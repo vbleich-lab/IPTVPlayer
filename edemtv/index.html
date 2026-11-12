@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IPTVPlayer</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <video id="video" autoplay playsinline></video>
+
+  <div id="spinner" class="hidden"><div class="ring"></div></div>
+  <div id="clock" class="hidden"></div>
+
+  <!-- Info-Leiste -->
+  <div id="infobar" class="hidden">
+    <div class="ib-tile">
+      <img id="ib-logo" alt="">
+      <span id="ib-num"></span>
+    </div>
+    <div class="ib-main">
+      <div class="ib-top">
+        <span id="ib-name"></span>
+        <span id="ib-badge" class="chip live"></span>
+        <span id="ib-arc" class="chip ghost hidden"></span>
+        <span id="ib-fav" class="star hidden">★</span>
+      </div>
+      <div class="ib-now"><span id="ib-time" class="ib-time"></span><span id="ib-title"></span></div>
+      <div class="progress"><div id="ib-progress"></div></div>
+      <div class="ib-bottom"><span id="ib-left"></span><span id="ib-next"></span></div>
+    </div>
+    <div class="ib-side">
+      <div id="ib-clock"></div>
+      <div id="ib-date"></div>
+      <div id="ib-gear" class="ib-gear" data-act="settings"><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span></div>
+    </div>
+  </div>
+
+  <!-- Kanalliste -->
+  <div id="list" class="panel hidden">
+    <div class="pane groups">
+      <div class="pane-title" data-t="groups"></div>
+      <div id="groups" class="rows" data-rh="3.3"></div>
+      <div id="gear" class="gear-btn" data-act="settings"><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span><span data-t="settings"></span></div>
+    </div>
+    <div class="pane channels">
+      <div class="pane-title clickable" data-act="groups"><span class="back">‹</span><span id="group-title"></span><span id="group-count" class="count"></span></div>
+      <div id="channels" class="rows" data-rh="4.6"></div>
+    </div>
+    <div class="card preview">
+      <div id="pv-video" class="pv-video"><span id="pv-video-label"></span></div>
+      <div class="pv-head">
+        <div class="pv-logo"><img id="pv-logo" alt=""></div>
+        <div class="pv-headtext">
+          <div id="pv-name" class="pv-name"></div>
+          <div id="pv-meta" class="pv-meta"></div>
+        </div>
+      </div>
+      <div id="pv-now" class="pv-now"></div>
+      <div class="progress"><div id="pv-progress"></div></div>
+      <div id="pv-desc" class="pv-desc"></div>
+      <div id="pv-next" class="pv-next"></div>
+    </div>
+    <div class="hints">
+      <span><b>OK</b> <i data-t="hPlay"></i></span>
+      <span><em class="key green"></em><i data-t="hGuide"></i></span>
+      <span><em class="key yellow"></em><i id="hint-yellow" data-t="hFav"></i></span>
+      <span class="clickable" data-act="settings"><em class="key blue"></em><i data-t="hSettings"></i></span>
+    </div>
+  </div>
+
+  <!-- Programmführer / Archiv -->
+  <div id="epg" class="panel hidden">
+    <div class="pane epg-pane">
+      <div class="epg-head">
+        <div class="pv-logo small"><img id="epg-logo" alt=""></div>
+        <div id="epg-title" class="epg-title"></div>
+      </div>
+      <div id="epg-days" class="days"></div>
+      <div id="epg-rows" class="rows" data-rh="3.6"></div>
+    </div>
+    <div class="card preview">
+      <div id="epg-pname" class="pv-name"></div>
+      <div id="epg-ptime" class="pv-now"></div>
+      <div id="epg-pstate" class="pv-meta"></div>
+      <div id="epg-pdesc" class="pv-desc"></div>
+    </div>
+    <div class="hints">
+      <span><b>OK</b> <i data-t="hArchivePlay"></i></span>
+      <span><b>◀ ▶</b> <i data-t="hDay"></i></span>
+      <span><b>↩</b> <i data-t="hBack"></i></span>
+    </div>
+  </div>
+
+  <!-- Einstellungen -->
+  <div id="settings" class="panel settings hidden">
+    <div class="set-head">
+      <div class="set-title" data-t="settings"></div>
+      <div id="set-welcome" class="set-welcome hidden"></div>
+      <div class="set-close" data-act="close">✕</div>
+    </div>
+    <div class="set-body">
+      <div class="pane cats">
+        <div id="set-cats" class="rows" data-rh="4"></div>
+      </div>
+      <div class="pane opts">
+        <div id="set-rows" class="rows" data-rh="4.6"></div>
+      </div>
+    </div>
+    <div id="set-help" class="set-help"></div>
+    <div class="hints">
+      <span><b>◀ ▶</b> <i data-t="hChange"></i></span>
+      <span><b>OK</b> <i data-t="hSelect"></i></span>
+      <span><b>↩</b> <i data-t="hClose"></i></span>
+    </div>
+  </div>
+
+  <!-- PIN -->
+  <div id="pin" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-title" data-t="pinTitle"></div>
+      <div id="pin-digits" class="pin-digits"></div>
+      <div id="pin-msg" class="modal-help" data-t="pinHelp"></div>
+    </div>
+  </div>
+
+  <!-- Einrichtung per Smartphone -->
+  <div id="qr" class="modal hidden">
+    <div class="modal-card qr-card">
+      <div class="qr-img" id="qr-img"></div>
+      <div class="qr-side">
+        <div class="modal-title" data-t="qrTitle"></div>
+        <div class="qr-steps" data-t="qrHelp"></div>
+        <div id="qr-url" class="qr-url"></div>
+        <div id="qr-status" class="qr-status"></div>
+        <div class="modal-help"><b>OK</b> / <b>↩</b> <i data-t="hClose"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="sleep" class="modal hidden">
+    <div class="modal-card"><div class="modal-title">☾</div><div id="sleep-msg" class="modal-help"></div></div>
+  </div>
+
+  <div id="numinput" class="hidden"></div>
+  <div id="toast" class="hidden"></div>
+
+  <script src="js/pako_inflate.min.js"></script>
+  <script src="js/qrcode.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/m3u.js"></script>
+  <script src="js/epg.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

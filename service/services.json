@@ -1,0 +1,7 @@
+{
+  "id": "com.edemtv.player.service",
+  "description": "IPTVPlayer phone setup",
+  "services": [
+    { "name": "com.edemtv.player.service", "description": "Local web server for phone setup and backups" }
+  ]
+}

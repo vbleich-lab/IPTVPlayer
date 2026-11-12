@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0f17">
+<title>IPTVPlayer</title>
+<style>
+  :root { --bg:#0b0f17; --card:#141a26; --card2:#1c2433; --line:#263042; --text:#e8edf6; --dim:#8d99ae; --accent:#3d8bff; --ok:#22b07d; --bad:#e5484d; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding: 0 0 calc(6rem + env(safe-area-inset-bottom)); -webkit-tap-highlight-color: transparent; }
+  header { position: sticky; top: 0; z-index: 2; background: rgba(11,15,23,.92); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    padding: calc(14px + env(safe-area-inset-top)) 18px 12px; border-bottom: 1px solid var(--line); display:flex; align-items:center; gap:12px; }
+  .logo { width: 34px; height: 34px; border-radius: 9px; background: var(--accent); display:flex; align-items:center; justify-content:center; font-weight:800; }
+  h1 { font-size: 18px; margin: 0; }
+  .sub { color: var(--dim); font-size: 13px; }
+  main { padding: 14px; max-width: 640px; margin: 0 auto; }
+  section { background: var(--card); border: 1px solid var(--line); border-radius: 16px; margin-bottom: 14px; overflow: hidden; }
+  section h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--dim); margin: 0; padding: 14px 16px 6px; }
+  .row { padding: 10px 16px 12px; border-top: 1px solid var(--line); }
+  section h2 + .row { border-top: 0; }
+  label { display:block; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .help { color: var(--dim); font-size: 12.5px; margin-top: 6px; }
+  input, select { width: 100%; font: inherit; color: var(--text); background: var(--card2); border: 1px solid var(--line); border-radius: 10px;
+    padding: 11px 12px; outline: none; -webkit-appearance: none; appearance: none; }
+  select { background-image: linear-gradient(45deg, transparent 50%, var(--dim) 50%), linear-gradient(135deg, var(--dim) 50%, transparent 50%);
+    background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%; background-size: 5px 5px; background-repeat: no-repeat; padding-right: 34px; }
+  input:focus, select:focus { border-color: var(--accent); }
+  .changed input, .changed select { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+  .btn { display:block; width:100%; border:0; border-radius: 12px; padding: 14px; font: inherit; font-weight: 700; color:#fff; background: var(--accent); cursor:pointer; }
+  .btn.ghost { background: var(--card2); color: var(--text); border: 1px solid var(--line); }
+  .btn + .btn { margin-top: 10px; }
+  .bar { position: fixed; left: 0; right: 0; bottom: 0; padding: 12px 14px calc(12px + env(safe-area-inset-bottom)); background: rgba(11,15,23,.95);
+    border-top: 1px solid var(--line); }
+  .bar .btn { max-width: 640px; margin: 0 auto; }
+  .btn:disabled { opacity: .5; }
+  #msg { position: fixed; left: 50%; bottom: calc(84px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: var(--card2); border: 1px solid var(--line);
+    padding: 10px 16px; border-radius: 12px; font-size: 14px; display: none; max-width: 90vw; text-align:center; }
+  #msg.ok { border-color: var(--ok); } #msg.err { border-color: var(--bad); }
+  .center { text-align:center; color: var(--dim); padding: 40px 20px; }
+  .pinrow input { letter-spacing: .5em; text-align: center; font-size: 20px; }
+  .eye { position: relative; } .eye input { padding-right: 52px; }
+  .eye button { position:absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: 0; color: var(--dim); font-size: 18px; padding: 6px 10px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">▶</div>
+  <div><h1 id="title">IPTVPlayer</h1><div class="sub" id="subtitle"></div></div>
+</header>
+<main id="main"><div class="center">…</div></main>
+<div class="bar"><button class="btn" id="save" disabled>…</button></div>
+<div id="msg"></div>
+<input type="file" id="file" accept="application/json,.json" style="display:none">
+
+<script>
+(function () {
+  'use strict';
+  var token = (/[?&]t=([^&]+)/.exec(location.search) || [])[1] || '';
+  var ui = {}, schema = [], settings = {}, changes = {};
+  var $ = function (id) { return document.getElementById(id); };
+  function T(k, a) { var s = ui[k] || k; return a !== undefined ? s.replace('%1', a) : s; }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  function api(method, p, body, cb) {
+    var x = new XMLHttpRequest();
+    x.open(method, '/api/' + p + (p.indexOf('?') < 0 ? '?' : '&') + 't=' + encodeURIComponent(token));
+    x.setRequestHeader('Content-Type', 'application/json');
+    x.timeout = 15000;
+    x.onload = function () { var r = null; try { r = JSON.parse(x.responseText); } catch (e) {} cb(x.status === 200 ? null : (r && r.error) || x.status, r); };
+    x.onerror = x.ontimeout = function () { cb('network'); };
+    x.send(body ? JSON.stringify(body) : null);
+  }
+
+  function msg(text, cls) {
+    var m = $('msg'); m.textContent = text; m.className = cls || ''; m.style.display = 'block';
+    clearTimeout(msg.t); msg.t = setTimeout(function () { m.style.display = 'none'; }, 3500);
+  }
+
+  function load() {
+    api('GET', 'state', null, function (err, r) {
+      if (err) { $('main').innerHTML = '<div class="center">⚠︎ ' + esc(err === 'token' ? 'QR code expired – please scan the code on the TV again' : (ui.wErr || 'No connection to the TV')) + '</div>'; return; }
+      ui = r.ui || {}; schema = r.schema || []; settings = r.settings || {}; changes = {};
+      if (ui.accent) document.documentElement.style.setProperty('--accent', ui.accent);
+      document.documentElement.lang = ui.lang || 'en';
+      $('title').textContent = T('wTitle'); $('subtitle').textContent = r.title || '';
+      document.title = T('wTitle');
+      render(r.favCount || 0);
+    });
+  }
+
+  function render(favCount) {
+    var h = '', needPin = false;
+    if (ui.pinAll) h += '<section><div class="row pinrow"><label>' + esc(T('wPin')) + '</label><input id="curpin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off"></div></section>';
+    schema.forEach(function (cat) {
+      h += '<section><h2>' + esc(cat.label) + '</h2>';
+      cat.items.forEach(function (it) {
+        if (it.parental) needPin = true;
+        var v = settings[it.k], ctl;
+        if (it.type === 'text') {
+          var typ = it.digits ? 'tel' : 'text';
+          ctl = '<div class="eye"><input data-k="' + esc(it.k) + '" type="' + (it.secret || it.digits ? 'password' : typ) + '" inputmode="' + (it.digits ? 'numeric' : 'text') +
+            '" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off"' + (it.digits ? ' maxlength="4" pattern="[0-9]*"' : '') +
+            ' value="' + esc(v) + '" placeholder="' + esc(it.placeholder || '') + '">' + (it.secret || it.digits ? '<button type="button" data-eye>👁</button>' : '') + '</div>';
+        } else {
+          ctl = '<select data-k="' + esc(it.k) + '">' + it.opts.map(function (o) {
+            return '<option value="' + esc(o[0]) + '"' + (String(o[0]) === String(v) ? ' selected' : '') + '>' + esc(o[1]) + '</option>';
+          }).join('') + '</select>';
+        }
+        h += '<div class="row"' + (it.dep ? ' data-dep="' + esc(it.dep[0]) + '" data-depv="' + esc(it.dep[1]) + '"' : '') + '><label>' + esc(it.label) + '</label>' + ctl + (it.help ? '<div class="help">' + esc(it.help) + '</div>' : '') + '</div>';
+      });
+      if (cat.parental && !ui.pinAll) {
+        h += '<div class="row pinrow"><label>' + esc(T('wPin')) + '</label><input id="curpin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off"></div>';
+      }
+      h += '</section>';
+    });
+    h += '<section><h2>' + esc(T('wBackup')) + '</h2><div class="row"><div class="help" style="margin:0 0 12px">' + esc(T('wBackupHelp')) + ' ' + esc(T('wFavs', favCount)) + '</div>' +
+      '<button class="btn ghost" id="dl">⬇ ' + esc(T('wDownload')) + '</button><button class="btn ghost" id="ul">⬆ ' + esc(T('wUpload')) + '</button></div></section>';
+    $('main').innerHTML = h;
+    $('save').textContent = T('wSave'); $('save').disabled = true;
+
+    Array.prototype.forEach.call(document.querySelectorAll('[data-k]'), function (el) {
+      el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', function () {
+        var k = el.getAttribute('data-k');
+        if (String(el.value) === String(settings[k] == null ? '' : settings[k])) delete changes[k]; else changes[k] = el.value;
+        el.closest('.row').classList[k in changes ? 'add' : 'remove']('changed');
+        $('save').disabled = !Object.keys(changes).length;
+        deps();
+      });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-eye]'), function (b) {
+      b.addEventListener('click', function () { var i = b.previousSibling; i.type = i.type === 'password' ? 'text' : 'password'; });
+    });
+    deps();
+    $('dl').addEventListener('click', function () { location.href = '/api/backup?t=' + encodeURIComponent(token); });
+    $('ul').addEventListener('click', function () { $('file').value = ''; $('file').click(); });
+  }
+
+  // Felder nur zeigen, wenn sie zur gewählten Quelle / zum EPG-Modus passen
+  function deps() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-dep]'), function (row) {
+      var c = document.querySelector('[data-k="' + row.getAttribute('data-dep') + '"]');
+      row.style.display = c && c.value === row.getAttribute('data-depv') ? '' : 'none';
+    });
+  }
+
+  $('save').addEventListener('click', function () {
+    var b = $('save'); b.disabled = true;
+    var pin = $('curpin') ? $('curpin').value : '';
+    api('POST', 'apply', { settings: changes, pin: pin }, function (err) {
+      if (err) { b.disabled = false; msg(T('wErr'), 'err'); return; }
+      msg('✓ ' + T('wSaved'), 'ok');
+      setTimeout(load, 1500);
+    });
+  });
+
+  $('file').addEventListener('change', function () {
+    var f = this.files && this.files[0]; if (!f) return;
+    var r = new FileReader();
+    r.onload = function () {
+      var data; try { data = JSON.parse(r.result); } catch (e) { msg('⚠︎ JSON', 'err'); return; }
+      api('POST', 'restore', data, function (err) {
+        if (err) { msg('⚠︎ ' + (typeof err === 'string' ? err : T('wErr')), 'err'); return; }
+        msg('✓ ' + T('wRestored'), 'ok');
+        setTimeout(load, 4000);
+      });
+    };
+    r.readAsText(f);
+  });
+
+  load();
+})();
+</script>
+</body>
+</html>

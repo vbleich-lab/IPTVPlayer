@@ -1,6 +1,6 @@
 {
-  "name": "com.edemtv.player.service",
-  "version": "2.6.1",
+  "name": "com.iptvplayer.app.service",
+  "version": "2.7.0",
   "description": "IPTVPlayer – Einrichtung per Smartphone (lokaler Web-Server im WLAN)",
   "main": "index.js"
 }

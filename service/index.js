@@ -19,7 +19,7 @@ var fs = require('fs');
 var path = require('path');
 var crypto = require('crypto');
 
-var SERVICE_ID = 'com.edemtv.player.service';
+var SERVICE_ID = 'com.iptvplayer.app.service';
 var PORTS = [8765, 8766, 8767, 8768];
 var MAX_BODY = 512 * 1024;
 
@@ -143,14 +143,14 @@ function handle(req, res) {
     if (p === '/api/backup') {
       var d = new Date(), stamp = d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '-' + pad(d.getHours()) + pad(d.getMinutes());
       var src = state.backup || {};
-      var backup = { app: 'edemtv', v: 1, date: d.toISOString(), settings: src.settings || {}, favs: src.favs || {} };
+      var backup = { app: 'iptvplayer', v: 1, date: d.toISOString(), settings: src.settings || {}, favs: src.favs || {} };
       return send(res, 200, JSON.stringify(backup, null, 2), 'application/json; charset=utf-8',
         { 'Content-Disposition': 'attachment; filename="iptvplayer-backup-' + stamp + '.json"' });
     }
     if ((p === '/api/apply' || p === '/api/restore') && req.method === 'POST') {
       return readBody(req, function (err, body) {
         if (err || !body || typeof body !== 'object') return send(res, 400, { error: 'bad json' });
-        if (p === '/api/restore' && (body.app !== 'edemtv' || typeof body.settings !== 'object')) return send(res, 400, { error: 'not an IPTVPlayer backup' });
+        if (p === '/api/restore' && ((body.app !== 'iptvplayer' && body.app !== 'edemtv') || typeof body.settings !== 'object')) return send(res, 400, { error: 'not an IPTVPlayer backup' });
         pushEvent(p === '/api/apply' ? 'apply' : 'restore', body);
         send(res, 200, { ok: true });
       });

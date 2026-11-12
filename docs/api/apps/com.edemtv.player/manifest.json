@@ -1,0 +1,15 @@
+{
+  "id": "com.edemtv.player",
+  "version": "2.6.1",
+  "type": "web",
+  "title": "IPTVPlayer",
+  "appDescription": "IPTV-App für Edem TV oder jede M3U-Playlist: Kanalliste mit Live-Vorschau, Programmführer, Archiv, Einrichtung per Smartphone, 10 Sprachen. Optional: Autostart beim Einschalten des Fernsehers (benötigt Root).",
+  "iconUri": "https://vbleich-lab.github.io/IPTVPlayer/icon.png",
+  "sourceUrl": "https://github.com/vbleich-lab/IPTVPlayer",
+  "rootRequired": "optional",
+  "ipkUrl": "https://github.com/vbleich-lab/IPTVPlayer/releases/download/v2.6.1/com.edemtv.player_2.6.1_all.ipk",
+  "ipkHash": {
+    "sha256": "94f0b05cc96fbe12836f095eb7637c81ba5d24c90a5ddfb10d55d6e8b02565f7"
+  },
+  "ipkSize": 107240
+}

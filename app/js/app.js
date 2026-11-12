@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '2.6.1';
+  var VERSION = '2.7.0';
   var KEY = {
     LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, ENTER: 13, BACK: 461, ESC: 27, BACKSPACE: 8,
     CH_UP: 33, CH_DOWN: 34, RED: 403, GREEN: 404, YELLOW: 405, BLUE: 406,
@@ -818,7 +818,7 @@
   // ---------- Einstellungen: Anzeige & Steuerung ----------
   // ---------- Autostart beim Einschalten (gerooteter TV mit Homebrew Channel) ----------
   var AUTOSTART_FILE = '/var/lib/webosbrew/init.d/50-iptvplayer-autostart';
-  var AUTOSTART_SCRIPT = "#!/bin/sh\n# IPTVPlayer: App beim Einschalten des Fernsehers starten. Angelegt von der App (Einstellungen > System > Autostart).\nAPP=com.edemtv.player\nPIDF=/tmp/iptvplayer-autostart.pid\n# Dienstpfad geteilt, damit \"pkill -f\" nur luna-send trifft und nicht die Shell, die dieses Skript enthält\nPWR=tvpower/power\nlaunch() { luna-send -n 1 luna://com.webos.applicationManager/launch \"{\\\"id\\\":\\\"$APP\\\"}\" >/dev/null 2>&1; }\nwatch_power() {\n  if [ \"$1\" != now ]; then sleep 20; launch; fi\n  prev=Active\n  luna-send -i \"luna://com.webos.service.$PWR/getPowerState\" '{\"subscribe\":true}' 2>/dev/null | while read -r line; do\n    if echo \"$line\" | grep -qE '\"state\" ?: ?\"Active\"'; then st=Active\n    elif echo \"$line\" | grep -q '\"state\"'; then st=Other\n    else continue; fi\n    if [ \"$st\" = Active ] && [ \"$prev\" != Active ]; then sleep 3; launch; fi\n    prev=$st\n  done\n}\n[ -f \"$PIDF\" ] && kill \"$(cat \"$PIDF\")\" 2>/dev/null\npkill -f '[t]vpower/power/getPowerState' 2>/dev/null\nwatch_power \"$1\" </dev/null >/dev/null 2>&1 &\necho $! > \"$PIDF\"\n";
+  var AUTOSTART_SCRIPT = "#!/bin/sh\n# IPTVPlayer: App beim Einschalten des Fernsehers starten. Angelegt von der App (Einstellungen > System > Autostart).\nAPP=com.iptvplayer.app\nPIDF=/tmp/iptvplayer-autostart.pid\n# Dienstpfad geteilt, damit \"pkill -f\" nur luna-send trifft und nicht die Shell, die dieses Skript enthält\nPWR=tvpower/power\nlaunch() { luna-send -n 1 luna://com.webos.applicationManager/launch \"{\\\"id\\\":\\\"$APP\\\"}\" >/dev/null 2>&1; }\nwatch_power() {\n  if [ \"$1\" != now ]; then sleep 20; launch; fi\n  prev=Active\n  luna-send -i \"luna://com.webos.service.$PWR/getPowerState\" '{\"subscribe\":true}' 2>/dev/null | while read -r line; do\n    if echo \"$line\" | grep -qE '\"state\" ?: ?\"Active\"'; then st=Active\n    elif echo \"$line\" | grep -q '\"state\"'; then st=Other\n    else continue; fi\n    if [ \"$st\" = Active ] && [ \"$prev\" != Active ]; then sleep 3; launch; fi\n    prev=$st\n  done\n}\n[ -f \"$PIDF\" ] && kill \"$(cat \"$PIDF\")\" 2>/dev/null\npkill -f '[t]vpower/power/getPowerState' 2>/dev/null\nwatch_power \"$1\" </dev/null >/dev/null 2>&1 &\necho $! > \"$PIDF\"\n";
   S.bridges = [];
   /** einzelner Luna-Aufruf über die webOS-Brücke */
   function luna(uri, params, cb) {
@@ -1061,7 +1061,7 @@
   }
 
   // ---------- Sicherung auf dem Fernseher ----------
-  function backupData() { return { app: 'edemtv', v: 1, date: new Date().toISOString(), settings: S.settings, favs: S.favs }; }
+  function backupData() { return { app: 'iptvplayer', v: 1, date: new Date().toISOString(), settings: S.settings, favs: S.favs }; }
   function backupInfo() {
     var b = load('backup', null); if (!b || !b.date) return t('noBackup');
     var d = new Date(b.date);
@@ -1075,7 +1075,7 @@
   }
   /** Sicherung übernehmen (vom TV oder vom Handy) und App neu starten */
   function restoreBackup(b) {
-    if (!b || b.app !== 'edemtv' || !b.settings || typeof b.settings !== 'object') { toast(t('errorX', 'backup')); return false; }
+    if (!b || (b.app !== 'iptvplayer' && b.app !== 'edemtv') || !b.settings || typeof b.settings !== 'object') { toast(t('errorX', 'backup')); return false; }
     var st = {}, fv = {};
     Object.keys(DEFAULTS).forEach(function (k) {
       var v = b.settings[k];
@@ -1091,7 +1091,7 @@
   // ---------- Einrichtung per Smartphone (QR-Code) ----------
   // Ein webOS-Hintergrunddienst (service/) öffnet einen kleinen Web-Server im WLAN.
   // Die App spricht ihn über 127.0.0.1 an; das Handy über die TV-IP + Token aus dem QR-Code.
-  var SERVICE = 'com.edemtv.player.service', SERVICE_PORTS = [8765, 8766, 8767, 8768];
+  var SERVICE = 'com.iptvplayer.app.service', SERVICE_PORTS = [8765, 8766, 8767, 8768];
   var R = { port: 0, info: null, since: 0, polling: false, pushTimer: null, bridge: null };
 
   function xhr(method, url, body, cb, timeout) {

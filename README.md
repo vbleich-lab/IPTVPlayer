@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="edemtv/largeIcon.png" width="110" alt="IPTVPlayer-Symbol">
+  <img src="app/largeIcon.png" width="110" alt="IPTVPlayer-Symbol">
 </p>
 
 <h1 align="center">IPTVPlayer</h1>
@@ -134,6 +134,19 @@ Acht Kategorien. Änderungen wirken sofort, zu jeder Einstellung steht eine kurz
 
 ## Installation
 
+### Über den Homebrew Channel (gerootete Fernseher)
+
+Am einfachsten geht es über das eigene Repository dieses Projekts. Updates erscheinen dann automatisch im Homebrew Channel.
+
+1. **Homebrew Channel** öffnen → **Settings** (Zahnrad) → ganz unten bei *Repositories* auf **Add repository**.
+2. Diese Adresse eingeben:
+   ```
+   https://vbleich-lab.github.io/IPTVPlayer/api/apps.json
+   ```
+3. Zurück zur App-Liste: **IPTVPlayer** auswählen → **Install**.
+
+### Manuell im Developer Mode
+
 Die fertige `.ipk`-Datei liegt unter [Releases](../../releases).
 
 1. Auf dem Fernseher die App **Developer Mode** aus dem LG Content Store installieren, mit einem LG-Developer-Konto anmelden, *Dev Mode Status* einschalten und den Fernseher neu starten.
@@ -145,32 +158,51 @@ Die fertige `.ipk`-Datei liegt unter [Releases](../../releases).
    ```
 3. Installieren und starten:
    ```bash
-   ares-install --device tv com.edemtv.player_2.6.1_all.ipk
-   ares-launch --device tv com.edemtv.player
+   ares-install --device tv com.iptvplayer.app_2.7.0_all.ipk
+   ares-launch --device tv com.iptvplayer.app
    ```
 4. In der App den Zugangsschlüssel und die Kanal-Domain eintragen (oder eine Playlist-URL), am bequemsten per Smartphone über den QR-Code. Der erste EPG-Download kann einige Minuten dauern. Er läuft im Hintergrund; danach kommt das EPG sofort aus dem Cache.
 
 > Im Developer Mode läuft die Sitzung nach 50 Stunden ab und muss in der Developer-Mode-App verlängert werden, sonst entfernt der Fernseher die App.
 
+### Umstieg von Version 2.6 und älter
+
+Bis Version 2.6 hieß die App intern `com.edemtv.player`, ab 2.7 heißt sie `com.iptvplayer.app`. Der Fernseher sieht sie deshalb als neue App.
+1. In der alten App: Einstellungen › *Smartphone & Sicherung* → QR-Code scannen → auf dem Handy **Sicherung herunterladen**.
+2. Die neue Version installieren und die alte deinstallieren.
+3. In der neuen App per QR-Code die Sicherung wieder hochladen. Einstellungen und Favoriten sind dann zurück.
+4. Wer den Autostart benutzt hat: in der neuen App unter Einstellungen › System einmal „Nein“ und wieder „Ja“ wählen. Dann startet der Fernseher die neue App.
+
 ## Selbst bauen
 
 ```bash
-npx -p @webos-tools/cli ares-package edemtv service -o dist -e demo
+npx -p @webos-tools/cli ares-package app service -o dist -e demo
 ```
-Das baut die App und den Hintergrunddienst zu `dist/com.edemtv.player_<version>_all.ipk`.
+Das baut die App und den Hintergrunddienst zu `dist/com.iptvplayer.app_<version>_all.ipk`.
+
+**Neue Version veröffentlichen:**
+1. Version in `app/appinfo.json` erhöhen und neu bauen (Befehl oben).
+2. Das Repository für den Homebrew Channel aktualisieren. Das Skript trägt Version, Download-Link und Prüfsumme in `docs/api/` ein:
+   ```bash
+   node tools/make-repo.js
+   ```
+3. Genau diese `.ipk` als Release hochladen, dann committen und pushen:
+   ```bash
+   gh release create v<version> dist/com.iptvplayer.app_<version>_all.ipk
+   ```
 
 ## Im Browser testen
 
 ```bash
 npx http-server -p 8137
 ```
-Dann `http://localhost:8137/edemtv/index.html?playlist=demo/demo.m3u` öffnen (Tasten: Pfeile, Enter, Backspace = Zurück).
-`node edemtv/demo/make-epg.js` erzeugt ein Demo-EPG um die aktuelle Uhrzeit. Für die Smartphone-Einrichtung zusätzlich `node service/index.js` starten; am PC läuft das ohne webOS als normaler Server.
+Dann `http://localhost:8137/app/index.html?playlist=demo/demo.m3u` öffnen (Tasten: Pfeile, Enter, Backspace = Zurück).
+`node app/demo/make-epg.js` erzeugt ein Demo-EPG um die aktuelle Uhrzeit. Für die Smartphone-Einrichtung zusätzlich `node service/index.js` starten; am PC läuft das ohne webOS als normaler Server.
 
 ## Projektaufbau
 
 ```
-edemtv/            webOS-App (HTML/CSS/ES5-JavaScript)
+app/               webOS-App (HTML/CSS/ES5-JavaScript)
   js/app.js        Oberfläche, Steuerung, Einstellungen
   js/player.js     Wiedergabe (nativ / hls.js), Tonspur, Untertitel
   js/epg.js        XMLTV-Parser mit IndexedDB-Cache

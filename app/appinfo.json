@@ -1,6 +1,6 @@
 {
-  "id": "com.edemtv.player",
-  "version": "2.6.1",
+  "id": "com.iptvplayer.app",
+  "version": "2.7.0",
   "vendor": "Private",
   "type": "web",
   "main": "index.html",

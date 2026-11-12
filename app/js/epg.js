@@ -187,7 +187,7 @@ var EPG = (function () {
   }
 
   // ---------- Cache (IndexedDB) ----------
-  var DB_NAME = 'edemtv', STORE = 'epg';
+  var DB_NAME = 'iptvplayer', STORE = 'epg';
   function openDb(cb) {
     if (!window.indexedDB) return cb(null);
     try {

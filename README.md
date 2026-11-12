@@ -10,6 +10,10 @@
 </p>
 
 <p align="center">
+  <a href="https://paypal.me/VitalijBleich"><img src="https://img.shields.io/badge/PayPal-Projekt%20unterst%C3%BCtzen-00457C?logo=paypal&logoColor=white&style=for-the-badge" alt="Mit PayPal unterstützen"></a>
+</p>
+
+<p align="center">
   <img src="docs/screenshots/02-channel-list.png" width="900" alt="Kanalliste mit Gruppen, Programm und Live-Vorschau">
 </p>
 
@@ -175,6 +179,12 @@ edemtv/            webOS-App (HTML/CSS/ES5-JavaScript)
 service/           webOS-JS-Dienst: Web-Server für die Smartphone-Einrichtung
 docs/screenshots/  Bilder für diese Seite
 ```
+
+## Unterstützen
+
+Dir gefällt die App? Über eine kleine Spende freue ich mich sehr. Sie hilft, IPTVPlayer weiterzuentwickeln.
+
+<a href="https://paypal.me/VitalijBleich"><img src="https://img.shields.io/badge/PayPal-paypal.me%2FVitalijBleich-00457C?logo=paypal&logoColor=white&style=for-the-badge" alt="paypal.me/VitalijBleich"></a>
 
 ## Hinweise
 

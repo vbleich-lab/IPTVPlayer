@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '2.7.0';
+  var VERSION = '2.8.0';
   var KEY = {
     LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, ENTER: 13, BACK: 461, ESC: 27, BACKSPACE: 8,
     CH_UP: 33, CH_DOWN: 34, RED: 403, GREEN: 404, YELLOW: 405, BLUE: 406,
@@ -783,17 +783,17 @@
       { k: 'protectSettings', label: 'sProtect', help: 'hProtect', opts: yn }
     ] },
     { id: 'remote', label: 'catRemote', items: [
-      { id: 'qr', type: 'act', label: 'sRemoteQr', help: 'hRemoteQr', primary: true, run: openQr },
+      { id: 'qr', type: 'act', label: 'sRemoteQr', help: 'hRemoteQr', primary: true, run: openQr, when: function () { return Platform.phoneSetup; } },
       { id: 'backupTv', type: 'act', label: 'sBackupTv', help: 'hBackupTv', run: actBackupTv, value: backupInfo },
       { id: 'restoreTv', type: 'act', label: 'sRestoreTv', help: 'hRestoreTv', confirm: true, run: actRestoreTv, when: function () { return !!load('backup', null); } },
-      { id: 'backupPhone', type: 'act', label: 'sBackupPhone', help: 'hBackupPhone', run: openQr }
+      { id: 'backupPhone', type: 'act', label: 'sBackupPhone', help: 'hBackupPhone', run: openQr, when: function () { return Platform.phoneSetup; } }
     ] },
     { id: 'sys', label: 'catSystem', items: [
-      { id: 'autostart', label: 'sAutostart', help: 'hAutostart', opts: yn, getv: function () { return S.autostart ? 1 : 0; }, setv: setAutostart },
+      { id: 'autostart', label: 'sAutostart', help: Platform.name === 'android' ? 'hAutostartA' : 'hAutostart', when: function () { return Platform.autostart; }, opts: yn, getv: function () { return S.autostart ? 1 : 0; }, setv: setAutostart },
       { id: 'reload', type: 'act', label: 'sReload', run: actLoadList, when: isConfigured },
       { id: 'resetFavs', type: 'act', label: 'sResetFavs', confirm: true, run: actResetFavs },
       { id: 'resetAll', type: 'act', label: 'sResetAll', confirm: true, run: actResetAll },
-      { id: 'version', type: 'info', label: 'sVersion', value: function () { return VERSION + '  ·  webOS'; } }
+      { id: 'version', type: 'info', label: 'sVersion', value: function () { return VERSION + '  ·  ' + Platform.label; } }
     ] }
   ];
 
@@ -837,6 +837,11 @@
     });
   }
   function checkAutostart() {
+    if (Platform.name === 'android') {
+      var a = Platform.androidAutostart() === 'on';
+      if (a !== !!S.autostart) { S.autostart = a; save('autostart', a); if (S.mode === 'settings') renderSettings(); }
+      return;
+    }
     rootExec('test -f ' + AUTOSTART_FILE + ' && echo on || echo off', function (err, out) {
       if (err) return;
       var on = out.indexOf('on') >= 0;
@@ -845,6 +850,15 @@
   }
   function setAutostart(v) {
     var on = !!+v;
+    if (Platform.name === 'android') {
+      var r = Platform.androidAutostart(on);
+      if (r === 'perm') { toast(t('autostartPerm'), 10000); Platform.openAutostartPermission(); return; }
+      if (r !== (on ? 'on' : 'off')) { toast(t('autostartFail') + ' [' + r + ']', 8000); return; }
+      S.autostart = on; save('autostart', on);
+      toast(t(on ? 'autostartOn' : 'autostartOff'), 4000);
+      if (S.mode === 'settings') renderSettings();
+      return;
+    }
     var cmd = on
       ? "mkdir -p /var/lib/webosbrew/init.d && cat > " + AUTOSTART_FILE + " <<'IPTVEOF'\n" + AUTOSTART_SCRIPT + "IPTVEOF\n" +
         'chmod 755 ' + AUTOSTART_FILE + ' && sh ' + AUTOSTART_FILE + ' now </dev/null >/dev/null 2>&1; test -f ' + AUTOSTART_FILE + ' && echo on'
@@ -1106,6 +1120,7 @@
 
   /** Dienst über Luna starten und per Abo am Leben halten (nur auf dem Fernseher) */
   function lunaStart(cb) {
+    if (Platform.name === 'android') { Platform.startPhoneServer(); return setTimeout(cb, 300); }
     if (!window.PalmServiceBridge) return cb();
     var done = false, fin = function () { if (!done) { done = true; cb(); } };
     try {
@@ -1298,14 +1313,18 @@
       case KEY.BACK: case KEY.ESC: case KEY.BACKSPACE:
         if (visible('infobar')) hideInfo();
         else if (S.archive) { play(S.current); toast(t('backLive'), 1500); }
+        else if (Platform.canExit && k === KEY.BACK) {
+          if (Date.now() - (S.backArmed || 0) < 2500) Platform.exit();
+          else { S.backArmed = Date.now(); toast(t('exitHint'), 2500); }
+        }
         else openList();
         break;
     }
   }
 
   window.addEventListener('resize', function () { placeVideo(); });
-  document.addEventListener('keydown', function (ev) {
-    var k = ev.keyCode;
+  function onKeyDown(ev) {
+    var k = Platform.mapKey(ev.keyCode);
     if (S.modal === 'pin') { ev.preventDefault(); return pinKey(k); }
     if (S.modal === 'qr') { ev.preventDefault(); if (k === KEY.BACK || k === KEY.ESC || k === KEY.BACKSPACE || k === KEY.ENTER) closeQr(); return; }
     if (S.modal === 'sleep') { ev.preventDefault(); show('sleep', false); S.modal = null; if (S.current) play(S.current); return; }
@@ -1314,7 +1333,20 @@
     if (S.mode === 'list') listKey(k);
     else if (S.mode === 'epg') epgKey(k);
     else playerKey(k);
-  });
+  }
+  document.addEventListener('keydown', onKeyDown);
+  window.IPTVKey = function (code) { onKeyDown({ keyCode: code, preventDefault: function () {} }); };
+
+  // App im Hintergrund (Android: Home-Taste, Samsung: Multitasking): Stream anhalten, beim Zurückkehren neu laden
+  window.IPTVSuspend = function () { S.suspended = true; Player.stop(); };
+  window.IPTVResume = function () {
+    if (!S.suspended) return;
+    S.suspended = false;
+    if (S.current) { S.archive = null; S.previewing = null; Player.start(S.current.url); }
+  };
+  if (Platform.name === 'tizen') {
+    document.addEventListener('visibilitychange', function () { if (document.hidden) window.IPTVSuspend(); else window.IPTVResume(); });
+  }
 
   // Magic-Remote: Zeiger-Klick öffnet Liste
   function closestEl(el, sel) {
@@ -1371,6 +1403,7 @@
   });
 
   // ---------- Start ----------
+  Platform.init();
   Player.init($('video'));
   Player.on('loading', function (on) { show('spinner', on); });
   Player.on('error', function () { toast(t('streamError')); });

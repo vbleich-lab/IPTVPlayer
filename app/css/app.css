@@ -5,7 +5,7 @@
   --bg: 7, 10, 17; --card: #121826; --card2: #182032; --line: rgba(255,255,255,.07);
   --text: #eef2f8; --dim: #8b95a9; --dim2: #5f6a80; --ok: #3fbf6f; --warn: #f5b942; --bad: #ef5350;
 }
-html { font-size: calc(100vw / 96 * var(--scale)); }
+html { font-size: 1.0417vw; font-size: calc(100vw / 96 * var(--scale)); }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { width: 100%; height: 100%; overflow: hidden; background: #000; color: var(--text);
   font-family: "LG Smart UI", "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif; cursor: default;

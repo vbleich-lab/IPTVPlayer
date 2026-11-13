@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '2.9.1';
+  var VERSION = '2.9.2';
   var KEY = {
     LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, ENTER: 13, BACK: 461, ESC: 27, BACKSPACE: 8,
     CH_UP: 33, CH_DOWN: 34, RED: 403, GREEN: 404, YELLOW: 405, BLUE: 406,
@@ -1117,14 +1117,69 @@
       : '[ -f /tmp/iptvplayer-autostart.pid ] && kill $(cat /tmp/iptvplayer-autostart.pid) 2>/dev/null; pkill -f \'[t]vpower/power/getPowerState\' 2>/dev/null; ' +
         'rm -f ' + AUTOSTART_FILE + ' /tmp/iptvplayer-autostart.pid; test -f ' + AUTOSTART_FILE + ' || echo off';
     toast('…', 8000);
-    rootExec(cmd, function (err, out) {
-      if (err || out.indexOf(on ? 'on' : 'off') < 0) {
-        var why = err ? err.message : (out || '').trim();
-        toast(t('autostartFail') + (why ? ' [' + why.slice(0, 120) + ']' : ''), 10000); return;
-      }
+    var ok = function () {
       S.autostart = on; save('autostart', on);
       toast(t(on ? 'autostartOn' : 'autostartOff'), 4000);
       if (S.mode === 'settings') renderSettings();
+    };
+    rootExec(cmd, function (err, out) {
+      if (!err && out.indexOf(on ? 'on' : 'off') >= 0) {
+        // mit Root: eine evtl. früher angelegte Developer-Mode-Aktivität entfernen, damit nichts doppelt startet
+        devAutostart(false, function () {}); ok(); return;
+      }
+      // ohne Root (Developer Mode): dauerhafte Aktivität im Activity Manager
+      devAutostart(on, function (err2) {
+        if (!err2) { ok(); return; }
+        var why = (err ? err.message : (out || '').trim()) + ' / ' + err2;
+        toast(t('autostartFail') + ' [' + why.slice(0, 160) + ']', 10000);
+      });
+    });
+  }
+
+  // ---------- Autostart ohne Root (Developer Mode): dauerhafte Aktivität im Activity Manager ----------
+  // Die Aktivität (persist) bleibt über Neustarts erhalten und startet die App, sobald der Fernseher hochgefahren ist.
+  var DEV_ACTIVITY = 'com.iptvplayer.app.autostart';
+  var AM_URIS = ['luna://com.webos.service.activitymanager/', 'luna://com.palm.activitymanager/'];
+  function amCall(method, params, cb, i) {
+    i = i || 0;
+    luna(AM_URIS[i] + method, params, function (r) {
+      if (r && r.returnValue) { cb(null, r); return; }
+      var err = (r && (r.errorText || r.errorCode)) || 'error';
+      if (i + 1 < AM_URIS.length && /unknown|not found|denied|no such|-1/i.test(String(err))) { amCall(method, params, cb, i + 1); return; }
+      cb(String(err), r);
+    });
+  }
+  function devAutostart(on, cb) {
+    if (!window.PalmServiceBridge) { cb('no webOS'); return; }
+    var cancel = function (next) {
+      var id = load('autostartActivity', 0);
+      amCall('cancel', id ? { activityId: id } : { activityName: DEV_ACTIVITY }, function (err) {
+        if (err && id) { amCall('cancel', { activityName: DEV_ACTIVITY }, function () { save('autostartActivity', 0); next(); }); return; }
+        save('autostartActivity', 0); next();
+      });
+    };
+    if (!on) { cancel(function () { cb(null); }); return; }
+    var spec = {
+      activity: {
+        name: DEV_ACTIVITY,
+        description: 'IPTVPlayer: start after power-on (Settings > System > Autostart)',
+        type: { foreground: true, persist: true, continuous: true },
+        trigger: {
+          method: 'luna://com.webos.bootManager/getBootStatus',
+          params: { subscribe: true },
+          where: { prop: ['signals', 'core-boot-done'], op: '=', val: true }
+        },
+        callback: { method: 'luna://com.webos.applicationManager/launch', params: { id: 'com.iptvplayer.app' } }
+      },
+      replace: true,
+      start: true
+    };
+    cancel(function () {
+      amCall('create', spec, function (err, r) {
+        if (err) { cb(err); return; }
+        if (r && r.activityId) save('autostartActivity', r.activityId);
+        cb(null);
+      });
     });
   }
 

@@ -41,7 +41,7 @@ Alle drei Versionen bauen auf demselben Code auf und haben dieselbe Oberfläche.
 - ⚙️ **Über 50 Einstellungen in 8 Kategorien,** direkt am Fernseher oder am Handy.
 - 🔒 **Kindersicherung** mit PIN für Erwachsenen-Gruppen und auf Wunsch für die Einstellungen.
 - 🌍 **22 Sprachen:** Deutsch, English, Русский, Українська, Polski, Türkçe, Español, Français, Italiano, Română, Português, Nederlands, Čeština, Slovenčina, Magyar, Български, Ελληνικά, Lietuvių, Latviešu, Eesti, Қазақша, Беларуская.
-- ⚡ **Autostart** beim Einschalten des Fernsehers (LG mit Homebrew Channel/Root und Android TV).
+- ⚡ **Autostart** beim Einschalten des Fernsehers (LG mit Root oder im Developer Mode, Android TV).
 - 🖱️ Bedienung mit der normalen Fernbedienung **oder** mit dem Zeiger der Magic Remote.
 - 🧓 Läuft auch auf älteren Fernsehern (ES5-Code, keine modernen Browser-Funktionen nötig).
 
@@ -126,9 +126,10 @@ Acht Kategorien. Änderungen wirken sofort, zu jeder Einstellung steht eine kurz
 - Änderungen an der Kindersicherung verlangen auch auf dem Handy die PIN.
 - Sicherung von Einstellungen und Favoriten auf dem Fernseher oder als JSON-Datei auf dem Handy, später wieder einspielbar.
 
-**Autostart (LG mit Root, Android TV)**
-- Einstellungen › System › „Beim Einschalten des Fernsehers starten“. Die App legt über den Root-Dienst des [Homebrew Channel](https://github.com/webosbrew/webos-homebrew-channel) ein Startskript in `/var/lib/webosbrew/init.d` an.
-- Die App startet dann nach dem Hochfahren und bei jedem Aufwachen aus dem Standby. „Nein“ entfernt das Skript wieder.
+**Autostart (LG mit Root oder im Developer Mode, Android TV)**
+- Einstellungen › System › „Beim Einschalten des Fernsehers starten“.
+- **LG mit Root:** Die App legt über den Root-Dienst des [Homebrew Channel](https://github.com/webosbrew/webos-homebrew-channel) ein Startskript in `/var/lib/webosbrew/init.d` an. Sie startet dann nach dem Hochfahren und bei jedem Aufwachen aus dem Standby. „Nein“ entfernt das Skript wieder.
+- **LG im Developer Mode (ohne Root):** Die App legt im Activity Manager des Fernsehers eine dauerhafte Aktivität an, die IPTVPlayer startet, sobald der Fernseher hochgefahren ist. Beim Aufwachen aus dem Standby (Quick Start+) bleibt meist ohnehin die zuletzt benutzte App offen. „Nein“ löscht die Aktivität. Dieser Weg ist nicht offiziell dokumentiert und nicht auf jedem Modell getestet; lehnt der Fernseher ihn ab, zeigt die App die Fehlermeldung an.
 - Android: siehe [Autostart auf Android](#android-tv--google-tv--fire-tv).
 
 ---

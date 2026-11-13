@@ -23,8 +23,8 @@ var ipkPath = path.join(ROOT, 'dist', ipkName);
 if (!fs.existsSync(ipkPath)) { console.error('Fehlt: dist/' + ipkName + ' – zuerst bauen (ares-package app service -o dist -e demo)'); process.exit(1); }
 var ipk = fs.readFileSync(ipkPath);
 
-var SHORT = 'IPTV-App für Edem TV oder jede M3U-Playlist: Kanalliste mit Live-Vorschau, Programmführer, Archiv, Einrichtung per Smartphone, 10 Sprachen.';
-var DESC = SHORT + ' Optional: Autostart beim Einschalten des Fernsehers (benötigt Root).';
+var SHORT = 'IPTV-App für Edem TV oder jede M3U-Playlist: Kanalliste mit Live-Vorschau, Programmführer, Archiv, Einrichtung per Smartphone, Mediathek, 22 Sprachen.';
+var DESC = SHORT + ' Optional: Autostart beim Einschalten des Fernsehers (mit Root oder im Developer Mode).';
 
 var manifest = {
   id: app.id,
@@ -75,8 +75,8 @@ var desc = [
   '<li><b>Kanalliste mit Live-Vorschau,</b> Gruppen, Favoriten, „Zuletzt gesehen“, „Mit Archiv“.</li>',
   '<li><b>Programmführer und Archiv</b> bis 7 Tage zurück.</li>',
   '<li><b>Einrichtung per Smartphone:</b> QR-Code scannen, Einstellungen am Handy eintippen, Sicherung herunterladen.</li>',
-  '<li>Über 50 Einstellungen, Kindersicherung mit PIN, 10 Sprachen.</li>',
-  '<li><b>Autostart</b> beim Einschalten des Fernsehers (Einstellungen › System, nur mit Root).</li>',
+  '<li>Über 50 Einstellungen, Kindersicherung mit PIN, 22 Sprachen.</li>',
+  '<li><b>Autostart</b> beim Einschalten des Fernsehers (Einstellungen › System, mit Root oder im Developer Mode).</li>',
   '</ul>',
   '<p>Die App enthält keine Sender oder Zugangsdaten – ein eigenes Abo bzw. eine eigene Playlist ist nötig.</p>',
   '<p>Quellcode, Screenshots und Anleitung: <a href="' + SOURCE + '">' + SOURCE + '</a></p>',

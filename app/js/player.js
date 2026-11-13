@@ -9,7 +9,9 @@ var Player = (function () {
   var vodMode = false, seekTo = 0, lastTime = 0;
   // Kürzel, an denen Tonspuren in der jeweiligen Sprache erkannt werden
   var LANG_ALIASES = { ru: ['ru', 'rus', 'рус'], uk: ['uk', 'ukr', 'укр'], de: ['de', 'deu', 'ger', 'нем'], en: ['en', 'eng', 'англ'],
-    tr: ['tr', 'tur'], pl: ['pl', 'pol'], es: ['es', 'spa'], fr: ['fr', 'fra', 'fre'], it: ['it', 'ita'], ro: ['ro', 'ron', 'rum'] };
+    tr: ['tr', 'tur'], pl: ['pl', 'pol'], es: ['es', 'spa'], fr: ['fr', 'fra', 'fre'], it: ['it', 'ita'], ro: ['ro', 'ron', 'rum'],
+    pt: ['pt', 'por'], nl: ['nl', 'nld', 'dut'], cs: ['cs', 'ces', 'cze'], sk: ['sk', 'slk', 'slo'], hu: ['hu', 'hun'], bg: ['bg', 'bul'],
+    el: ['el', 'ell', 'gre'], lt: ['lt', 'lit'], lv: ['lv', 'lav'], et: ['et', 'est'], kk: ['kk', 'kaz', 'каз'], be: ['be', 'bel', 'бел'] };
   var listeners = { loading: function () {}, playing: function () {}, error: function () {} };
   var HLS_CDN = 'https://cdn.jsdelivr.net/npm/hls.js@1/dist/hls.min.js';
   var hlsLoading = false, hlsQueue = [];

@@ -24,9 +24,9 @@
         "rootRequired": "optional",
         "ipkUrl": "https://github.com/vbleich-lab/IPTVPlayer/releases/download/v2.9.0/com.iptvplayer.app_2.9.0_all.ipk",
         "ipkHash": {
-          "sha256": "38c293cd7948a2bddb1d229d26207451f2ae26e49a8def6af7146c0f8f92d417"
+          "sha256": "dbb8597460a9f087938ea6edb145209648b0a80d916de85549b51227bed85aac"
         },
-        "ipkSize": 114218
+        "ipkSize": 158108
       },
       "pool": "main",
       "requirements": {

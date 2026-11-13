@@ -1014,7 +1014,7 @@
       { k: 'buffer', label: 'sBuffer', help: 'hBuffer', opts: function () { return [10, 20, 30, 60].map(function (v) { return [v, t('seconds', v)]; }); } },
       { k: 'retries', label: 'sRetries', opts: function () { return [[0, '0'], [3, '3'], [10, '10'], [-1, t('vUnlimited')]]; } },
       { k: 'timeout', label: 'sTimeout', help: 'hTimeout', opts: function () { return [10, 15, 30, 60].map(function (v) { return [v, t('seconds', v)]; }).concat([[0, t('vOff')]]); } },
-      { k: 'audioLang', label: 'sAudioLang', help: 'hAudioLang', opts: function () { return [['auto', t('vAuto')], ['ru', 'Русский'], ['uk', 'Українська'], ['de', 'Deutsch'], ['en', 'English'], ['pl', 'Polski'], ['tr', 'Türkçe'], ['es', 'Español'], ['fr', 'Français'], ['it', 'Italiano'], ['ro', 'Română']]; } },
+      { k: 'audioLang', label: 'sAudioLang', help: 'hAudioLang', opts: function () { return [['auto', t('vAuto')], ['ru', 'Русский'], ['uk', 'Українська'], ['de', 'Deutsch'], ['en', 'English'], ['pl', 'Polski'], ['tr', 'Türkçe'], ['es', 'Español'], ['fr', 'Français'], ['it', 'Italiano'], ['ro', 'Română'], ['pt', 'Português'], ['nl', 'Nederlands'], ['cs', 'Čeština'], ['sk', 'Slovenčina'], ['hu', 'Magyar'], ['bg', 'Български'], ['el', 'Ελληνικά'], ['lt', 'Lietuvių'], ['lv', 'Latviešu'], ['et', 'Eesti'], ['kk', 'Қазақша'], ['be', 'Беларуская']]; } },
       { k: 'subtitles', label: 'sSubtitles', opts: yn },
       { k: 'startScreen', label: 'sStartScreen', opts: function () { return tr([['play', 'vStartPlay'], ['list', 'vStartList']]); } },
       { id: 'sleep', label: 'sSleep', getv: function () { return S.sleepMin; }, setv: setSleep,

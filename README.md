@@ -40,7 +40,7 @@ Alle drei Versionen bauen auf demselben Code auf und haben dieselbe Oberfläche.
 - 📱 **Einrichtung per Smartphone:** QR-Code am Fernseher scannen und alle Einstellungen bequem am Handy eintippen. Dort lassen sich auch Sicherungen herunterladen und wieder einspielen.
 - ⚙️ **Über 50 Einstellungen in 8 Kategorien,** direkt am Fernseher oder am Handy.
 - 🔒 **Kindersicherung** mit PIN für Erwachsenen-Gruppen und auf Wunsch für die Einstellungen.
-- 🌍 **10 Sprachen:** Deutsch, English, Русский, Українська, Polski, Türkçe, Español, Français, Italiano, Română.
+- 🌍 **22 Sprachen:** Deutsch, English, Русский, Українська, Polski, Türkçe, Español, Français, Italiano, Română, Português, Nederlands, Čeština, Slovenčina, Magyar, Български, Ελληνικά, Lietuvių, Latviešu, Eesti, Қазақша, Беларуская.
 - ⚡ **Autostart** beim Einschalten des Fernsehers (LG mit Homebrew Channel/Root und Android TV).
 - 🖱️ Bedienung mit der normalen Fernbedienung **oder** mit dem Zeiger der Magic Remote.
 - 🧓 Läuft auch auf älteren Fernsehern (ES5-Code, keine modernen Browser-Funktionen nötig).
@@ -118,7 +118,7 @@ Acht Kategorien. Änderungen wirken sofort, zu jeder Einstellung steht eine kurz
 - Merkt sich den letzten Kanal. Rote Taste wechselt zum vorigen Kanal.
 
 **Oberfläche**
-- 10 Sprachen (Standard ist die Sprache des Fernsehers), 6 Akzentfarben, Größe 80–130 %.
+- 22 Sprachen (Standard ist die Sprache des Fernsehers), 6 Akzentfarben, Größe 80–130 %.
 - Uhr, 24/12 h, Dauer und Position der Info-Leiste, deckender oder durchscheinender Menühintergrund, Animationen.
 
 **Smartphone und Sicherung**
@@ -279,7 +279,7 @@ app/               Die App (HTML/CSS/ES5-JavaScript), gemeinsam für alle Plattf
   js/player.js     Wiedergabe (nativ / hls.js), Tonspur, Untertitel
   js/epg.js        XMLTV-Parser mit IndexedDB-Cache
   js/m3u.js        Playlist-Parser
-  js/i18n.js       Übersetzungen (10 Sprachen)
+  js/i18n.js       Übersetzungen (22 Sprachen)
 service/           webOS-JS-Dienst: Web-Server für die Smartphone-Einrichtung (LG)
 tizen/config.xml   Samsung-Paketbeschreibung
 android/           Android-Hülle (Java): WebView, Tastenzuordnung, Handy-Server, Autostart

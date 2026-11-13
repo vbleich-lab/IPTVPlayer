@@ -5,6 +5,8 @@ var Player = (function () {
   var video, hls = null, engine = 'native', currentUrl = '', retries = 0, retryTimer = null;
   var opts = { buffer: 30, retries: 3, timeout: 15, audioLang: 'auto', subtitles: false };
   var loadTimer = null, gotPlaying = false;
+  // Mediathek (Filme): Startposition und letzte Position für Neuversuche
+  var vodMode = false, seekTo = 0, lastTime = 0;
   // Kürzel, an denen Tonspuren in der jeweiligen Sprache erkannt werden
   var LANG_ALIASES = { ru: ['ru', 'rus', 'рус'], uk: ['uk', 'ukr', 'укр'], de: ['de', 'deu', 'ger', 'нем'], en: ['en', 'eng', 'англ'],
     tr: ['tr', 'tur'], pl: ['pl', 'pol'], es: ['es', 'spa'], fr: ['fr', 'fra', 'fre'], it: ['it', 'ita'], ro: ['ro', 'ron', 'rum'] };
@@ -42,6 +44,11 @@ var Player = (function () {
     if (video.audioTracks && video.audioTracks.addEventListener) video.audioTracks.addEventListener('addtrack', function () { pickAudio(); });
     if (video.textTracks && video.textTracks.addEventListener) video.textTracks.addEventListener('addtrack', function () { applySubs(); });
     video.addEventListener('canplay', function () { listeners.loading(false); });
+    video.addEventListener('loadedmetadata', function () {
+      if (seekTo > 0) { try { video.currentTime = seekTo; } catch (e) {} }
+      seekTo = 0;
+    });
+    video.addEventListener('timeupdate', function () { if (vodMode && video.currentTime > 0) lastTime = video.currentTime; });
     video.addEventListener('error', function () { handleError('Stream-Fehler (' + (video.error ? video.error.code : '?') + ')'); });
     video.addEventListener('ended', function () { if (!listeners.ended || !listeners.ended()) handleError('Stream beendet'); });
   }
@@ -102,8 +109,10 @@ var Player = (function () {
     }
   }
 
-  function start(url, isRetry) {
-    if (!isRetry) retries = 0;
+  /** startAt (Sekunden) nur für Filme der Mediathek: Wiedergabe ab dieser Stelle, Neuversuche setzen an der letzten Stelle fort */
+  function start(url, isRetry, startAt) {
+    if (!isRetry) { retries = 0; vodMode = startAt !== undefined && startAt !== null; seekTo = +startAt || 0; lastTime = seekTo; }
+    else if (vodMode && lastTime > 5) seekTo = lastTime;
     clearTimeout(retryTimer);
     currentUrl = url;
     gotPlaying = false;
@@ -119,7 +128,7 @@ var Player = (function () {
       ensureHls(function (ok) {
         if (url !== currentUrl) return;
         if (!ok || !window.Hls.isSupported()) { playNative(url); return; }
-        hls = new window.Hls({ maxBufferLength: opts.buffer, liveSyncDurationCount: 3, enableWorker: true });
+        hls = new window.Hls({ maxBufferLength: opts.buffer, liveSyncDurationCount: 3, enableWorker: true, startPosition: seekTo > 0 ? seekTo : -1 });
         hls.on(window.Hls.Events.ERROR, function (_, d) {
           if (!d.fatal) return;
           if (d.type === window.Hls.ErrorTypes.MEDIA_ERROR) { hls.recoverMediaError(); return; }
@@ -144,7 +153,7 @@ var Player = (function () {
   }
 
   function stop() {
-    currentUrl = '';
+    currentUrl = ''; vodMode = false; seekTo = 0;
     clearTimeout(retryTimer);
     clearTimeout(loadTimer);
     destroyHls();
@@ -158,8 +167,19 @@ var Player = (function () {
     video.pause(); return true;
   }
 
+  /** Mediathek: relativ spulen */
+  function seek(delta) {
+    var d = video.duration, p = (video.currentTime || 0) + delta;
+    if (isFinite(d) && d > 0) p = Math.min(p, d - 3);
+    try { video.currentTime = Math.max(0, p); } catch (e) {}
+  }
+  function position() {
+    var d = video.duration;
+    return { pos: video.currentTime || lastTime || 0, dur: isFinite(d) && d > 0 ? d : 0, paused: video.paused };
+  }
+
   return {
-    init: init, start: start, stop: stop, togglePause: togglePause,
+    init: init, start: start, stop: stop, togglePause: togglePause, seek: seek, position: position,
     setEngine: function (e) { engine = e; },
     configure: function (o) { if (o.engine) engine = o.engine; if (o.buffer) opts.buffer = o.buffer; if (o.retries !== undefined && !isNaN(o.retries)) opts.retries = o.retries;
       if (o.timeout !== undefined && !isNaN(o.timeout)) opts.timeout = o.timeout; if (o.audioLang) { opts.audioLang = o.audioLang; pickAudio(); }

@@ -62,10 +62,33 @@
       <div id="pv-next" class="pv-next"></div>
     </div>
     <div class="hints">
-      <span><b>OK</b> <i data-t="hPlay"></i></span>
+      <span><b>OK</b> <i id="hint-ok" data-t="hPlay"></i></span>
       <span><em class="key green"></em><i data-t="hGuide"></i></span>
       <span><em class="key yellow"></em><i id="hint-yellow" data-t="hFav"></i></span>
       <span class="clickable" data-act="settings"><em class="key blue"></em><i data-t="hSettings"></i></span>
+    </div>
+  </div>
+
+  <!-- Mediathek -->
+  <div id="vod" class="panel hidden">
+    <div class="pane groups">
+      <div class="pane-title" data-t="vod"></div>
+      <div id="vod-cats" class="rows" data-rh="3.3"></div>
+    </div>
+    <div class="pane channels">
+      <div class="pane-title clickable" data-act="vodcats"><span class="back">‹</span><span id="vod-title"></span><span id="vod-count" class="count"></span></div>
+      <div id="vod-items" class="rows" data-rh="4.6"></div>
+    </div>
+    <div class="card preview vod-card">
+      <div class="vod-poster"><img id="vod-poster" alt=""></div>
+      <div id="vod-name" class="pv-name"></div>
+      <div id="vod-meta" class="pv-meta"></div>
+      <div id="vod-resume" class="pv-now"></div>
+    </div>
+    <div class="hints">
+      <span><b>OK</b> <i data-t="hPlay"></i></span>
+      <span><em class="key red"></em><i data-t="hFromStart"></i></span>
+      <span><b>↩</b> <i data-t="hBack"></i></span>
     </div>
   </div>
 

@@ -292,3 +292,18 @@ body.info-top #infobar { top: 0; bottom: auto; padding: 2.6rem 3.2rem 6rem;
 /* ausgeblendete Gruppen (nur sichtbar, wenn "Ausgeblendete Gruppen anzeigen" an ist) */
 .row.hid .t, .row.hid .gi { opacity: .45; }
 .row .hidmark { color: var(--dim2); font-size: 1.1rem; flex: none; }
+
+/* Favoriten verschieben */
+.pane.active .row.ch.moving { background: linear-gradient(90deg, rgba(245,185,66,.95), rgba(245,185,66,.72)); color: #1b1300;
+  box-shadow: 0 .4rem 1.4rem rgba(245,185,66,.35); }
+.pane.active .row.ch.moving .sub, .pane.active .row.ch.moving .n { color: rgba(27,19,0,.75); }
+.ch .icons .mv { font-size: 1.5rem; font-weight: 700; }
+
+/* ---------- Mediathek ---------- */
+#vod .preview { flex: 1 1 0; width: 0; min-width: 0; overflow: hidden; }
+.vod-poster { height: 26rem; border-radius: 1rem; background: var(--card2); display: flex; align-items: center; justify-content: center;
+  overflow: hidden; margin-bottom: 1.4rem; }
+.vod-poster img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.vi .lg { width: 3rem; height: 4.2rem; }
+.vi .lg img { max-width: 100%; max-height: 100%; object-fit: cover; }
+#vod-meta { white-space: normal; }

@@ -35,6 +35,7 @@ Alle drei Versionen bauen auf demselben Code auf und haben dieselbe Oberfläche.
 
 - 📺 **Edem TV per Code:** nur Zugangsschlüssel und Kanal-Domain eingeben, die App erzeugt die komplette Kanalliste selbst. Alternativ geht jede eigene M3U/M3U8-Playlist.
 - 🗂️ **Kanalliste mit Live-Vorschau:** Gruppen, Favoriten, „Zuletzt gesehen“ und „Mit Archiv“. Der gewählte Sender läuft klein in der Vorschau, daneben stehen die laufende Sendung und das Programm.
+- 🎬 **Mediathek:** Filme und Serien aus einer eigenen Playlist (bei Edem: *Медиатека*), mit Postern, Spulen und „Weiter ansehen“ an der zuletzt gesehenen Stelle.
 - 🗓️ **Programmführer (EPG) und Archiv bis 7 Tage:** Sendung auswählen, OK drücken, und sie läuft aus dem Archiv. Mit ⏪ ⏩ springt man in der Sendung.
 - 📱 **Einrichtung per Smartphone:** QR-Code am Fernseher scannen und alle Einstellungen bequem am Handy eintippen. Dort lassen sich auch Sicherungen herunterladen und wieder einspielen.
 - ⚙️ **Über 50 Einstellungen in 8 Kategorien,** direkt am Fernseher oder am Handy.
@@ -91,6 +92,11 @@ Acht Kategorien. Änderungen wirken sofort, zu jeder Einstellung steht eine kurz
 - **Edem TV:** nur *Ключ доступа* (Zugangsschlüssel) und *Домен каналов* (Kanal-Domain) aus dem Kabinett eingeben. Die App lädt die aktuelle Edem-Kanalvorlage (epg.one, etwa 4200 Kanäle) und setzt beides ein: `http://<domain>/iptv/<schlüssel>/<kanal>/index.m3u8`. Die Vorlage wird gespeichert, falls der Server einmal nicht erreichbar ist.
 - **Eigene Playlist:** beliebige M3U/M3U8-URL, auf Wunsch automatisch alle 6, 12 oder 24 Stunden neu geladen.
 
+**Mediathek (Filme und Serien)**
+- Edem: im Kabinett unter *Медиатека* den Link kopieren und in Einstellungen › Anbieter › *Mediathek-Link* eintragen (am einfachsten per Smartphone). Jede andere VOD-Playlist im M3U-Format funktioniert genauso.
+- Öffnen über die Gruppe **Mediathek** in der Kanalliste. Links die Kategorien aus der Playlist, dazu „Weiter ansehen“ und „Alle“.
+- OK spielt ab oder setzt an der gemerkten Stelle fort, 🔴 Rot startet von vorn. Im Film: ◀ ▶ ±30 s, ⏪ ⏩ ±5 Min, OK Pause, Zurück führt zurück in die Mediathek, danach läuft wieder der Live-Sender.
+
 **Programmführer**
 - Für Edem automatisch von epg.one: „komplett“ mit Archivtagen und Beschreibungen, oder „kompakt“ nur für heute. Alternativ das EPG aus der Playlist (`url-tvg`) oder eine eigene XMLTV-URL.
 - Das EPG wird auf dem Fernseher zwischengespeichert und nur in einstellbaren Abständen neu geladen. Gepackte Dateien (`.gz`) funktionieren auch auf älteren Geräten (mitgeliefertes pako).
@@ -102,6 +108,7 @@ Acht Kategorien. Änderungen wirken sofort, zu jeder Einstellung steht eine kurz
 
 **Kanalliste**
 - Gruppen aus der Playlist, dazu Favoriten, „Zuletzt gesehen“ und „Mit Archiv“. Gruppen lassen sich ausblenden (gelbe Taste).
+- **Favoriten sortieren:** In den Favoriten OK lang drücken, mit ▲ ▼ verschieben (CH± springt an den Anfang bzw. ans Ende), mit OK fertig. Die Reihenfolge wird mitgesichert.
 - Live-Vorschau, Logos, Kanalnummern und die laufende Sendung mit Fortschrittsbalken.
 - Sortierung, Startkanal, Verhalten von OK sowie ▲▼, automatisches Schließen und Wartezeit nach Zifferneingabe sind einstellbar.
 

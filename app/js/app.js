@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '2.9.0';
+  var VERSION = '2.9.1';
   var KEY = {
     LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, ENTER: 13, BACK: 461, ESC: 27, BACKSPACE: 8,
     CH_UP: 33, CH_DOWN: 34, RED: 403, GREEN: 404, YELLOW: 405, BLUE: 406,
@@ -551,12 +551,11 @@
         var c = g.items[i], hid = locking && isAdult(c), e = showEpg && !hid ? epgAt(c, now) : {}, sh = shiftOf(c);
         var pct = e.now ? Math.min(100, Math.max(0, (now - e.now.s - sh) / (e.now.e - e.now.s) * 100)) : 0;
         return '<div class="row ch' + (sel ? ' sel' : '') + (sel && S.moving ? ' moving' : '') + (c === S.current ? ' playing' : '') + (S.previewing && c === S.previewing ? ' previewing' : '') + '">' +
-          '<span class="n">' + c.num + '</span>' + (hid ? (get('showLogos') ? '<span class="lg"></span>' : '') : logoHtml(c, 'lg')) +
+          '<span class="n">' + c.num + '</span><span class="arc' + (c.catchupDays > 0 ? ' on' : '') + '"></span>' + (hid ? (get('showLogos') ? '<span class="lg"></span>' : '') : logoHtml(c, 'lg')) +
           '<span class="txt"><span class="name">' + esc(c.name) + '</span>' +
           (e.now ? '<span class="sub">' + esc(e.now.t) + '</span><span class="mini"><div style="width:' + pct + '%"></div></span>' : '') +
           '</span><span class="icons">' + (sel && S.moving ? '<span class="mv">⇅</span>' : isFav(c) ? '<span class="fav">★</span>' : '') +
-          (locking && isAdult(c) ? '<span class="lock">🔒</span>' : '') +
-          (c.catchupDays ? '<span>⟲</span>' : '') + '</span></div>';
+          (locking && isAdult(c) ? '<span class="lock">🔒</span>' : '') + '</span></div>';
       });
     }
     renderPreview(g.items[S.ci]);

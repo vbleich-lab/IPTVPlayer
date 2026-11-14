@@ -199,6 +199,79 @@ if (Service) {
   }, function (msg) {
     delete keepers[msg.uniqueToken];
   });
+
+  // ---- Autostart ohne Root (Developer Mode) ----
+  // Der Dienst legt eine dauerhafte Aktivität (persist) an, deren Callback wieder dieser Dienst ist.
+  // Beim Hochfahren ruft der Activity Manager "autostart" auf, und der Dienst startet die App.
+  // (Die App selbst darf weder bootManager noch applicationManager als Callback eintragen.)
+  var APP_ID = 'com.iptvplayer.app';
+  var ACTIVITY = 'com.iptvplayer.app.autostart';
+  var AM = ['luna://com.webos.service.activitymanager/', 'luna://com.palm.activitymanager/'];
+  var lastLaunch = null, launchWaiters = [], settingUp = false;
+  function lcall(uri, params, cb) {
+    var done = false, fin = function (r) { if (!done) { done = true; cb(r || {}); } };
+    try { service.call(uri, params, function (m) { fin(m && m.payload); }); } catch (e) { fin({ returnValue: false, errorText: String(e.message || e) }); }
+    setTimeout(function () { fin({ returnValue: false, errorText: 'timeout' }); }, 10000);
+  }
+  function amCall(method, params, cb, i) {
+    i = i || 0;
+    lcall(AM[i] + method, params, function (r) {
+      if (r.returnValue) return cb(null, r);
+      if (i + 1 < AM.length && /unknown|not found|no such/i.test(String(r.errorText || ''))) return amCall(method, params, cb, i + 1);
+      cb(String(r.errorText || r.errorCode || 'error'), r);
+    });
+  }
+  function launchApp(tries, cb) {
+    lcall('luna://com.webos.applicationManager/launch', { id: APP_ID }, function (r) {
+      if (!r.returnValue && tries > 1 && !/denied|rights/i.test(String(r.errorText || ''))) {
+        return setTimeout(function () { launchApp(tries - 1, cb); }, 5000);
+      }
+      cb(r);
+    });
+  }
+  service.register('autostart', function (msg) {
+    msg.respond({ returnValue: true });
+    var boot = !settingUp && process.uptime() < 60;
+    // direkt nach dem Hochfahren etwas warten, bis das System bereit ist
+    setTimeout(function () {
+      launchApp(boot ? 6 : 1, function (r) {
+        lastLaunch = { returnValue: !!r.returnValue, errorText: r.errorText || '' };
+        var w = launchWaiters; launchWaiters = []; w.forEach(function (f) { f(lastLaunch); });
+      });
+    }, boot ? 8000 : 0);
+  });
+  service.register('setAutostart', function (msg) {
+    var on = !!(msg.payload && msg.payload.on);
+    amCall('cancel', { activityName: ACTIVITY }, function () {
+      if (!on) return msg.respond({ returnValue: true, on: false });
+      lastLaunch = null; settingUp = true;
+      setTimeout(function () { settingUp = false; }, 15000);
+      var spec = {
+        activity: {
+          name: ACTIVITY,
+          description: 'IPTVPlayer: start after power-on (Settings > System > Autostart)',
+          type: { foreground: true, persist: true },
+          callback: { method: 'luna://' + SERVICE_ID + '/autostart', params: {} }
+        },
+        replace: true,
+        start: true
+      };
+      amCall('create', spec, function (err, r) {
+        if (err) return msg.respond({ returnValue: false, errorText: 'create: ' + err });
+        // Die Aktivität läuft sofort einmal: auf das Ergebnis des App-Starts warten, damit Fehler sichtbar werden
+        var answered = false, answer = function (l) {
+          if (answered) return; answered = true;
+          if (l && !l.returnValue) {
+            amCall('cancel', { activityName: ACTIVITY }, function () {});
+            return msg.respond({ returnValue: false, errorText: 'launch: ' + l.errorText });
+          }
+          msg.respond({ returnValue: true, on: true, activityId: r.activityId, launch: l ? 'ok' : 'pending' });
+        };
+        if (lastLaunch) answer(lastLaunch); else launchWaiters.push(answer);
+        setTimeout(function () { answer(lastLaunch); }, 6000);
+      });
+    });
+  });
 } else {
   start(function (err, inf) {
     if (err) { console.error('Server-Start fehlgeschlagen:', err.message); process.exit(1); }

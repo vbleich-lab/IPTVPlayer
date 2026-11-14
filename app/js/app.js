@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '2.9.3';
+  var VERSION = '2.9.4';
   var KEY = {
     LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, ENTER: 13, BACK: 461, ESC: 27, BACKSPACE: 8,
     CH_UP: 33, CH_DOWN: 34, RED: 403, GREEN: 404, YELLOW: 405, BLUE: 406,
@@ -165,7 +165,7 @@
     var all = alpha ? chans.slice().sort(sortFn) : chans;
     var favs = sortFavs(all.filter(isFav));
     S.visible = chans;
-    S.groups = [{ id: 'all', items: all, icon: '▦' }, { id: 'fav', items: favs, icon: '★' }];
+    S.groups = [{ id: 'all', items: all, icon: '▦' }, { id: 'fav', items: favs, icon: '★' }, { id: 'search', items: searchItems(chans), icon: '⌕' }];
     if (hasVod()) S.groups.push({ id: 'vod', items: [], icon: '▶' });
     if (+get('groupHistory')) S.groups.push({ id: 'hist', items: histItems(chans), icon: '◷' });
     if (+get('groupArchive')) S.groups.push({ id: 'arc', items: all.filter(function (c) { return c.catchupDays > 0; }), icon: '⟲' });
@@ -191,7 +191,58 @@
     save('favs', S.favs);
     remotePush();
   }
-  function groupName(g) { return g.id === 'vod' ? t('vod') : g.id === 'all' ? t('allChannels') : g.id === 'fav' ? t('favorites') : g.id === 'arc' ? t('withArchive') : g.id === 'hist' ? t('history') : g.name; }
+  // ---------- Suche nach Sendernamen über alle Kategorien ----------
+  function normName(s) { return String(s || '').toLowerCase().replace(/ё/g, 'е').replace(/[\s\-_.,:;!?'"()\[\]|\/+&*]+/g, ' ').trim(); }
+  function searchItems(chans) {
+    var q = normName(S.q);
+    if (!q) return [];
+    var words = q.split(' '), qc = q.replace(/ /g, ''), out = [];
+    for (var i = 0; i < chans.length; i++) {
+      var c = chans[i], n = normName(c.name), nc = n.replace(/ /g, ''), ok = String(c.num) === qc;
+      if (!ok) { ok = true; for (var j = 0; j < words.length && ok; j++) ok = n.indexOf(words[j]) >= 0 || nc.indexOf(words[j]) >= 0; }
+      if (!ok && qc.length > 1) ok = nc.indexOf(qc) >= 0;
+      if (ok) out.push({ c: c, r: (n.indexOf(q) === 0 || nc.indexOf(qc) === 0 ? 0 : 1), i: i });
+    }
+    out.sort(function (a, b) { return a.r - b.r || a.i - b.i; });
+    return out.map(function (x) { return x.c; });
+  }
+  function searchIndex() { for (var i = 0; i < S.groups.length; i++) if (S.groups[i].id === 'search') return i; return -1; }
+  function startSearch() {
+    var gi = searchIndex();
+    if (gi < 0) return;
+    if (S.moving) moveKey(KEY.ENTER);
+    S.gi = gi; S.ci = 0; S.focus = 'channels'; S.searchEdit = true;
+    renderList();
+    var inp = $('search-input');
+    show('search-input', true);
+    inp.value = S.q || '';
+    inp.focus();
+    try { inp.setSelectionRange(inp.value.length, inp.value.length); } catch (e) {}
+  }
+  function endSearch() {
+    if (!S.searchEdit) return;
+    S.searchEdit = false;
+    var inp = $('search-input');
+    inp.blur(); show('search-input', false);
+    if (S.mode === 'list') renderList();
+  }
+  function updateSearch() {
+    var gi = searchIndex();
+    if (gi < 0) return;
+    S.q = $('search-input').value;
+    S.groups[gi].items = searchItems(S.visible);
+    S.ci = 0;
+    renderList();
+  }
+  /** Tasten während der Eingabe: Text geht an die Bildschirmtastatur, OK/▲/▼/Zurück beenden die Eingabe */
+  function searchKey(k, ev) {
+    if (k === KEY.ENTER || k === KEY.UP || k === KEY.DOWN || k === KEY.BACK || k === KEY.ESC || k === KEY.RED) {
+      ev.preventDefault(); endSearch(); return true;
+    }
+    return false;
+  }
+
+  function groupName(g) { return g.id === 'search' ? t('search') + (S.q ? ': ' + S.q : '') : g.id === 'vod' ? t('vod') : g.id === 'all' ? t('allChannels') : g.id === 'fav' ? t('favorites') : g.id === 'arc' ? t('withArchive') : g.id === 'hist' ? t('history') : g.name; }
 
   /** zuletzt gesehene Sender (neueste zuerst) */
   function histItems(chans) {
@@ -505,7 +556,7 @@
   function armListClose() {
     clearTimeout(S.listCloseT);
     var sec = +get('listAutoClose');
-    if (sec > 0) S.listCloseT = setTimeout(function () { if (S.mode === 'list' && !S.modal) closePanels(); }, sec * 1000);
+    if (sec > 0) S.listCloseT = setTimeout(function () { if (S.mode === 'list' && !S.modal && !S.searchEdit) closePanels(); else if (S.searchEdit) armListClose(); }, sec * 1000);
   }
 
   function closePanels() {
@@ -513,6 +564,7 @@
     if (S.mode === 'list') S.listPos = { gi: S.gi, ci: S.ci };
     S.mode = 'player';
     S.set.editing = null;
+    if (S.searchEdit) { S.searchEdit = false; $('search-input').blur(); show('search-input', false); }
     show('list', false); show('epg', false); show('settings', false); show('vod', false);
     if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
     if (V.resumeLive && !S.vod) { V.resumeLive = false; if (S.current) Player.start(S.current.url); }
@@ -544,7 +596,7 @@
     $('group-count').textContent = g.items.length;
     var now = nowSec(), showEpg = get('showEpgList');
     if (!g.items.length) {
-      $('channels').innerHTML = '<div class="row dim" style="height:4rem">' + esc(g.id === 'vod' ? t('vodOpen') : g.id === 'fav' ? t('favHint') : t('empty')) + '</div>';
+      $('channels').innerHTML = '<div class="row dim" style="height:4rem">' + esc(g.id === 'vod' ? t('vodOpen') : g.id === 'fav' ? t('favHint') : g.id === 'search' ? t(S.q ? 'searchNone' : 'searchHint') : t('empty')) + '</div>';
     } else {
       if (S.ci >= g.items.length) S.ci = g.items.length - 1;
       renderRows($('channels'), g.items.length, S.ci, function (i, sel) {
@@ -616,6 +668,7 @@
     if (S.moving) return moveKey(k);
     var g = S.groups[S.gi], items = g ? g.items : [];
     if (k === KEY.BLUE) { openSettings(); return; }
+    if (k === KEY.RED) { startSearch(); return; }
     if (k === KEY.BACK || k === KEY.ESC || k === KEY.BACKSPACE) { closePanels(); return; }
     if (S.focus === 'gear') {
       if (k === KEY.ENTER) { openSettings(); return; }
@@ -628,10 +681,15 @@
       else if (k === KEY.CH_UP) { S.gi = Math.max(0, S.gi - pageSize($('groups'))); S.ci = 0; }
       else if (k === KEY.CH_DOWN) { S.gi = Math.min(S.groups.length - 1, S.gi + pageSize($('groups'))); S.ci = 0; }
       else if (k === KEY.YELLOW) toggleHideGroup(S.groups[S.gi]);
-      else if (k === KEY.RIGHT || k === KEY.ENTER) { if (S.groups[S.gi] && S.groups[S.gi].id === 'vod') { openVod(); return; } S.focus = 'channels'; }
+      else if (k === KEY.RIGHT || k === KEY.ENTER) {
+        if (S.groups[S.gi] && S.groups[S.gi].id === 'vod') { openVod(); return; }
+        if (S.groups[S.gi] && S.groups[S.gi].id === 'search' && (k === KEY.ENTER || !S.groups[S.gi].items.length)) { startSearch(); return; }
+        S.focus = 'channels';
+      }
       else return;
     } else {
       if (g && g.id === 'vod') { if (k === KEY.ENTER || k === KEY.RIGHT) openVod(); else if (k === KEY.LEFT || k === KEY.UP || k === KEY.DOWN) { S.focus = 'groups'; renderList(); } return; }
+      if (g && g.id === 'search' && !items.length && k === KEY.ENTER) { startSearch(); return; }
       var page = pageSize($('channels'));
       if (k === KEY.UP) S.ci = items.length ? (S.ci - 1 + items.length) % items.length : 0;
       else if (k === KEY.DOWN) S.ci = items.length ? (S.ci + 1) % items.length : 0;
@@ -1095,7 +1153,14 @@
       return;
     }
     rootExec('test -f ' + AUTOSTART_FILE + ' && echo on || echo off', function (err, out) {
-      if (err) return;
+      if (err) {
+        // ohne Root: Protokoll des Developer-Mode-Autostarts vom eigenen Dienst holen
+        luna('luna://com.iptvplayer.app.service/autostartLog', {}, function (r) {
+          var l = r && r.returnValue && r.log && r.log.length ? r.log.slice(-4).join('\n') : '';
+          if (l !== (S.autostartLog || '')) { S.autostartLog = l; if (S.mode === 'settings') renderSettings(); }
+        });
+        return;
+      }
       var on = out.indexOf('on') >= 0;
       if (on !== !!S.autostart) { S.autostart = on; save('autostart', on); if (S.mode === 'settings') renderSettings(); }
     });
@@ -1118,7 +1183,7 @@
         'rm -f ' + AUTOSTART_FILE + ' /tmp/iptvplayer-autostart.pid; test -f ' + AUTOSTART_FILE + ' || echo off';
     toast('…', 8000);
     var ok = function () {
-      S.autostart = on; save('autostart', on);
+      S.autostart = on; save('autostart', on); save('autostartV', 2);
       toast(t(on ? 'autostartOn' : 'autostartOff'), 4000);
       if (S.mode === 'settings') renderSettings();
     };
@@ -1129,6 +1194,7 @@
       }
       // ohne Root (Developer Mode): dauerhafte Aktivität im Activity Manager
       devAutostart(on, function (err2) {
+        checkAutostart();
         if (!err2) { ok(); return; }
         var why = (err ? err.message : (out || '').trim()) + ' / ' + err2;
         toast(t('autostartFail') + ' [' + why.slice(0, 160) + ']', 10000);
@@ -1184,7 +1250,9 @@
       return '<div class="' + cls + '"><span class="lbl">' + esc(t(it.label)) + '</span><span class="val">' + val + '</span></div>';
     });
     var cur = items[st.ri];
-    $('set-help').textContent = st.focus === 'rows' && cur && cur.help ? t(cur.help) : '';
+    var help = st.focus === 'rows' && cur && cur.help ? t(cur.help) : '';
+    if (help && cur.id === 'autostart' && S.autostartLog) help += '\n' + t('autostartLog') + ':\n' + S.autostartLog;
+    $('set-help').textContent = help;
   }
 
   function startEdit(it) {
@@ -1604,6 +1672,7 @@
   }
   function onKeyDown(ev) {
     var k = Platform.mapKey(ev.keyCode);
+    if (S.searchEdit) { searchKey(k, ev); return; }
     if (k === KEY.ENTER && (S.okDown || favLongPress())) {
       ev.preventDefault();
       if (S.okDown) return; // Wiederholung beim Gedrückthalten
@@ -1622,6 +1691,8 @@
     else playerKey(k);
   }
   document.addEventListener('keydown', onKeyDown);
+  $('search-input').addEventListener('input', updateSearch);
+  $('search-input').addEventListener('blur', function () { setTimeout(function () { if (S.searchEdit && document.activeElement !== $('search-input')) endSearch(); }, 200); });
   document.addEventListener('keyup', function (ev) {
     if (Platform.mapKey(ev.keyCode) !== KEY.ENTER || !S.okDown) return;
     S.okDown = 0;
@@ -1665,7 +1736,7 @@
     var row = closestEl(ev.target, '[data-i]');
     if (row && row.parentNode) {
       var i = +row.getAttribute('data-i'), box = row.parentNode.id, st = S.set;
-      if (box === 'groups') { S.gi = i; S.ci = 0; if (S.groups[i] && S.groups[i].id === 'vod') { openVod(); return; } S.focus = 'channels'; renderList(); }
+      if (box === 'groups') { S.gi = i; S.ci = 0; if (S.groups[i] && S.groups[i].id === 'vod') { openVod(); return; } if (S.groups[i] && S.groups[i].id === 'search') { startSearch(); return; } S.focus = 'channels'; renderList(); }
       else if (box === 'vod-cats') { V.ci = i; V.ii = 0; V.focus = 'cats'; vodKeyDown(KEY.ENTER); }
       else if (box === 'vod-items') { if (V.focus === 'items' && V.ii === i) vodKeyDown(KEY.ENTER); else { V.focus = 'items'; V.ii = i; renderVod(); } }
       else if (box === 'channels') { if (S.focus === 'channels' && S.ci === i) listKey(KEY.ENTER); else { S.focus = 'channels'; S.ci = i; renderList(); } }
@@ -1727,6 +1798,15 @@
   S.hiddenGroups = load('hiddenGroups', {});
   S.history = load('history', []);
   S.autostart = !!load('autostart', false);
+  // Developer-Mode-Autostart aus 2.9.3 (ohne Trigger) einmalig durch die neue Aktivität (Hochfahren + Aufwachen) ersetzen
+  if (Platform.name === 'webos' && S.autostart && load('autostartV', 0) < 2) {
+    setTimeout(function () {
+      rootExec('true', function (err) {
+        if (!err) { save('autostartV', 2); return; }
+        devAutostart(true, function (e) { if (!e) save('autostartV', 2); });
+      });
+    }, 8000);
+  }
   S.settings = load('settings', {});
   // Testmodus im Browser: index.html?playlist=URL
   var qm = /[?&]playlist=([^&]+)/.exec(location.search);

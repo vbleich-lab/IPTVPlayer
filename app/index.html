@@ -45,6 +45,7 @@
     </div>
     <div class="pane channels">
       <div class="pane-title clickable" data-act="groups"><span class="back">‹</span><span id="group-title"></span><span id="group-count" class="count"></span></div>
+      <input id="search-input" class="search-input hidden" type="text" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" maxlength="60">
       <div id="channels" class="rows" data-rh="4.6"></div>
     </div>
     <div class="card preview">
@@ -63,6 +64,7 @@
     </div>
     <div class="hints">
       <span><b>OK</b> <i id="hint-ok" data-t="hPlay"></i></span>
+      <span><em class="key red"></em><i data-t="hSearch"></i></span>
       <span><em class="key green"></em><i data-t="hGuide"></i></span>
       <span><em class="key yellow"></em><i id="hint-yellow" data-t="hFav"></i></span>
       <span class="clickable" data-act="settings"><em class="key blue"></em><i data-t="hSettings"></i></span>

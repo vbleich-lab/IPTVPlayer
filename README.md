@@ -109,6 +109,7 @@ Acht Kategorien. Änderungen wirken sofort, zu jeder Einstellung steht eine kurz
 **Kanalliste**
 - Gruppen aus der Playlist, dazu Favoriten, „Zuletzt gesehen“ und „Mit Archiv“. Gruppen lassen sich ausblenden (gelbe Taste).
 - **Favoriten sortieren:** In den Favoriten OK lang drücken, mit ▲ ▼ verschieben (CH± springt an den Anfang bzw. ans Ende), mit OK fertig. Die Reihenfolge wird mitgesichert.
+- **Suche:** Rote Taste in der Kanalliste oder Kategorie „Suche“. Den Sendernamen mit der Bildschirmtastatur eingeben; die Treffer aus allen Kategorien erscheinen schon beim Tippen (auch Teile des Namens oder die Sendernummer). OK oder ▼ wechselt in die Trefferliste.
 - Live-Vorschau, Logos, Kanalnummern und die laufende Sendung mit Fortschrittsbalken.
 - Sortierung, Startkanal, Verhalten von OK sowie ▲▼, automatisches Schließen und Wartezeit nach Zifferneingabe sind einstellbar.
 
@@ -129,7 +130,7 @@ Acht Kategorien. Änderungen wirken sofort, zu jeder Einstellung steht eine kurz
 **Autostart (LG mit Root oder im Developer Mode, Android TV)**
 - Einstellungen › System › „Beim Einschalten des Fernsehers starten“.
 - **LG mit Root:** Die App legt über den Root-Dienst des [Homebrew Channel](https://github.com/webosbrew/webos-homebrew-channel) ein Startskript in `/var/lib/webosbrew/init.d` an. Sie startet dann nach dem Hochfahren und bei jedem Aufwachen aus dem Standby. „Nein“ entfernt das Skript wieder.
-- **LG im Developer Mode (ohne Root):** Die App legt im Activity Manager des Fernsehers eine dauerhafte Aktivität an, die IPTVPlayer startet, sobald der Fernseher hochgefahren ist. Beim Aufwachen aus dem Standby (Quick Start+) bleibt meist ohnehin die zuletzt benutzte App offen. „Nein“ löscht die Aktivität. Dieser Weg ist nicht offiziell dokumentiert und nicht auf jedem Modell getestet; lehnt der Fernseher ihn ab, zeigt die App die Fehlermeldung an.
+- **LG im Developer Mode (ohne Root):** Der Hintergrunddienst der App legt im Activity Manager des Fernsehers eine dauerhafte Aktivität an. Sie startet IPTVPlayer nach dem Hochfahren und nach dem Aufwachen aus dem Standby (Quick Start+). Unter dem Hilfetext der Einstellung steht ein kurzes Protokoll (Auslöser, App-Start). „Nein“ löscht die Aktivität. Dieser Weg ist nicht offiziell dokumentiert und nicht auf jedem Modell getestet; lehnt der Fernseher ihn ab, zeigt die App die Fehlermeldung an.
 - Android: siehe [Autostart auf Android](#android-tv--google-tv--fire-tv).
 
 ---

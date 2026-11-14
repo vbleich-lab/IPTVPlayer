@@ -201,13 +201,30 @@ if (Service) {
   });
 
   // ---- Autostart ohne Root (Developer Mode) ----
-  // Der Dienst legt eine dauerhafte Aktivität (persist) an, deren Callback wieder dieser Dienst ist.
-  // Beim Hochfahren ruft der Activity Manager "autostart" auf, und der Dienst startet die App.
-  // (Die App selbst darf weder bootManager noch applicationManager als Callback eintragen.)
+  // Der Dienst legt eine dauerhafte Aktivität (persist, continuous) an. Trigger und Callback sind dieser Dienst selbst,
+  // denn die App darf weder bootManager noch applicationManager eintragen ("doesn't have rights to call callback/trigger").
+  //  - Trigger "wakeWatch": meldet fired=true nach dem Hochfahren (kurze Systemlaufzeit) und nach dem Aufwachen
+  //    aus dem Standby (Quick Start+ friert alle Prozesse ein: die Uhr springt dann zwischen zwei Takten weit nach vorn).
+  //  - Callback "autostart": startet die App und meldet die Aktivität als erledigt (restart), damit sie wieder wartet.
   var APP_ID = 'com.iptvplayer.app';
   var ACTIVITY = 'com.iptvplayer.app.autostart';
   var AM = ['luna://com.webos.service.activitymanager/', 'luna://com.palm.activitymanager/'];
-  var lastLaunch = null, launchWaiters = [], settingUp = false;
+  var watchers = {}, bootChecked = false, lastTick = Date.now();
+  var LOGS = [path.join(__dirname, 'autostart.log'), '/tmp/iptvplayer-autostart.log'], logLines = null;
+
+  function hhmm(d) { function p(n) { return (n < 10 ? '0' : '') + n; } return p(d.getDate()) + '.' + p(d.getMonth() + 1) + '. ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds()); }
+  function readLog() {
+    if (logLines) return logLines;
+    logLines = [];
+    for (var i = 0; i < LOGS.length; i++) { try { logLines = fs.readFileSync(LOGS[i], 'utf8').split('\n').filter(Boolean); break; } catch (e) {} }
+    return logLines;
+  }
+  function log(s) {
+    var l = readLog();
+    l.push(hhmm(new Date()) + '  ' + s);
+    while (l.length > 25) l.shift();
+    for (var i = 0; i < LOGS.length; i++) { try { fs.writeFileSync(LOGS[i], l.join('\n') + '\n'); break; } catch (e) {} }
+  }
   function lcall(uri, params, cb) {
     var done = false, fin = function (r) { if (!done) { done = true; cb(r || {}); } };
     try { service.call(uri, params, function (m) { fin(m && m.payload); }); } catch (e) { fin({ returnValue: false, errorText: String(e.message || e) }); }
@@ -229,48 +246,79 @@ if (Service) {
       cb(r);
     });
   }
+  function fire(why) {
+    var keys = Object.keys(watchers);
+    log('Auslöser: ' + why + (keys.length ? '' : ' (keine wartende Aktivität)'));
+    keys.forEach(function (k) { try { watchers[k].respond({ returnValue: true, fired: true, why: why }); } catch (e) {} });
+  }
+  // Takt: springt die Uhr weit nach vorn, war der Fernseher im Standby
+  setInterval(function () {
+    var now = Date.now(), gap = now - lastTick;
+    lastTick = now;
+    if (gap > 45000) fire('Aufwachen nach ' + Math.round(gap / 1000) + ' s Standby');
+  }, 5000);
+
+  service.register('wakeWatch', function (msg) {
+    if (!msg.isSubscription) return msg.respond({ returnValue: true, fired: false });
+    watchers[msg.uniqueToken] = msg;
+    msg.respond({ returnValue: true, subscribed: true, fired: false });
+    if (!bootChecked) {
+      bootChecked = true;
+      var up = Math.round(os.uptime());
+      if (up < 600) setTimeout(function () { fire('Hochfahren (Systemlaufzeit ' + up + ' s)'); }, 100);
+    }
+  }, function (msg) { delete watchers[msg.uniqueToken]; });
+
   service.register('autostart', function (msg) {
     msg.respond({ returnValue: true });
-    var boot = !settingUp && process.uptime() < 60;
-    // direkt nach dem Hochfahren etwas warten, bis das System bereit ist
+    var act = msg.payload && msg.payload.$activity;
     setTimeout(function () {
-      launchApp(boot ? 6 : 1, function (r) {
-        lastLaunch = { returnValue: !!r.returnValue, errorText: r.errorText || '' };
-        var w = launchWaiters; launchWaiters = []; w.forEach(function (f) { f(lastLaunch); });
+      launchApp(4, function (r) {
+        log('App-Start: ' + (r.returnValue ? 'ok' : 'Fehler ' + (r.errorText || '?')));
+        if (act && act.activityId) amCall('complete', { activityId: act.activityId, restart: true }, function (err) {
+          if (err) log('Aktivität neu starten: Fehler ' + err);
+        });
       });
-    }, boot ? 8000 : 0);
+    }, os.uptime() < 180 ? 8000 : 1500);
   });
+
   service.register('setAutostart', function (msg) {
     var on = !!(msg.payload && msg.payload.on);
     amCall('cancel', { activityName: ACTIVITY }, function () {
-      if (!on) return msg.respond({ returnValue: true, on: false });
-      lastLaunch = null; settingUp = true;
-      setTimeout(function () { settingUp = false; }, 15000);
+      if (!on) { log('Autostart ausgeschaltet'); return msg.respond({ returnValue: true, on: false }); }
       var spec = {
         activity: {
           name: ACTIVITY,
           description: 'IPTVPlayer: start after power-on (Settings > System > Autostart)',
-          type: { foreground: true, persist: true },
+          type: { foreground: true, persist: true, continuous: true },
+          trigger: {
+            method: 'luna://' + SERVICE_ID + '/wakeWatch',
+            params: { subscribe: true },
+            where: { prop: 'fired', op: '=', val: true }
+          },
           callback: { method: 'luna://' + SERVICE_ID + '/autostart', params: {} }
         },
         replace: true,
         start: true
       };
       amCall('create', spec, function (err, r) {
-        if (err) return msg.respond({ returnValue: false, errorText: 'create: ' + err });
-        // Die Aktivität läuft sofort einmal: auf das Ergebnis des App-Starts warten, damit Fehler sichtbar werden
-        var answered = false, answer = function (l) {
-          if (answered) return; answered = true;
-          if (l && !l.returnValue) {
+        if (err) { log('Aktivität anlegen: Fehler ' + err); return msg.respond({ returnValue: false, errorText: 'create: ' + err }); }
+        // prüfen, ob dieser Dienst die App überhaupt starten darf
+        launchApp(1, function (l) {
+          if (!l.returnValue) {
+            log('Probestart: Fehler ' + (l.errorText || '?'));
             amCall('cancel', { activityName: ACTIVITY }, function () {});
-            return msg.respond({ returnValue: false, errorText: 'launch: ' + l.errorText });
+            return msg.respond({ returnValue: false, errorText: 'launch: ' + (l.errorText || '?') });
           }
-          msg.respond({ returnValue: true, on: true, activityId: r.activityId, launch: l ? 'ok' : 'pending' });
-        };
-        if (lastLaunch) answer(lastLaunch); else launchWaiters.push(answer);
-        setTimeout(function () { answer(lastLaunch); }, 6000);
+          log('Autostart eingeschaltet (Aktivität ' + r.activityId + ')');
+          msg.respond({ returnValue: true, on: true, activityId: r.activityId });
+        });
       });
     });
+  });
+
+  service.register('autostartLog', function (msg) {
+    msg.respond({ returnValue: true, log: readLog().slice(-8), waiting: Object.keys(watchers).length });
   });
 } else {
   start(function (err, inf) {

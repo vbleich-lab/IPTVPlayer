@@ -11,6 +11,7 @@ var I18N = (function () {
   var D = {};
 
   D.en = {
+    search: "Search", searchHint: "OK: type a channel name (searches all categories)", searchNone: "No channels found", hSearch: "Search", autostartLog: "Log",
     allChannels: 'All channels', favorites: 'Favorites', groups: 'Groups', empty: 'Empty',
     favHint: 'Press yellow to add a favorite',
     hPlay: 'Play', hGuide: 'Guide / archive', hFav: 'Favorite', hSettings: 'Settings', hBack: 'Back',
@@ -80,6 +81,7 @@ var I18N = (function () {
   };
 
   D.de = {
+    search: "Suche", searchHint: "OK: Sendernamen eingeben (sucht in allen Kategorien)", searchNone: "Keine Sender gefunden", hSearch: "Suche", autostartLog: "Protokoll",
     allChannels: 'Alle Kanäle', favorites: 'Favoriten', groups: 'Gruppen', empty: 'Leer',
     favHint: 'Gelbe Taste = Favorit hinzufügen',
     hPlay: 'Abspielen', hGuide: 'Programm / Archiv', hFav: 'Favorit', hSettings: 'Einstellungen', hBack: 'Zurück',
@@ -149,6 +151,7 @@ var I18N = (function () {
   };
 
   D.ru = {
+    search: "Поиск", searchHint: "OK: введите название канала (поиск во всех категориях)", searchNone: "Каналы не найдены", hSearch: "Поиск", autostartLog: "Журнал",
     allChannels: 'Все каналы', favorites: 'Избранное', groups: 'Группы', empty: 'Пусто',
     favHint: 'Жёлтая кнопка — добавить в избранное',
     hPlay: 'Смотреть', hGuide: 'Программа / архив', hFav: 'Избранное', hSettings: 'Настройки', hBack: 'Назад',
@@ -218,6 +221,7 @@ var I18N = (function () {
   };
 
   D.uk = {
+    search: "Пошук", searchHint: "OK: введіть назву каналу (пошук у всіх категоріях)", searchNone: "Канали не знайдено", hSearch: "Пошук", autostartLog: "Журнал",
     allChannels: 'Усі канали', favorites: 'Обране', groups: 'Групи', empty: 'Порожньо',
     favHint: 'Жовта кнопка — додати до обраного',
     hPlay: 'Дивитися', hGuide: 'Програма / архів', hFav: 'Обране', hSettings: 'Налаштування', hBack: 'Назад',
@@ -287,6 +291,7 @@ var I18N = (function () {
   };
 
   D.pl = {
+    search: "Szukaj", searchHint: "OK: wpisz nazwę kanału (szuka we wszystkich kategoriach)", searchNone: "Nie znaleziono kanałów", hSearch: "Szukaj", autostartLog: "Dziennik",
     allChannels: 'Wszystkie kanały', favorites: 'Ulubione', groups: 'Grupy', empty: 'Pusto',
     favHint: 'Żółty przycisk = dodaj do ulubionych',
     hPlay: 'Odtwórz', hGuide: 'Program / archiwum', hFav: 'Ulubione', hSettings: 'Ustawienia', hBack: 'Wstecz',
@@ -356,6 +361,7 @@ var I18N = (function () {
   };
 
   D.tr = {
+    search: "Ara", searchHint: "OK: kanal adını yazın (tüm kategorilerde arar)", searchNone: "Kanal bulunamadı", hSearch: "Ara", autostartLog: "Günlük",
     allChannels: 'Tüm kanallar', favorites: 'Favoriler', groups: 'Gruplar', empty: 'Boş',
     favHint: 'Favori eklemek için sarı tuş',
     hPlay: 'Oynat', hGuide: 'Yayın akışı / arşiv', hFav: 'Favori', hSettings: 'Ayarlar', hBack: 'Geri',
@@ -425,6 +431,7 @@ var I18N = (function () {
   };
 
   D.es = {
+    search: "Buscar", searchHint: "OK: escribe el nombre del canal (busca en todas las categorías)", searchNone: "No se encontraron canales", hSearch: "Buscar", autostartLog: "Registro",
     allChannels: 'Todos los canales', favorites: 'Favoritos', groups: 'Grupos', empty: 'Vacío',
     favHint: 'Botón amarillo = añadir a favoritos',
     hPlay: 'Reproducir', hGuide: 'Guía / archivo', hFav: 'Favorito', hSettings: 'Ajustes', hBack: 'Atrás',
@@ -494,6 +501,7 @@ var I18N = (function () {
   };
 
   D.fr = {
+    search: "Recherche", searchHint: "OK : saisissez le nom de la chaîne (dans toutes les catégories)", searchNone: "Aucune chaîne trouvée", hSearch: "Recherche", autostartLog: "Journal",
     allChannels: 'Toutes les chaînes', favorites: 'Favoris', groups: 'Groupes', empty: 'Vide',
     favHint: 'Touche jaune = ajouter aux favoris',
     hPlay: 'Lire', hGuide: 'Guide / archives', hFav: 'Favori', hSettings: 'Paramètres', hBack: 'Retour',
@@ -563,6 +571,7 @@ var I18N = (function () {
   };
 
   D.it = {
+    search: "Cerca", searchHint: "OK: digita il nome del canale (cerca in tutte le categorie)", searchNone: "Nessun canale trovato", hSearch: "Cerca", autostartLog: "Registro",
     allChannels: 'Tutti i canali', favorites: 'Preferiti', groups: 'Gruppi', empty: 'Vuoto',
     favHint: 'Tasto giallo = aggiungi ai preferiti',
     hPlay: 'Riproduci', hGuide: 'Guida / archivio', hFav: 'Preferito', hSettings: 'Impostazioni', hBack: 'Indietro',
@@ -632,6 +641,7 @@ var I18N = (function () {
   };
 
   D.ro = {
+    search: "Căutare", searchHint: "OK: scrie numele canalului (caută în toate categoriile)", searchNone: "Niciun canal găsit", hSearch: "Căutare", autostartLog: "Jurnal",
     allChannels: 'Toate canalele', favorites: 'Favorite', groups: 'Grupuri', empty: 'Gol',
     favHint: 'Butonul galben = adaugă la favorite',
     hPlay: 'Redă', hGuide: 'Ghid / arhivă', hFav: 'Favorit', hSettings: 'Setări', hBack: 'Înapoi',
@@ -701,6 +711,7 @@ var I18N = (function () {
   };
 
   D.pt = {
+    search: "Pesquisa", searchHint: "OK: escreva o nome do canal (pesquisa em todas as categorias)", searchNone: "Nenhum canal encontrado", hSearch: "Pesquisa", autostartLog: "Registo",
     allChannels: "Todos os canais",
     favorites: "Favoritos",
     groups: "Grupos",
@@ -967,6 +978,7 @@ var I18N = (function () {
   };
 
   D.nl = {
+    search: "Zoeken", searchHint: "OK: typ een zendernaam (zoekt in alle categorieën)", searchNone: "Geen zenders gevonden", hSearch: "Zoeken", autostartLog: "Logboek",
     allChannels: "Alle zenders",
     favorites: "Favorieten",
     groups: "Groepen",
@@ -1233,6 +1245,7 @@ var I18N = (function () {
   };
 
   D.cs = {
+    search: "Hledat", searchHint: "OK: zadejte název kanálu (hledá ve všech kategoriích)", searchNone: "Žádné kanály nenalezeny", hSearch: "Hledat", autostartLog: "Protokol",
     allChannels: "Všechny kanály",
     favorites: "Oblíbené",
     groups: "Skupiny",
@@ -1499,6 +1512,7 @@ var I18N = (function () {
   };
 
   D.sk = {
+    search: "Hľadať", searchHint: "OK: zadajte názov kanála (hľadá vo všetkých kategóriách)", searchNone: "Nenašli sa žiadne kanály", hSearch: "Hľadať", autostartLog: "Protokol",
     allChannels: "Všetky kanály",
     favorites: "Obľúbené",
     groups: "Skupiny",
@@ -1765,6 +1779,7 @@ var I18N = (function () {
   };
 
   D.hu = {
+    search: "Keresés", searchHint: "OK: írja be a csatorna nevét (minden kategóriában keres)", searchNone: "Nincs találat", hSearch: "Keresés", autostartLog: "Napló",
     allChannels: "Összes csatorna",
     favorites: "Kedvencek",
     groups: "Csoportok",
@@ -2031,6 +2046,7 @@ var I18N = (function () {
   };
 
   D.bg = {
+    search: "Търсене", searchHint: "OK: въведете име на канал (търси във всички категории)", searchNone: "Няма намерени канали", hSearch: "Търсене", autostartLog: "Дневник",
     allChannels: "Всички канали",
     favorites: "Любими",
     groups: "Групи",
@@ -2297,6 +2313,7 @@ var I18N = (function () {
   };
 
   D.el = {
+    search: "Αναζήτηση", searchHint: "OK: πληκτρολογήστε όνομα καναλιού (σε όλες τις κατηγορίες)", searchNone: "Δεν βρέθηκαν κανάλια", hSearch: "Αναζήτηση", autostartLog: "Αρχείο καταγραφής",
     allChannels: "Όλα τα κανάλια",
     favorites: "Αγαπημένα",
     groups: "Ομάδες",
@@ -2563,6 +2580,7 @@ var I18N = (function () {
   };
 
   D.lt = {
+    search: "Paieška", searchHint: "OK: įveskite kanalo pavadinimą (ieško visose kategorijose)", searchNone: "Kanalų nerasta", hSearch: "Paieška", autostartLog: "Žurnalas",
     allChannels: "Visi kanalai",
     favorites: "Mėgstami",
     groups: "Grupės",
@@ -2829,6 +2847,7 @@ var I18N = (function () {
   };
 
   D.lv = {
+    search: "Meklēt", searchHint: "OK: ievadiet kanāla nosaukumu (meklē visās kategorijās)", searchNone: "Kanāli nav atrasti", hSearch: "Meklēt", autostartLog: "Žurnāls",
     allChannels: "Visi kanāli",
     favorites: "Izlase",
     groups: "Grupas",
@@ -3095,6 +3114,7 @@ var I18N = (function () {
   };
 
   D.et = {
+    search: "Otsing", searchHint: "OK: sisesta kanali nimi (otsib kõigist kategooriatest)", searchNone: "Kanaleid ei leitud", hSearch: "Otsing", autostartLog: "Logi",
     allChannels: "Kõik kanalid",
     favorites: "Lemmikud",
     groups: "Grupid",
@@ -3361,6 +3381,7 @@ var I18N = (function () {
   };
 
   D.kk = {
+    search: "Іздеу", searchHint: "OK: арна атауын енгізіңіз (барлық санаттардан іздейді)", searchNone: "Арналар табылмады", hSearch: "Іздеу", autostartLog: "Журнал",
     allChannels: "Барлық арналар",
     favorites: "Таңдаулылар",
     groups: "Топтар",
@@ -3627,6 +3648,7 @@ var I18N = (function () {
   };
 
   D.be = {
+    search: "Пошук", searchHint: "OK: увядзіце назву канала (пошук ва ўсіх катэгорыях)", searchNone: "Каналы не знойдзены", hSearch: "Пошук", autostartLog: "Журнал",
     allChannels: "Усе каналы",
     favorites: "Абранае",
     groups: "Групы",

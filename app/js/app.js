@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '2.9.5';
+  var VERSION = '2.9.6';
   var KEY = {
     LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, ENTER: 13, BACK: 461, ESC: 27, BACKSPACE: 8,
     CH_UP: 33, CH_DOWN: 34, RED: 403, GREEN: 404, YELLOW: 405, BLUE: 406,
@@ -1710,6 +1710,17 @@
   };
   if (Platform.name === 'tizen') {
     document.addEventListener('visibilitychange', function () { if (document.hidden) window.IPTVSuspend(); else window.IPTVResume(); });
+  }
+  // webOS-Autostart ohne Root: dem eigenen Dienst melden, ob die App sichtbar ist
+  // (der Dienst darf getForegroundAppInfo nicht abfragen und startet die App sonst erneut)
+  function reportVisible() {
+    if (Platform.name !== 'webos' || !S.autostart || !window.PalmServiceBridge) return;
+    luna('luna://com.iptvplayer.app.service/appState', { visible: !document.hidden }, function () {});
+  }
+  if (Platform.name === 'webos') {
+    document.addEventListener('visibilitychange', reportVisible);
+    document.addEventListener('webOSRelaunch', function () { setTimeout(reportVisible, 300); });
+    setTimeout(reportVisible, 1500);
   }
 
   // Magic-Remote: Zeiger-Klick öffnet Liste

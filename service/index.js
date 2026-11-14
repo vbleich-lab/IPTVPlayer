@@ -210,6 +210,18 @@ if (Service) {
   var ACTIVITY = 'com.iptvplayer.app.autostart';
   var AM = ['luna://com.webos.service.activitymanager/', 'luna://com.palm.activitymanager/'];
   var watchers = {}, bootChecked = false, lastTick = Date.now();
+  // Lebenszeichen auf dem Speicher: Startet der Dienst neu und war er länger als 2 Minuten nicht aktiv,
+  // war der Fernseher aus oder im Standby (webOS beendet den Dienst dabei oft, statt ihn nur anzuhalten).
+  var ALIVE = [path.join(__dirname, 'alive'), path.join(os.homedir ? os.homedir() : '/tmp', '.iptvplayer-alive'),
+    '/media/developer/temp/iptvplayer-alive', '/tmp/iptvplayer-alive'];
+  var appVis = { visible: false, at: 0 }, launchedAt = 0;
+  function readAlive() {
+    for (var i = 0; i < ALIVE.length; i++) { try { var v = +fs.readFileSync(ALIVE[i], 'utf8'); if (v) return v; } catch (e) {} }
+    return 0;
+  }
+  function writeAlive() {
+    for (var i = 0; i < ALIVE.length; i++) { try { fs.writeFileSync(ALIVE[i], String(Date.now())); return; } catch (e) {} }
+  }
   // erster beschreibbarer Ort gewinnt; /tmp geht beim Neustart verloren und ist nur der letzte Ausweg
   var LOGS = [path.join(__dirname, 'autostart.log'), path.join(os.homedir ? os.homedir() : '/tmp', '.iptvplayer-autostart.log'),
     '/media/developer/temp/iptvplayer-autostart.log', '/tmp/iptvplayer-autostart.log'], logLines = null;
@@ -254,10 +266,12 @@ if (Service) {
     keys.forEach(function (k) { try { watchers[k].respond({ returnValue: true, fired: true, why: why }); } catch (e) {} });
   }
   // Takt: springt die Uhr weit nach vorn, war der Fernseher im Standby
+  var ticks = 0;
   setInterval(function () {
     var now = Date.now(), gap = now - lastTick;
     lastTick = now;
     if (gap > 45000) fire('Aufwachen nach ' + Math.round(gap / 1000) + ' s Standby');
+    if (++ticks % 12 === 0 || gap > 45000) writeAlive();
   }, 5000);
 
   service.register('wakeWatch', function (msg) {
@@ -266,9 +280,11 @@ if (Service) {
     msg.respond({ returnValue: true, subscribed: true, fired: false });
     if (!bootChecked) {
       bootChecked = true;
-      var up = Math.round(os.uptime());
-      if (up < 600) setTimeout(function () { fire('Hochfahren (Systemlaufzeit ' + up + ' s)'); }, 100);
-      else log('Dienst wartet auf Einschalten (Systemlaufzeit ' + up + ' s)');
+      var up = Math.round(os.uptime()), last = readAlive(), off = last ? Math.round((Date.now() - last) / 1000) : -1;
+      writeAlive();
+      if (up < 180) setTimeout(function () { fire('Hochfahren (Systemlaufzeit ' + up + ' s)'); }, 100);
+      else if (off > 120) setTimeout(function () { fire('Einschalten (Dienst war ' + Math.round(off / 60) + ' min nicht aktiv)'); }, 100);
+      else log('Dienst wartet auf Einschalten (Systemlaufzeit ' + up + ' s' + (off >= 0 ? ', zuletzt aktiv vor ' + off + ' s' : '') + ')');
     }
   }, function (msg) { delete watchers[msg.uniqueToken]; });
 
@@ -283,28 +299,30 @@ if (Service) {
           // "Invalid transition: unsatisfied -> complete": continuous-Aktivität wartet schon wieder (normal)
           if (err && !/invalid transition/i.test(err)) log('Aktivität neu starten: Fehler ' + err);
         });
-        if (r.returnValue) ensureFront(boot ? 3 : 2, boot ? 12000 : 6000);
+        launchedAt = Date.now();
+        if (r.returnValue) ensureFront(3, boot ? 12000 : 7000);
       });
     }, boot ? 8000 : 1500);
   });
 
   // Nach dem Hochfahren öffnet der Fernseher oft noch seine eigene Start-App (Live-TV/Home) und verdeckt IPTVPlayer.
-  // Deshalb nachsehen, welche App vorn ist, und IPTVPlayer bei Bedarf erneut starten.
+  // Die App meldet ihre Sichtbarkeit selbst ("appState"), denn getForegroundAppInfo ist für Developer-Mode-Apps gesperrt.
   function ensureFront(rounds, wait) {
     setTimeout(function () {
-      lcall('luna://com.webos.applicationManager/getForegroundAppInfo', {}, function (r) {
-        var fg = r && r.returnValue ? String(r.appId || '') : null;
-        if (fg === APP_ID) { log('IPTVPlayer ist im Vordergrund'); return; }
-        log(fg === null ? 'Vordergrund nicht abfragbar (' + ((r && r.errorText) || '?') + '), starte erneut'
-          : 'Im Vordergrund: ' + (fg || '–') + ', starte erneut');
-        launchApp(1, function (l) {
-          if (!l.returnValue) { log('Erneuter Start: Fehler ' + (l.errorText || '?')); return; }
-          if (rounds > 1 && fg !== null) ensureFront(rounds - 1, 8000);
-          else if (rounds > 1 && fg === null) setTimeout(function () { launchApp(1, function () {}); }, 15000);
-        });
+      if (appVis.visible && appVis.at >= launchedAt - 2000) { log('IPTVPlayer ist sichtbar'); return; }
+      log('IPTVPlayer ' + (appVis.at >= launchedAt - 2000 ? 'verdeckt' : 'meldet sich nicht') + ', starte erneut');
+      launchApp(1, function (l) {
+        if (!l.returnValue) { log('Erneuter Start: Fehler ' + (l.errorText || '?')); return; }
+        launchedAt = Date.now();
+        if (rounds > 1) ensureFront(rounds - 1, 8000);
       });
     }, wait);
   }
+  service.register('appState', function (msg) {
+    var v = !!(msg.payload && msg.payload.visible);
+    appVis = { visible: v, at: Date.now() };
+    msg.respond({ returnValue: true });
+  });
 
   service.register('setAutostart', function (msg) {
     var on = !!(msg.payload && msg.payload.on);

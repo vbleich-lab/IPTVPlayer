@@ -210,7 +210,9 @@ if (Service) {
   var ACTIVITY = 'com.iptvplayer.app.autostart';
   var AM = ['luna://com.webos.service.activitymanager/', 'luna://com.palm.activitymanager/'];
   var watchers = {}, bootChecked = false, lastTick = Date.now();
-  var LOGS = [path.join(__dirname, 'autostart.log'), '/tmp/iptvplayer-autostart.log'], logLines = null;
+  // erster beschreibbarer Ort gewinnt; /tmp geht beim Neustart verloren und ist nur der letzte Ausweg
+  var LOGS = [path.join(__dirname, 'autostart.log'), path.join(os.homedir ? os.homedir() : '/tmp', '.iptvplayer-autostart.log'),
+    '/media/developer/temp/iptvplayer-autostart.log', '/tmp/iptvplayer-autostart.log'], logLines = null;
 
   function hhmm(d) { function p(n) { return (n < 10 ? '0' : '') + n; } return p(d.getDate()) + '.' + p(d.getMonth() + 1) + '. ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds()); }
   function readLog() {
@@ -266,21 +268,43 @@ if (Service) {
       bootChecked = true;
       var up = Math.round(os.uptime());
       if (up < 600) setTimeout(function () { fire('Hochfahren (Systemlaufzeit ' + up + ' s)'); }, 100);
+      else log('Dienst wartet auf Einschalten (Systemlaufzeit ' + up + ' s)');
     }
   }, function (msg) { delete watchers[msg.uniqueToken]; });
 
   service.register('autostart', function (msg) {
     msg.respond({ returnValue: true });
     var act = msg.payload && msg.payload.$activity;
+    var boot = os.uptime() < 180;
     setTimeout(function () {
       launchApp(4, function (r) {
         log('App-Start: ' + (r.returnValue ? 'ok' : 'Fehler ' + (r.errorText || '?')));
         if (act && act.activityId) amCall('complete', { activityId: act.activityId, restart: true }, function (err) {
-          if (err) log('Aktivität neu starten: Fehler ' + err);
+          // "Invalid transition: unsatisfied -> complete": continuous-Aktivität wartet schon wieder (normal)
+          if (err && !/invalid transition/i.test(err)) log('Aktivität neu starten: Fehler ' + err);
+        });
+        if (r.returnValue) ensureFront(boot ? 3 : 2, boot ? 12000 : 6000);
+      });
+    }, boot ? 8000 : 1500);
+  });
+
+  // Nach dem Hochfahren öffnet der Fernseher oft noch seine eigene Start-App (Live-TV/Home) und verdeckt IPTVPlayer.
+  // Deshalb nachsehen, welche App vorn ist, und IPTVPlayer bei Bedarf erneut starten.
+  function ensureFront(rounds, wait) {
+    setTimeout(function () {
+      lcall('luna://com.webos.applicationManager/getForegroundAppInfo', {}, function (r) {
+        var fg = r && r.returnValue ? String(r.appId || '') : null;
+        if (fg === APP_ID) { log('IPTVPlayer ist im Vordergrund'); return; }
+        log(fg === null ? 'Vordergrund nicht abfragbar (' + ((r && r.errorText) || '?') + '), starte erneut'
+          : 'Im Vordergrund: ' + (fg || '–') + ', starte erneut');
+        launchApp(1, function (l) {
+          if (!l.returnValue) { log('Erneuter Start: Fehler ' + (l.errorText || '?')); return; }
+          if (rounds > 1 && fg !== null) ensureFront(rounds - 1, 8000);
+          else if (rounds > 1 && fg === null) setTimeout(function () { launchApp(1, function () {}); }, 15000);
         });
       });
-    }, os.uptime() < 180 ? 8000 : 1500);
-  });
+    }, wait);
+  }
 
   service.register('setAutostart', function (msg) {
     var on = !!(msg.payload && msg.payload.on);

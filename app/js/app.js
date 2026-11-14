@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '2.9.4';
+  var VERSION = '2.9.5';
   var KEY = {
     LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, ENTER: 13, BACK: 461, ESC: 27, BACKSPACE: 8,
     CH_UP: 33, CH_DOWN: 34, RED: 403, GREEN: 404, YELLOW: 405, BLUE: 406,
@@ -1156,7 +1156,7 @@
       if (err) {
         // ohne Root: Protokoll des Developer-Mode-Autostarts vom eigenen Dienst holen
         luna('luna://com.iptvplayer.app.service/autostartLog', {}, function (r) {
-          var l = r && r.returnValue && r.log && r.log.length ? r.log.slice(-4).join('\n') : '';
+          var l = r && r.returnValue && r.log && r.log.length ? r.log.slice(-6).join('\n') : '';
           if (l !== (S.autostartLog || '')) { S.autostartLog = l; if (S.mode === 'settings') renderSettings(); }
         });
         return;

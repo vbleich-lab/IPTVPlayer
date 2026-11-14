@@ -1,6 +1,6 @@
 {
   "name": "com.iptvplayer.app.service",
-  "version": "2.9.4",
+  "version": "2.9.5",
   "description": "IPTVPlayer – Einrichtung per Smartphone (lokaler Web-Server im WLAN)",
   "main": "index.js"
 }

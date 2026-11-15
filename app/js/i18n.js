@@ -11,6 +11,7 @@ var I18N = (function () {
   var D = {};
 
   D.en = {
+    audioTrack: "Audio track", audioOnly: "This channel has only one audio track",
     search: "Search", searchHint: "OK: type a channel name (searches all categories)", searchNone: "No channels found", hSearch: "Search", autostartLog: "Log",
     allChannels: 'All channels', favorites: 'Favorites', groups: 'Groups', empty: 'Empty',
     favHint: 'Press yellow to add a favorite',
@@ -81,6 +82,7 @@ var I18N = (function () {
   };
 
   D.de = {
+    audioTrack: "Tonspur", audioOnly: "Dieser Sender hat nur eine Tonspur",
     search: "Suche", searchHint: "OK: Sendernamen eingeben (sucht in allen Kategorien)", searchNone: "Keine Sender gefunden", hSearch: "Suche", autostartLog: "Protokoll",
     allChannels: 'Alle Kanäle', favorites: 'Favoriten', groups: 'Gruppen', empty: 'Leer',
     favHint: 'Gelbe Taste = Favorit hinzufügen',
@@ -151,6 +153,7 @@ var I18N = (function () {
   };
 
   D.ru = {
+    audioTrack: "Звуковая дорожка", audioOnly: "У этого канала только одна звуковая дорожка",
     search: "Поиск", searchHint: "OK: введите название канала (поиск во всех категориях)", searchNone: "Каналы не найдены", hSearch: "Поиск", autostartLog: "Журнал",
     allChannels: 'Все каналы', favorites: 'Избранное', groups: 'Группы', empty: 'Пусто',
     favHint: 'Жёлтая кнопка — добавить в избранное',
@@ -221,6 +224,7 @@ var I18N = (function () {
   };
 
   D.uk = {
+    audioTrack: "Звукова доріжка", audioOnly: "У цього каналу лише одна звукова доріжка",
     search: "Пошук", searchHint: "OK: введіть назву каналу (пошук у всіх категоріях)", searchNone: "Канали не знайдено", hSearch: "Пошук", autostartLog: "Журнал",
     allChannels: 'Усі канали', favorites: 'Обране', groups: 'Групи', empty: 'Порожньо',
     favHint: 'Жовта кнопка — додати до обраного',
@@ -291,6 +295,7 @@ var I18N = (function () {
   };
 
   D.pl = {
+    audioTrack: "Ścieżka dźwiękowa", audioOnly: "Ten kanał ma tylko jedną ścieżkę dźwiękową",
     search: "Szukaj", searchHint: "OK: wpisz nazwę kanału (szuka we wszystkich kategoriach)", searchNone: "Nie znaleziono kanałów", hSearch: "Szukaj", autostartLog: "Dziennik",
     allChannels: 'Wszystkie kanały', favorites: 'Ulubione', groups: 'Grupy', empty: 'Pusto',
     favHint: 'Żółty przycisk = dodaj do ulubionych',
@@ -361,6 +366,7 @@ var I18N = (function () {
   };
 
   D.tr = {
+    audioTrack: "Ses parçası", audioOnly: "Bu kanalın yalnızca bir ses parçası var",
     search: "Ara", searchHint: "OK: kanal adını yazın (tüm kategorilerde arar)", searchNone: "Kanal bulunamadı", hSearch: "Ara", autostartLog: "Günlük",
     allChannels: 'Tüm kanallar', favorites: 'Favoriler', groups: 'Gruplar', empty: 'Boş',
     favHint: 'Favori eklemek için sarı tuş',
@@ -431,6 +437,7 @@ var I18N = (function () {
   };
 
   D.es = {
+    audioTrack: "Pista de audio", audioOnly: "Este canal solo tiene una pista de audio",
     search: "Buscar", searchHint: "OK: escribe el nombre del canal (busca en todas las categorías)", searchNone: "No se encontraron canales", hSearch: "Buscar", autostartLog: "Registro",
     allChannels: 'Todos los canales', favorites: 'Favoritos', groups: 'Grupos', empty: 'Vacío',
     favHint: 'Botón amarillo = añadir a favoritos',
@@ -501,6 +508,7 @@ var I18N = (function () {
   };
 
   D.fr = {
+    audioTrack: "Piste audio", audioOnly: "Cette chaîne n’a qu’une seule piste audio",
     search: "Recherche", searchHint: "OK : saisissez le nom de la chaîne (dans toutes les catégories)", searchNone: "Aucune chaîne trouvée", hSearch: "Recherche", autostartLog: "Journal",
     allChannels: 'Toutes les chaînes', favorites: 'Favoris', groups: 'Groupes', empty: 'Vide',
     favHint: 'Touche jaune = ajouter aux favoris',
@@ -571,6 +579,7 @@ var I18N = (function () {
   };
 
   D.it = {
+    audioTrack: "Traccia audio", audioOnly: "Questo canale ha una sola traccia audio",
     search: "Cerca", searchHint: "OK: digita il nome del canale (cerca in tutte le categorie)", searchNone: "Nessun canale trovato", hSearch: "Cerca", autostartLog: "Registro",
     allChannels: 'Tutti i canali', favorites: 'Preferiti', groups: 'Gruppi', empty: 'Vuoto',
     favHint: 'Tasto giallo = aggiungi ai preferiti',
@@ -641,6 +650,7 @@ var I18N = (function () {
   };
 
   D.ro = {
+    audioTrack: "Pistă audio", audioOnly: "Acest canal are o singură pistă audio",
     search: "Căutare", searchHint: "OK: scrie numele canalului (caută în toate categoriile)", searchNone: "Niciun canal găsit", hSearch: "Căutare", autostartLog: "Jurnal",
     allChannels: 'Toate canalele', favorites: 'Favorite', groups: 'Grupuri', empty: 'Gol',
     favHint: 'Butonul galben = adaugă la favorite',
@@ -711,6 +721,7 @@ var I18N = (function () {
   };
 
   D.pt = {
+    audioTrack: "Faixa de áudio", audioOnly: "Este canal tem apenas uma faixa de áudio",
     search: "Pesquisa", searchHint: "OK: escreva o nome do canal (pesquisa em todas as categorias)", searchNone: "Nenhum canal encontrado", hSearch: "Pesquisa", autostartLog: "Registo",
     allChannels: "Todos os canais",
     favorites: "Favoritos",
@@ -978,6 +989,7 @@ var I18N = (function () {
   };
 
   D.nl = {
+    audioTrack: "Audiospoor", audioOnly: "Deze zender heeft maar één audiospoor",
     search: "Zoeken", searchHint: "OK: typ een zendernaam (zoekt in alle categorieën)", searchNone: "Geen zenders gevonden", hSearch: "Zoeken", autostartLog: "Logboek",
     allChannels: "Alle zenders",
     favorites: "Favorieten",
@@ -1245,6 +1257,7 @@ var I18N = (function () {
   };
 
   D.cs = {
+    audioTrack: "Zvuková stopa", audioOnly: "Tento kanál má jen jednu zvukovou stopu",
     search: "Hledat", searchHint: "OK: zadejte název kanálu (hledá ve všech kategoriích)", searchNone: "Žádné kanály nenalezeny", hSearch: "Hledat", autostartLog: "Protokol",
     allChannels: "Všechny kanály",
     favorites: "Oblíbené",
@@ -1512,6 +1525,7 @@ var I18N = (function () {
   };
 
   D.sk = {
+    audioTrack: "Zvuková stopa", audioOnly: "Tento kanál má iba jednu zvukovú stopu",
     search: "Hľadať", searchHint: "OK: zadajte názov kanála (hľadá vo všetkých kategóriách)", searchNone: "Nenašli sa žiadne kanály", hSearch: "Hľadať", autostartLog: "Protokol",
     allChannels: "Všetky kanály",
     favorites: "Obľúbené",
@@ -1779,6 +1793,7 @@ var I18N = (function () {
   };
 
   D.hu = {
+    audioTrack: "Hangsáv", audioOnly: "Ennek a csatornának csak egy hangsávja van",
     search: "Keresés", searchHint: "OK: írja be a csatorna nevét (minden kategóriában keres)", searchNone: "Nincs találat", hSearch: "Keresés", autostartLog: "Napló",
     allChannels: "Összes csatorna",
     favorites: "Kedvencek",
@@ -2046,6 +2061,7 @@ var I18N = (function () {
   };
 
   D.bg = {
+    audioTrack: "Аудио писта", audioOnly: "Този канал има само една аудио писта",
     search: "Търсене", searchHint: "OK: въведете име на канал (търси във всички категории)", searchNone: "Няма намерени канали", hSearch: "Търсене", autostartLog: "Дневник",
     allChannels: "Всички канали",
     favorites: "Любими",
@@ -2313,6 +2329,7 @@ var I18N = (function () {
   };
 
   D.el = {
+    audioTrack: "Κομμάτι ήχου", audioOnly: "Αυτό το κανάλι έχει μόνο ένα κομμάτι ήχου",
     search: "Αναζήτηση", searchHint: "OK: πληκτρολογήστε όνομα καναλιού (σε όλες τις κατηγορίες)", searchNone: "Δεν βρέθηκαν κανάλια", hSearch: "Αναζήτηση", autostartLog: "Αρχείο καταγραφής",
     allChannels: "Όλα τα κανάλια",
     favorites: "Αγαπημένα",
@@ -2580,6 +2597,7 @@ var I18N = (function () {
   };
 
   D.lt = {
+    audioTrack: "Garso takelis", audioOnly: "Šis kanalas turi tik vieną garso takelį",
     search: "Paieška", searchHint: "OK: įveskite kanalo pavadinimą (ieško visose kategorijose)", searchNone: "Kanalų nerasta", hSearch: "Paieška", autostartLog: "Žurnalas",
     allChannels: "Visi kanalai",
     favorites: "Mėgstami",
@@ -2847,6 +2865,7 @@ var I18N = (function () {
   };
 
   D.lv = {
+    audioTrack: "Audio celiņš", audioOnly: "Šim kanālam ir tikai viens audio celiņš",
     search: "Meklēt", searchHint: "OK: ievadiet kanāla nosaukumu (meklē visās kategorijās)", searchNone: "Kanāli nav atrasti", hSearch: "Meklēt", autostartLog: "Žurnāls",
     allChannels: "Visi kanāli",
     favorites: "Izlase",
@@ -3114,6 +3133,7 @@ var I18N = (function () {
   };
 
   D.et = {
+    audioTrack: "Helirada", audioOnly: "Sellel kanalil on ainult üks helirada",
     search: "Otsing", searchHint: "OK: sisesta kanali nimi (otsib kõigist kategooriatest)", searchNone: "Kanaleid ei leitud", hSearch: "Otsing", autostartLog: "Logi",
     allChannels: "Kõik kanalid",
     favorites: "Lemmikud",
@@ -3381,6 +3401,7 @@ var I18N = (function () {
   };
 
   D.kk = {
+    audioTrack: "Дыбыс жолы", audioOnly: "Бұл арнада тек бір дыбыс жолы бар",
     search: "Іздеу", searchHint: "OK: арна атауын енгізіңіз (барлық санаттардан іздейді)", searchNone: "Арналар табылмады", hSearch: "Іздеу", autostartLog: "Журнал",
     allChannels: "Барлық арналар",
     favorites: "Таңдаулылар",
@@ -3648,6 +3669,7 @@ var I18N = (function () {
   };
 
   D.be = {
+    audioTrack: "Гукавая дарожка", audioOnly: "У гэтага канала толькі адна гукавая дарожка",
     search: "Пошук", searchHint: "OK: увядзіце назву канала (пошук ва ўсіх катэгорыях)", searchNone: "Каналы не знойдзены", hSearch: "Пошук", autostartLog: "Журнал",
     allChannels: "Усе каналы",
     favorites: "Абранае",

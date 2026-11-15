@@ -75,8 +75,13 @@ var Player = (function () {
 
   /** bevorzugte Tonspur wählen (hls.js oder nativer Player) */
   function pickAudio() {
+    var i, pref = opts.prefFn ? opts.prefFn(currentUrl) : null;
+    // vom Nutzer für diesen Sender gewählte Tonspur (Sprache + Name) hat Vorrang
+    if (pref) {
+      var l = tracks().list;
+      for (i = 0; i < l.length; i++) if (l[i].lang === pref.lang && l[i].label === pref.label) { if (i !== tracks().cur) setTrack(i); return; }
+    }
     if (!opts.audioLang || opts.audioLang === 'auto') return;
-    var i;
     if (hls && hls.audioTracks && hls.audioTracks.length > 1) {
       for (i = 0; i < hls.audioTracks.length; i++) if (langMatch(hls.audioTracks[i].lang, hls.audioTracks[i].name)) { if (hls.audioTrack !== i) hls.audioTrack = i; return; }
       return;
@@ -86,6 +91,27 @@ var Player = (function () {
     var idx = -1;
     for (i = 0; i < at.length; i++) if (idx < 0 && langMatch(at[i].language, at[i].label)) idx = i;
     if (idx >= 0) for (i = 0; i < at.length; i++) at[i].enabled = i === idx;
+  }
+
+  /** Tonspuren des laufenden Streams: { list: [{ lang, label }], cur } */
+  function tracks() {
+    var out = [], cur = -1, i;
+    if (hls && hls.audioTracks && hls.audioTracks.length) {
+      for (i = 0; i < hls.audioTracks.length; i++) out.push({ lang: hls.audioTracks[i].lang || '', label: hls.audioTracks[i].name || '' });
+      cur = hls.audioTrack;
+    } else if (video && video.audioTracks) {
+      var at = video.audioTracks;
+      for (i = 0; i < at.length; i++) { out.push({ lang: at[i].language || '', label: at[i].label || '' }); if (at[i].enabled && cur < 0) cur = i; }
+    }
+    return { list: out, cur: cur < 0 && out.length ? 0 : cur };
+  }
+  function setTrack(idx) {
+    if (hls && hls.audioTracks && hls.audioTracks.length) { if (idx >= 0 && idx < hls.audioTracks.length) hls.audioTrack = idx; return; }
+    var at = video && video.audioTracks;
+    if (!at || idx < 0 || idx >= at.length) return;
+    // erst die neue Spur einschalten, dann die anderen aus (manche Player verstummen sonst kurz ganz)
+    at[idx].enabled = true;
+    for (var i = 0; i < at.length; i++) if (i !== idx) at[i].enabled = false;
   }
 
   /** Untertitel ein/aus; bevorzugt die Sprache der gewählten Tonspur */
@@ -183,7 +209,9 @@ var Player = (function () {
   return {
     init: init, start: start, stop: stop, togglePause: togglePause, seek: seek, position: position,
     setEngine: function (e) { engine = e; },
+    tracks: tracks, setTrack: setTrack,
     configure: function (o) { if (o.engine) engine = o.engine; if (o.buffer) opts.buffer = o.buffer; if (o.retries !== undefined && !isNaN(o.retries)) opts.retries = o.retries;
+      if (o.prefFn) opts.prefFn = o.prefFn;
       if (o.timeout !== undefined && !isNaN(o.timeout)) opts.timeout = o.timeout; if (o.audioLang) { opts.audioLang = o.audioLang; pickAudio(); }
       if (o.subtitles !== undefined) { opts.subtitles = !!o.subtitles; applySubs(); } },
     on: function (ev, fn) { listeners[ev] = fn; },

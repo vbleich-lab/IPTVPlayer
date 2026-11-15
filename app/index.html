@@ -32,7 +32,10 @@
     <div class="ib-side">
       <div id="ib-clock"></div>
       <div id="ib-date"></div>
+      <div class="ib-btns">
+      <div id="ib-audio" class="ib-gear ib-audio" data-act="audio"><span class="ico"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.4 5.6a9 9 0 0 1 0 12.8"/></svg></span><span id="ib-audio-t"></span></div>
       <div id="ib-gear" class="ib-gear" data-act="settings"><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span></div>
+      </div>
     </div>
   </div>
 
@@ -160,6 +163,15 @@
         <div id="qr-status" class="qr-status"></div>
         <div class="modal-help"><b>OK</b> / <b>↩</b> <i data-t="hClose"></i></div>
       </div>
+    </div>
+  </div>
+
+  <!-- Tonspur -->
+  <div id="audio" class="modal hidden">
+    <div class="modal-card audio-card">
+      <div class="modal-title" data-t="audioTrack"></div>
+      <div id="audio-rows" class="audio-rows"></div>
+      <div class="modal-help"><b>OK</b> <i data-t="hSelect"></i> &nbsp; <b>↩</b> <i data-t="hClose"></i></div>
     </div>
   </div>
 

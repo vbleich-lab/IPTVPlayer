@@ -109,6 +109,7 @@ Acht Kategorien. Änderungen wirken sofort, zu jeder Einstellung steht eine kurz
 **Kanalliste**
 - Gruppen aus der Playlist, dazu Favoriten, „Zuletzt gesehen“ und „Mit Archiv“. Gruppen lassen sich ausblenden (gelbe Taste).
 - **Favoriten sortieren:** In den Favoriten OK lang drücken, mit ▲ ▼ verschieben (CH± springt an den Anfang bzw. ans Ende), mit OK fertig. Die Reihenfolge wird mitgesichert.
+- **Eigene Favoriten-Nummern:** In den Favoriten tragen die Sender ihre Position als Nummer (1, 2, 3 …). Solange ein Favorit läuft, wählen die Zifferntasten diese Nummern.
 - **Suche:** Rote Taste in der Kanalliste oder Kategorie „Suche“. Den Sendernamen mit der Bildschirmtastatur eingeben; die Treffer aus allen Kategorien erscheinen schon beim Tippen (auch Teile des Namens oder die Sendernummer). OK oder ▼ wechselt in die Trefferliste.
 - Live-Vorschau, Logos, Kanalnummern und die laufende Sendung mit Fortschrittsbalken.
 - Sortierung, Startkanal, Verhalten von OK sowie ▲▼, automatisches Schließen und Wartezeit nach Zifferneingabe sind einstellbar.
@@ -116,7 +117,8 @@ Acht Kategorien. Änderungen wirken sofort, zu jeder Einstellung steht eine kurz
 **Wiedergabe**
 - Nativer Player des Fernsehers (HLS und MPEG-TS) oder hls.js.
 - Bildformat, Puffer, automatische Neuverbindung, Stream-Zeitlimit, bevorzugte Tonspur (Sprache), Untertitel und Sleep-Timer.
-- Merkt sich den letzten Kanal. Rote Taste wechselt zum vorigen Kanal.
+- Startet mit dem letzten Kanal in der zuletzt benutzten Kategorie (Umschalten und Liste bleiben darin). Rote Taste wechselt zum vorigen Kanal.
+- **Tonspur wählen:** ▶ in der laufenden Sendung zeigt die Info-Leiste mit dem Knopf „Tonspur“; OK öffnet die Auswahl. Die gewählte Spur merkt sich die App pro Sender.
 
 **Oberfläche**
 - 22 Sprachen (Standard ist die Sprache des Fernsehers), 6 Akzentfarben, Größe 80–130 %.

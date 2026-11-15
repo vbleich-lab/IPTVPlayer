@@ -238,6 +238,22 @@ body.in-panel #toast { top: auto; bottom: 1.1rem; left: auto; right: 2.6rem; tra
 .gear-btn:hover, .clickable:hover, .ib-gear:hover, .set-close:hover { color: var(--text); }
 .ib-gear { display: inline-flex; margin-top: .7rem; padding: .45rem; border-radius: .7rem; color: var(--dim); background: rgba(255,255,255,.06); cursor: pointer; }
 .clickable { cursor: pointer; }
+/* Tonspur-Knopf in der Info-Leiste und Auswahl */
+.ib-btns { display: flex; justify-content: flex-end; align-items: center; }
+.ib-btns > * + * { margin-left: .6rem; }
+.ib-audio { align-items: center; max-width: 16rem; border: .12rem solid transparent; }
+#ib-audio-t { margin-left: .5rem; font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ib-audio.sel { background: var(--accent); color: #fff; box-shadow: 0 .4rem 1.6rem rgba(var(--accent-rgb), .45); }
+.audio-card { min-width: 30rem; max-width: 44rem; text-align: left; }
+.audio-card .modal-title { text-align: center; }
+.audio-rows { margin-top: 1.4rem; }
+.audio-rows .row { height: 3.6rem; font-size: 1.35rem; cursor: pointer; }
+.audio-rows .row.sel { background: linear-gradient(90deg, rgba(var(--accent-rgb), .95), rgba(var(--accent-rgb), .72)); color: #fff; }
+.audio-rows .check { margin-left: 1rem; color: var(--accent); font-weight: 700; }
+.audio-rows .row.sel .check { color: #fff; }
+.audio-none { text-align: center; color: var(--dim); font-size: 1.25rem; padding: 1rem 0; }
+.audio-card .modal-help { text-align: center; }
+.audio-card .modal-help i { font-style: normal; }
 .set-close { margin-left: auto; width: 3.2rem; height: 3.2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center;
   font-size: 1.5rem; color: var(--dim); background: rgba(255,255,255,.06); cursor: pointer; flex: none; }
 .settings .set-welcome { margin-right: 0; }

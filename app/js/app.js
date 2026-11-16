@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '2.9.8';
+  var VERSION = '2.9.9';
   var KEY = {
     LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, ENTER: 13, BACK: 461, ESC: 27, BACKSPACE: 8,
     CH_UP: 33, CH_DOWN: 34, RED: 403, GREEN: 404, YELLOW: 405, BLUE: 406,
@@ -14,11 +14,13 @@
   var EPG_COMPACT = ['http://cdn.epg.one/epg.xml', 'http://epg.one/epg.xml'];
   var ACCENTS = { blue: '#3d8bff', green: '#22b07d', purple: '#8b5cf6', orange: '#f08a24', red: '#e5484d', teal: '#14b8c4' };
   var LANG_NAMES = [['ru', 'Русский'], ['uk', 'Українська'], ['de', 'Deutsch'], ['en', 'English'], ['pl', 'Polski'], ['tr', 'Türkçe'], ['es', 'Español'], ['fr', 'Français'], ['it', 'Italiano'], ['ro', 'Română'], ['pt', 'Português'], ['nl', 'Nederlands'], ['cs', 'Čeština'], ['sk', 'Slovenčina'], ['hu', 'Magyar'], ['bg', 'Български'], ['el', 'Ελληνικά'], ['lt', 'Lietuvių'], ['lv', 'Latviešu'], ['et', 'Eesti'], ['kk', 'Қазақша'], ['be', 'Беларуская']];
+  // Schriftfarben (Einstellung „Schriftfarbe“); auto = Farbe des gewählten Designs
+  var TEXTS = { white: '#ffffff', cream: '#f3e9d2', yellow: '#ffd75e', cyan: '#8fe3ff', green: '#9cf0a8', pink: '#ffb3d1', black: '#10141c' };
   var ADULT_RE = /взросл|дорос|adult|xxx|18\+|erot|эрот/i;
 
   var DEFAULTS = {
     source: 'edem', key: '', domain: '', playlist: '', vod: '',
-    lang: '', theme: 'night', logoShape: 'rect', accent: 'blue', scale: 100, clock: 'menus', timeFmt: '24', infoTimeout: 5,
+    lang: '', theme: 'night', logoShape: 'rect', textColor: 'auto', groupIcons: 'tile', accent: 'blue', scale: 100, clock: 'menus', timeFmt: '24', infoTimeout: 5,
     showLogos: 1, showNumbers: 1, showEpgList: 1, preview: 'live', sort: 'order', start: 'last', zapDir: 'normal', okAction: 'list', zapScope: 'group',
     engine: 'native', aspect: 'fit', buffer: 30, retries: 3,
     epgMode: 'full', epg: '', epgShift: 0, epgRefresh: 12, catchup: 'auto', seekStep: 5,
@@ -250,6 +252,67 @@
     return false;
   }
 
+  // ---------- Kategorie-Icons (Einstellung „Kategorie-Icons“: Linien, farbige Kacheln, Buchstaben) ----------
+  var GICON = {
+    tv: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M16 3l-4 4-4-4"/>',
+    news: '<path d="M16 6h3a1 1 0 0 1 1 1v11a2 2 0 0 1-4 0V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a3 3 0 0 0 3 3h11"/><path d="M8 8h4M8 12h4M8 16h4"/>',
+    sport: '<circle cx="12" cy="12" r="9"/><path d="M12 7l4.76 3.45-1.82 5.6H9.06l-1.82-5.6z"/><path d="M12 7V3M16.76 10.45l3.8-1.24M14.94 16.05l2.35 3.24M9.06 16.05l-2.35 3.24M7.24 10.45l-3.8-1.24"/>',
+    movie: '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 4v16M16 4v16M4 8h4M4 16h4M4 12h16M16 8h4M16 16h4"/>',
+    series: '<path d="M12 4l8 4-8 4-8-4z"/><path d="M4 12l8 4 8-4"/><path d="M4 16l8 4 8-4"/>',
+    kids: '<circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01"/><path d="M9.5 15a3.5 3.5 0 0 0 5 0"/>',
+    music: '<circle cx="6" cy="17" r="3"/><circle cx="16" cy="17" r="3"/><path d="M9 17V4h10v13M9 8h10"/>',
+    edu: '<circle cx="12" cy="12" r="9"/><path d="M3.6 9h16.8M3.6 15h16.8"/><path d="M11.5 3a17 17 0 0 0 0 18M12.5 3a17 17 0 0 1 0 18"/>',
+    fun: '<path d="M16 18a2 2 0 0 1 2 2 2 2 0 0 1 2-2 2 2 0 0 1-2-2 2 2 0 0 1-2 2zm0-12a2 2 0 0 1 2 2 2 2 0 0 1 2-2 2 2 0 0 1-2-2 2 2 0 0 1-2 2zM9 18a6 6 0 0 1 6-6 6 6 0 0 1-6-6 6 6 0 0 1-6 6 6 6 0 0 1 6 6z"/>',
+    adult: '<rect x="5" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+    region: '<circle cx="12" cy="11" r="3"/><path d="M17.66 16.66l-4.25 4.24a2 2 0 0 1-2.83 0l-4.24-4.24a8 8 0 1 1 11.32 0z"/>',
+    hd: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9v6M10 9v6M7 12h3M14 9v6h1.5a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2H14z"/>',
+    radio: '<path d="M14 3L4.5 7.7A1 1 0 0 0 4 8.6V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2H4"/><circle cx="15" cy="15" r="2"/><path d="M7 12h1M7 15h1M7 18h1"/>',
+    life: '<path d="M19.5 12.57L12 20l-7.5-7.43A5 5 0 1 1 12 6.01a5 5 0 1 1 7.5 6.57"/>',
+    all: '<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>',
+    fav: '<path d="M12 17.75l-6.17 3.24 1.18-6.87-5-4.86 6.9-1L12 2l3.09 6.26 6.9 1-5 4.86 1.18 6.87z"/>',
+    search: '<circle cx="10" cy="10" r="7"/><path d="M21 21l-6-6"/>',
+    vod: '<path d="M7 4v16l13-8z"/>',
+    hist: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
+    arc: '<path d="M12 8v4l2 2"/><path d="M3.05 11a9 9 0 1 1 .5 4M3 20v-5h5"/>'
+  };
+  // Erkennung am Kategorienamen (Edem: russisch, Landesgruppen in Landessprache); Reihenfolge = Vorrang
+  var GCAT = [
+    ['kids', '#f08a24', /дет|мульт|kids|kinder|child|cartoon|çocuk/i],
+    ['sport', '#22a35a', /спорт|sport|футбол|football|fußball|spor\b/i],
+    ['news', '#d9534f', /новост|news|nachricht|haber|новин/i],
+    ['music', '#e0478a', /муз|music|musik|müzik/i],
+    ['series', '#6366f1', /сериал|series|serie|dizi/i],
+    ['movie', '#8b5cf6', /кино|фильм|movie|film|cinema|kino/i],
+    ['edu', '#14a3b8', /познав|док|науч|discovery|doku|wissen|educat|природ|nature|истор|belgesel/i],
+    ['fun', '#ca8a04', /развлек|entertain|unterhalt|юмор|comedy|шоу|show|eğlence/i],
+    ['radio', '#a855f7', /радио|radio/i],
+    ['life', '#db2777', /кух|food|cook|lifestyle|стиль|мода|fashion|travel|путеш|релакс/i],
+    ['region', '#2f7fd1', /türk|moldov|україн|украин|ישרא|израил|հայ|армян|ქართ|груз|o'zbek|uzbek|узбек|azərb|azerb|азерб|қазақ|казах|беларус|belarus|точик|тадж|tajik|\busa\b|сша|deutsch|german|немец|polsk|польск|europ|европ|латв|литв|эстон|регион|region|local/i],
+    ['hd', '#0891b2', /\bhd\b|\b4k\b|uhd|fhd|ultra/i],
+    ['tv', '#5b6b8c', /общ|general|allgem|эфир|федерал|другие|other|sonstig/i]
+  ];
+  var GSPECIAL = { all: ['all', null], fav: ['fav', '#e0a200'], search: ['search', '#5b6b8c'], vod: ['vod', '#7c3aed'],
+    hist: ['hist', '#64748b'], arc: ['arc', '#d97706'], cont: ['hist', '#64748b'] };
+  function groupCat(g, def) {
+    var sp = GSPECIAL[g.id];
+    if (sp) return { k: sp[0], c: sp[1] || ACCENTS[get('accent')] || ACCENTS.blue, special: true };
+    var n = g.name || '';
+    if (g.adult || ADULT_RE.test(n)) return { k: 'adult', c: '#444a57' };
+    for (var i = 0; i < GCAT.length; i++) if (GCAT[i][2].test(n)) return { k: GCAT[i][0], c: GCAT[i][1] };
+    return { k: def || 'tv', c: '#5b6b8c' };
+  }
+  /** Icon vor einem Kategorienamen; def = Icon für unbekannte Kategorien (Mediathek: Film) */
+  function groupIcon(g, def) {
+    var mode = get('groupIcons');
+    if (mode === 'off') return '<span class="gi">' + (g.icon || '') + '</span>';
+    var c = groupCat(g, def), svg = '<svg viewBox="0 0 24 24">' + GICON[c.k] + '</svg>';
+    if (mode === 'line') return '<span class="gk gk-line">' + svg + '</span>';
+    if (mode === 'letter') {
+      var m = c.special ? null : /[^\s\d\W_]|[Ѐ-ӿ԰-֏֐-׿Ⴀ-ჿ]|\d/.exec(g.name || '');
+      return '<span class="gk gk-ring" style="border-color:' + c.c + '">' + (m ? esc(m[0].toUpperCase()) : svg) + '</span>';
+    }
+    return '<span class="gk gk-tile" style="background:' + c.c + '">' + svg + '</span>';
+  }
   function groupName(g) { return g.id === 'search' ? t('search') + (S.q ? ': ' + S.q : '') : g.id === 'vod' ? t('vod') : g.id === 'all' ? t('allChannels') : g.id === 'fav' ? t('favorites') : g.id === 'arc' ? t('withArchive') : g.id === 'hist' ? t('history') : g.name; }
 
   /** zuletzt gesehene Sender (neueste zuerst) */
@@ -655,7 +718,7 @@
     var locking = get('adult') === 'lock' && !S.unlocked;
     renderRows($('groups'), groups.length, S.gi, function (i, sel) {
       var gr = groups[i];
-      return '<div class="row' + (sel ? ' sel' : '') + (gr.hidden ? ' hid' : '') + '"><span class="gi">' + (gr.icon || '') + '</span><span class="t">' + esc(groupName(gr)) + '</span>' +
+      return '<div class="row' + (sel ? ' sel' : '') + (gr.hidden ? ' hid' : '') + '">' + groupIcon(gr) + '<span class="t">' + esc(groupName(gr)) + '</span>' +
         (gr.hidden ? '<span class="hidmark">⊘</span>' : '') +
         (gr.adult && locking ? '<span class="lock">🔒</span>' : '') + '<span class="pill">' + gr.items.length + '</span></div>';
     });
@@ -870,7 +933,7 @@
     $('vod-items').parentNode.classList[V.focus === 'items' ? 'add' : 'remove']('active');
     renderRows($('vod-cats'), cats.length, V.ci, function (i, sel) {
       var g = cats[i];
-      return '<div class="row' + (sel ? ' sel' : '') + '"><span class="gi">' + (g.icon || '') + '</span><span class="t">' + esc(vodCatName(g)) + '</span>' +
+      return '<div class="row' + (sel ? ' sel' : '') + '">' + groupIcon(g, 'movie') + '<span class="t">' + esc(vodCatName(g)) + '</span>' +
         (g.adult && locking ? '<span class="lock">🔒</span>' : '') + '<span class="pill">' + g.items.length + '</span></div>';
     });
     $('vod-title').textContent = vodCatName(c);
@@ -1105,7 +1168,8 @@
       { k: 'lang', label: 'sLang', opts: function () { return I18N.langs; } },
       { k: 'theme', label: 'sTheme', opts: function () { return tr([['night', 'tNight'], ['oled', 'tOled'], ['graphite', 'tGraphite'], ['ocean', 'tOcean'], ['aurora', 'tAurora'], ['light', 'tLight']]); } },
       { k: 'logoShape', label: 'sLogoShape', opts: function () { return tr([['rect', 'vLogoRect'], ['round', 'vLogoRound'], ['square', 'vLogoSquare']]); } },
-      { k: 'accent', label: 'sAccent', swatch: true, opts: function () { return tr([['blue', 'cBlue'], ['green', 'cGreen'], ['purple', 'cPurple'], ['orange', 'cOrange'], ['red', 'cRed'], ['teal', 'cTeal']]); } },
+      { k: 'textColor', label: 'sTextColor', help: 'hTextColor', swatch: TEXTS, opts: function () { return tr([['auto', 'vAuto'], ['white', 'fWhite'], ['cream', 'fCream'], ['yellow', 'fYellow'], ['cyan', 'fCyan'], ['green', 'fGreen'], ['pink', 'fPink'], ['black', 'fBlack']]); } },
+      { k: 'accent', label: 'sAccent', swatch: ACCENTS, opts: function () { return tr([['blue', 'cBlue'], ['green', 'cGreen'], ['purple', 'cPurple'], ['orange', 'cOrange'], ['red', 'cRed'], ['teal', 'cTeal']]); } },
       { k: 'scale', label: 'sScale', opts: function () { return [80, 90, 100, 110, 120, 130].map(function (v) { return [v, v + ' %']; }); } },
       { k: 'clock', label: 'sClock', opts: function () { return tr([['off', 'vOff'], ['menus', 'vMenus'], ['always', 'vAlways']]); } },
       { k: 'timeFmt', label: 'sTimeFmt', opts: function () { return [['24', '24 h  (20:15)'], ['12', '12 h  (8:15p)']]; } },
@@ -1128,6 +1192,7 @@
       { k: 'listOk', label: 'sListOk', opts: function () { return tr([['close', 'vPlayClose'], ['stay', 'vPlayStay']]); } },
       { k: 'groupOpen', label: 'sGroupOpen', opts: function () { return tr([['playing', 'vGroupPlaying'], ['last', 'vGroupLast']]); } },
       { k: 'groupArchive', label: 'sGroupArchive', opts: yn },
+      { k: 'groupIcons', label: 'sGroupIcons', opts: function () { return tr([['tile', 'vIconTile'], ['line', 'vIconLine'], ['letter', 'vIconLetter'], ['off', 'vOff']]); } },
       { k: 'groupCounts', label: 'sGroupCounts', opts: yn },
       { k: 'groupHistory', label: 'sGroupHistory', opts: yn },
       { k: 'showHidden', label: 'sShowHidden', help: 'hShowHidden', opts: yn },
@@ -1315,7 +1380,7 @@
       if (it.type === 'act') val = sel && st.confirm === it.id ? '<span>' + esc(t('confirm')) + '</span>' : (it.value ? '<span>' + esc(it.value()) + '</span>' : '') + '<span class="arr">›</span>';
       else if (it.type === 'text') val = '<span>' + esc(displayValue(it)) + '</span><span class="arr">✎</span>';
       else if (it.type === 'info') val = '<span>' + esc(displayValue(it)) + '</span>';
-      else val = (it.swatch ? '<span class="swatch" style="background:' + ACCENTS[itemValue(it)] + '"></span>' : '') +
+      else val = (it.swatch && it.swatch[itemValue(it)] ? '<span class="swatch" style="background:' + it.swatch[itemValue(it)] + '"></span>' : '') +
         '<span class="arr">‹</span><span>' + esc(displayValue(it)) + '</span><span class="arr">›</span>';
       return '<div class="' + cls + '"><span class="lbl">' + esc(t(it.label)) + '</span><span class="val">' + val + '</span></div>';
     });
@@ -1409,6 +1474,10 @@
         document.documentElement.style.setProperty('--accent', hex);
         document.documentElement.style.setProperty('--accent-rgb', (n >> 16) + ',' + ((n >> 8) & 255) + ',' + (n & 255));
         break;
+      case 'textColor':
+        var tc = TEXTS[get('textColor')];
+        if (tc) document.body.style.setProperty('--text', tc); else document.body.style.removeProperty('--text');
+        break;
       case 'scale': document.documentElement.style.setProperty('--scale', (+get('scale') || 100) / 100); break;
       case 'clock': case 'timeFmt': updateClock(); break;
       case 'sort': case 'adult': if (S.channels.length) buildGroups(); break;
@@ -1438,7 +1507,7 @@
     }
   }
   function applyAll() {
-    ['lang', 'theme', 'logoShape', 'accent', 'scale', 'engine', 'aspect', 'panelBg', 'anim', 'groupCounts', 'infoPos'].forEach(applySetting);
+    ['lang', 'theme', 'logoShape', 'textColor', 'accent', 'scale', 'engine', 'aspect', 'panelBg', 'anim', 'groupCounts', 'infoPos'].forEach(applySetting);
     armEpgRefresh(); armPlRefresh();
   }
   function rerender() {

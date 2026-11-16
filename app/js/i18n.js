@@ -11,6 +11,8 @@ var I18N = (function () {
   var D = {};
 
   D.en = {
+    sGroupIcons: "Category icons", vIconTile: "Coloured tiles", vIconLine: "Line icons", vIconLetter: "Letters",
+    sTextColor: "Text colour", hTextColor: "Automatic uses the colour of the chosen design. With the “Light” design pick a dark colour such as black.", fWhite: "White", fCream: "Cream", fYellow: "Yellow", fCyan: "Light blue", fGreen: "Light green", fPink: "Pink", fBlack: "Black",
     sLogoShape: "Logo shape", vLogoRect: "Rounded", vLogoRound: "Round", vLogoSquare: "Square",
     sTheme: "Design", tNight: "Night blue", tOled: "OLED black", tGraphite: "Graphite", tOcean: "Ocean", tAurora: "Aurora", tLight: "Light",
     audioTrack: "Audio track", audioOnly: "This channel has only one audio track",
@@ -84,6 +86,8 @@ var I18N = (function () {
   };
 
   D.de = {
+    sGroupIcons: "Kategorie-Icons", vIconTile: "Farbige Kacheln", vIconLine: "Linien-Icons", vIconLetter: "Buchstaben",
+    sTextColor: "Schriftfarbe", hTextColor: "Automatisch nimmt die Farbe des gewählten Designs. Beim Design „Hell“ eine dunkle Farbe wie Schwarz wählen.", fWhite: "Weiß", fCream: "Creme", fYellow: "Gelb", fCyan: "Hellblau", fGreen: "Hellgrün", fPink: "Rosa", fBlack: "Schwarz",
     sLogoShape: "Logo-Form", vLogoRect: "Abgerundet", vLogoRound: "Rund", vLogoSquare: "Quadratisch",
     sTheme: "Design", tNight: "Nachtblau", tOled: "OLED-Schwarz", tGraphite: "Graphit", tOcean: "Ozean", tAurora: "Aurora", tLight: "Hell",
     audioTrack: "Tonspur", audioOnly: "Dieser Sender hat nur eine Tonspur",
@@ -157,6 +161,8 @@ var I18N = (function () {
   };
 
   D.ru = {
+    sGroupIcons: "Значки категорий", vIconTile: "Цветные плитки", vIconLine: "Контурные значки", vIconLetter: "Буквы",
+    sTextColor: "Цвет шрифта", hTextColor: "«Автоматически» — цвет выбранного оформления. Для оформления «Светлое» выберите тёмный цвет, например чёрный.", fWhite: "Белый", fCream: "Кремовый", fYellow: "Жёлтый", fCyan: "Голубой", fGreen: "Светло-зелёный", fPink: "Розовый", fBlack: "Чёрный",
     sLogoShape: "Форма логотипов", vLogoRect: "Скруглённые", vLogoRound: "Круглые", vLogoSquare: "Квадратные",
     sTheme: "Оформление", tNight: "Ночной синий", tOled: "OLED-чёрный", tGraphite: "Графит", tOcean: "Океан", tAurora: "Аврора", tLight: "Светлое",
     audioTrack: "Звуковая дорожка", audioOnly: "У этого канала только одна звуковая дорожка",
@@ -230,6 +236,8 @@ var I18N = (function () {
   };
 
   D.uk = {
+    sGroupIcons: "Значки категорій", vIconTile: "Кольорові плитки", vIconLine: "Контурні значки", vIconLetter: "Літери",
+    sTextColor: "Колір шрифту", hTextColor: "«Автоматично» — колір вибраного оформлення. Для оформлення «Світле» виберіть темний колір, наприклад чорний.", fWhite: "Білий", fCream: "Кремовий", fYellow: "Жовтий", fCyan: "Блакитний", fGreen: "Світло-зелений", fPink: "Рожевий", fBlack: "Чорний",
     sLogoShape: "Форма логотипів", vLogoRect: "Заокруглені", vLogoRound: "Круглі", vLogoSquare: "Квадратні",
     sTheme: "Оформлення", tNight: "Нічний синій", tOled: "OLED-чорний", tGraphite: "Графіт", tOcean: "Океан", tAurora: "Аврора", tLight: "Світле",
     audioTrack: "Звукова доріжка", audioOnly: "У цього каналу лише одна звукова доріжка",
@@ -303,6 +311,8 @@ var I18N = (function () {
   };
 
   D.pl = {
+    sGroupIcons: "Ikony kategorii", vIconTile: "Kolorowe kafelki", vIconLine: "Ikony liniowe", vIconLetter: "Litery",
+    sTextColor: "Kolor czcionki", hTextColor: "Automatycznie: kolor wybranego wyglądu. Przy wyglądzie „Jasny” wybierz ciemny kolor, np. czarny.", fWhite: "Biały", fCream: "Kremowy", fYellow: "Żółty", fCyan: "Jasnoniebieski", fGreen: "Jasnozielony", fPink: "Różowy", fBlack: "Czarny",
     sLogoShape: "Kształt logo", vLogoRect: "Zaokrąglone", vLogoRound: "Okrągłe", vLogoSquare: "Kwadratowe",
     sTheme: "Wygląd", tNight: "Nocny błękit", tOled: "Czerń OLED", tGraphite: "Grafit", tOcean: "Ocean", tAurora: "Zorza", tLight: "Jasny",
     audioTrack: "Ścieżka dźwiękowa", audioOnly: "Ten kanał ma tylko jedną ścieżkę dźwiękową",
@@ -376,6 +386,8 @@ var I18N = (function () {
   };
 
   D.tr = {
+    sGroupIcons: "Kategori simgeleri", vIconTile: "Renkli kutucuklar", vIconLine: "Çizgi simgeler", vIconLetter: "Harfler",
+    sTextColor: "Yazı rengi", hTextColor: "Otomatik, seçilen tasarımın rengini kullanır. “Açık” tasarımda siyah gibi koyu bir renk seçin.", fWhite: "Beyaz", fCream: "Krem", fYellow: "Sarı", fCyan: "Açık mavi", fGreen: "Açık yeşil", fPink: "Pembe", fBlack: "Siyah",
     sLogoShape: "Logo şekli", vLogoRect: "Yuvarlatılmış", vLogoRound: "Yuvarlak", vLogoSquare: "Kare",
     sTheme: "Tasarım", tNight: "Gece mavisi", tOled: "OLED siyahı", tGraphite: "Grafit", tOcean: "Okyanus", tAurora: "Aurora", tLight: "Açık",
     audioTrack: "Ses parçası", audioOnly: "Bu kanalın yalnızca bir ses parçası var",
@@ -449,6 +461,8 @@ var I18N = (function () {
   };
 
   D.es = {
+    sGroupIcons: "Iconos de categoría", vIconTile: "Mosaicos de color", vIconLine: "Iconos de línea", vIconLetter: "Letras",
+    sTextColor: "Color del texto", hTextColor: "Automático usa el color del diseño elegido. Con el diseño «Claro» elige un color oscuro, como negro.", fWhite: "Blanco", fCream: "Crema", fYellow: "Amarillo", fCyan: "Azul claro", fGreen: "Verde claro", fPink: "Rosa", fBlack: "Negro",
     sLogoShape: "Forma del logo", vLogoRect: "Redondeado", vLogoRound: "Redondo", vLogoSquare: "Cuadrado",
     sTheme: "Diseño", tNight: "Azul noche", tOled: "Negro OLED", tGraphite: "Grafito", tOcean: "Océano", tAurora: "Aurora", tLight: "Claro",
     audioTrack: "Pista de audio", audioOnly: "Este canal solo tiene una pista de audio",
@@ -522,6 +536,8 @@ var I18N = (function () {
   };
 
   D.fr = {
+    sGroupIcons: "Icônes des catégories", vIconTile: "Tuiles colorées", vIconLine: "Icônes au trait", vIconLetter: "Lettres",
+    sTextColor: "Couleur du texte", hTextColor: "Automatique utilise la couleur du thème choisi. Avec le thème « Clair », choisissez une couleur sombre comme le noir.", fWhite: "Blanc", fCream: "Crème", fYellow: "Jaune", fCyan: "Bleu clair", fGreen: "Vert clair", fPink: "Rose", fBlack: "Noir",
     sLogoShape: "Forme des logos", vLogoRect: "Arrondi", vLogoRound: "Rond", vLogoSquare: "Carré",
     sTheme: "Thème", tNight: "Bleu nuit", tOled: "Noir OLED", tGraphite: "Graphite", tOcean: "Océan", tAurora: "Aurore", tLight: "Clair",
     audioTrack: "Piste audio", audioOnly: "Cette chaîne n’a qu’une seule piste audio",
@@ -595,6 +611,8 @@ var I18N = (function () {
   };
 
   D.it = {
+    sGroupIcons: "Icone delle categorie", vIconTile: "Riquadri colorati", vIconLine: "Icone a linee", vIconLetter: "Lettere",
+    sTextColor: "Colore del testo", hTextColor: "Automatico usa il colore del tema scelto. Con il tema «Chiaro» scegli un colore scuro, ad esempio nero.", fWhite: "Bianco", fCream: "Crema", fYellow: "Giallo", fCyan: "Azzurro", fGreen: "Verde chiaro", fPink: "Rosa", fBlack: "Nero",
     sLogoShape: "Forma dei loghi", vLogoRect: "Arrotondato", vLogoRound: "Rotondo", vLogoSquare: "Quadrato",
     sTheme: "Tema", tNight: "Blu notte", tOled: "Nero OLED", tGraphite: "Grafite", tOcean: "Oceano", tAurora: "Aurora", tLight: "Chiaro",
     audioTrack: "Traccia audio", audioOnly: "Questo canale ha una sola traccia audio",
@@ -668,6 +686,8 @@ var I18N = (function () {
   };
 
   D.ro = {
+    sGroupIcons: "Pictograme categorii", vIconTile: "Plăci colorate", vIconLine: "Pictograme contur", vIconLetter: "Litere",
+    sTextColor: "Culoarea textului", hTextColor: "Automat folosește culoarea temei alese. La tema „Luminos” alege o culoare închisă, de ex. negru.", fWhite: "Alb", fCream: "Crem", fYellow: "Galben", fCyan: "Albastru deschis", fGreen: "Verde deschis", fPink: "Roz", fBlack: "Negru",
     sLogoShape: "Forma siglelor", vLogoRect: "Rotunjit", vLogoRound: "Rotund", vLogoSquare: "Pătrat",
     sTheme: "Temă", tNight: "Albastru de noapte", tOled: "Negru OLED", tGraphite: "Grafit", tOcean: "Ocean", tAurora: "Auroră", tLight: "Luminos",
     audioTrack: "Pistă audio", audioOnly: "Acest canal are o singură pistă audio",
@@ -741,6 +761,8 @@ var I18N = (function () {
   };
 
   D.pt = {
+    sGroupIcons: "Ícones das categorias", vIconTile: "Mosaicos coloridos", vIconLine: "Ícones de linha", vIconLetter: "Letras",
+    sTextColor: "Cor do texto", hTextColor: "Automático usa a cor do tema escolhido. Com o tema «Claro» escolha uma cor escura, como preto.", fWhite: "Branco", fCream: "Creme", fYellow: "Amarelo", fCyan: "Azul claro", fGreen: "Verde claro", fPink: "Rosa", fBlack: "Preto",
     sLogoShape: "Forma do logótipo", vLogoRect: "Arredondado", vLogoRound: "Redondo", vLogoSquare: "Quadrado",
     sTheme: "Tema", tNight: "Azul noite", tOled: "Preto OLED", tGraphite: "Grafite", tOcean: "Oceano", tAurora: "Aurora", tLight: "Claro",
     audioTrack: "Faixa de áudio", audioOnly: "Este canal tem apenas uma faixa de áudio",
@@ -1011,6 +1033,8 @@ var I18N = (function () {
   };
 
   D.nl = {
+    sGroupIcons: "Categoriepictogrammen", vIconTile: "Gekleurde tegels", vIconLine: "Lijnpictogrammen", vIconLetter: "Letters",
+    sTextColor: "Tekstkleur", hTextColor: "Automatisch gebruikt de kleur van het gekozen thema. Kies bij het thema „Licht” een donkere kleur zoals zwart.", fWhite: "Wit", fCream: "Crème", fYellow: "Geel", fCyan: "Lichtblauw", fGreen: "Lichtgroen", fPink: "Roze", fBlack: "Zwart",
     sLogoShape: "Logovorm", vLogoRect: "Afgerond", vLogoRound: "Rond", vLogoSquare: "Vierkant",
     sTheme: "Thema", tNight: "Nachtblauw", tOled: "OLED-zwart", tGraphite: "Grafiet", tOcean: "Oceaan", tAurora: "Aurora", tLight: "Licht",
     audioTrack: "Audiospoor", audioOnly: "Deze zender heeft maar één audiospoor",
@@ -1281,6 +1305,8 @@ var I18N = (function () {
   };
 
   D.cs = {
+    sGroupIcons: "Ikony kategorií", vIconTile: "Barevné dlaždice", vIconLine: "Obrysové ikony", vIconLetter: "Písmena",
+    sTextColor: "Barva písma", hTextColor: "Automaticky použije barvu zvoleného vzhledu. U vzhledu „Světlý“ zvolte tmavou barvu, např. černou.", fWhite: "Bílá", fCream: "Krémová", fYellow: "Žlutá", fCyan: "Světle modrá", fGreen: "Světle zelená", fPink: "Růžová", fBlack: "Černá",
     sLogoShape: "Tvar log", vLogoRect: "Zaoblené", vLogoRound: "Kulaté", vLogoSquare: "Čtvercové",
     sTheme: "Vzhled", tNight: "Noční modrá", tOled: "OLED černá", tGraphite: "Grafit", tOcean: "Oceán", tAurora: "Polární záře", tLight: "Světlý",
     audioTrack: "Zvuková stopa", audioOnly: "Tento kanál má jen jednu zvukovou stopu",
@@ -1551,6 +1577,8 @@ var I18N = (function () {
   };
 
   D.sk = {
+    sGroupIcons: "Ikony kategórií", vIconTile: "Farebné dlaždice", vIconLine: "Obrysové ikony", vIconLetter: "Písmená",
+    sTextColor: "Farba písma", hTextColor: "Automaticky použije farbu zvoleného vzhľadu. Pri vzhľade „Svetlý“ zvoľte tmavú farbu, napr. čiernu.", fWhite: "Biela", fCream: "Krémová", fYellow: "Žltá", fCyan: "Svetlomodrá", fGreen: "Svetlozelená", fPink: "Ružová", fBlack: "Čierna",
     sLogoShape: "Tvar lôg", vLogoRect: "Zaoblené", vLogoRound: "Okrúhle", vLogoSquare: "Štvorcové",
     sTheme: "Vzhľad", tNight: "Nočná modrá", tOled: "OLED čierna", tGraphite: "Grafit", tOcean: "Oceán", tAurora: "Polárna žiara", tLight: "Svetlý",
     audioTrack: "Zvuková stopa", audioOnly: "Tento kanál má iba jednu zvukovú stopu",
@@ -1821,6 +1849,8 @@ var I18N = (function () {
   };
 
   D.hu = {
+    sGroupIcons: "Kategóriaikonok", vIconTile: "Színes csempék", vIconLine: "Vonalas ikonok", vIconLetter: "Betűk",
+    sTextColor: "Betűszín", hTextColor: "Az Automatikus a választott megjelenés színét használja. A „Világos” megjelenéshez válasszon sötét színt, pl. feketét.", fWhite: "Fehér", fCream: "Krém", fYellow: "Sárga", fCyan: "Világoskék", fGreen: "Világoszöld", fPink: "Rózsaszín", fBlack: "Fekete",
     sLogoShape: "Logó alakja", vLogoRect: "Lekerekített", vLogoRound: "Kerek", vLogoSquare: "Négyzetes",
     sTheme: "Megjelenés", tNight: "Éjkék", tOled: "OLED-fekete", tGraphite: "Grafit", tOcean: "Óceán", tAurora: "Sarki fény", tLight: "Világos",
     audioTrack: "Hangsáv", audioOnly: "Ennek a csatornának csak egy hangsávja van",
@@ -2091,6 +2121,8 @@ var I18N = (function () {
   };
 
   D.bg = {
+    sGroupIcons: "Икони на категориите", vIconTile: "Цветни плочки", vIconLine: "Контурни икони", vIconLetter: "Букви",
+    sTextColor: "Цвят на шрифта", hTextColor: "„Автоматично“ използва цвета на избраното оформление. При „Светло“ изберете тъмен цвят, напр. черен.", fWhite: "Бял", fCream: "Кремав", fYellow: "Жълт", fCyan: "Светлосин", fGreen: "Светлозелен", fPink: "Розов", fBlack: "Черен",
     sLogoShape: "Форма на логата", vLogoRect: "Заоблени", vLogoRound: "Кръгли", vLogoSquare: "Квадратни",
     sTheme: "Оформление", tNight: "Нощно синьо", tOled: "OLED черно", tGraphite: "Графит", tOcean: "Океан", tAurora: "Аврора", tLight: "Светло",
     audioTrack: "Аудио писта", audioOnly: "Този канал има само една аудио писта",
@@ -2361,6 +2393,8 @@ var I18N = (function () {
   };
 
   D.el = {
+    sGroupIcons: "Εικονίδια κατηγοριών", vIconTile: "Χρωματιστά πλακίδια", vIconLine: "Εικονίδια γραμμής", vIconLetter: "Γράμματα",
+    sTextColor: "Χρώμα κειμένου", hTextColor: "Το «Αυτόματο» χρησιμοποιεί το χρώμα του θέματος. Με το θέμα «Φωτεινό» επιλέξτε σκούρο χρώμα, π.χ. μαύρο.", fWhite: "Λευκό", fCream: "Κρεμ", fYellow: "Κίτρινο", fCyan: "Γαλάζιο", fGreen: "Ανοιχτό πράσινο", fPink: "Ροζ", fBlack: "Μαύρο",
     sLogoShape: "Σχήμα λογοτύπων", vLogoRect: "Στρογγυλεμένα", vLogoRound: "Στρογγυλά", vLogoSquare: "Τετράγωνα",
     sTheme: "Θέμα", tNight: "Νυχτερινό μπλε", tOled: "Μαύρο OLED", tGraphite: "Γραφίτης", tOcean: "Ωκεανός", tAurora: "Σέλας", tLight: "Φωτεινό",
     audioTrack: "Κομμάτι ήχου", audioOnly: "Αυτό το κανάλι έχει μόνο ένα κομμάτι ήχου",
@@ -2631,6 +2665,8 @@ var I18N = (function () {
   };
 
   D.lt = {
+    sGroupIcons: "Kategorijų piktogramos", vIconTile: "Spalvotos plytelės", vIconLine: "Kontūrinės piktogramos", vIconLetter: "Raidės",
+    sTextColor: "Šrifto spalva", hTextColor: "Automatiškai naudoja pasirinktos išvaizdos spalvą. Su „Šviesi“ išvaizda rinkitės tamsią spalvą, pvz., juodą.", fWhite: "Balta", fCream: "Kreminė", fYellow: "Geltona", fCyan: "Šviesiai mėlyna", fGreen: "Šviesiai žalia", fPink: "Rožinė", fBlack: "Juoda",
     sLogoShape: "Logotipų forma", vLogoRect: "Suapvalinti", vLogoRound: "Apvalūs", vLogoSquare: "Kvadratiniai",
     sTheme: "Išvaizda", tNight: "Nakties mėlyna", tOled: "OLED juoda", tGraphite: "Grafitas", tOcean: "Vandenynas", tAurora: "Pašvaistė", tLight: "Šviesi",
     audioTrack: "Garso takelis", audioOnly: "Šis kanalas turi tik vieną garso takelį",
@@ -2901,6 +2937,8 @@ var I18N = (function () {
   };
 
   D.lv = {
+    sGroupIcons: "Kategoriju ikonas", vIconTile: "Krāsainas flīzes", vIconLine: "Līniju ikonas", vIconLetter: "Burti",
+    sTextColor: "Fonta krāsa", hTextColor: "Automātiski izmanto izvēlētā izskata krāsu. Izskatam “Gaišs” izvēlieties tumšu krāsu, piem., melnu.", fWhite: "Balta", fCream: "Krēmkrāsa", fYellow: "Dzeltena", fCyan: "Gaiši zila", fGreen: "Gaiši zaļa", fPink: "Rozā", fBlack: "Melna",
     sLogoShape: "Logo forma", vLogoRect: "Noapaļoti", vLogoRound: "Apaļi", vLogoSquare: "Kvadrātiski",
     sTheme: "Izskats", tNight: "Nakts zils", tOled: "OLED melns", tGraphite: "Grafīts", tOcean: "Okeāns", tAurora: "Ziemeļblāzma", tLight: "Gaišs",
     audioTrack: "Audio celiņš", audioOnly: "Šim kanālam ir tikai viens audio celiņš",
@@ -3171,6 +3209,8 @@ var I18N = (function () {
   };
 
   D.et = {
+    sGroupIcons: "Kategooriate ikoonid", vIconTile: "Värvilised plaadid", vIconLine: "Joonikoonid", vIconLetter: "Tähed",
+    sTextColor: "Kirja värv", hTextColor: "Automaatne kasutab valitud kujunduse värvi. Kujundusega „Hele“ vali tume värv, nt must.", fWhite: "Valge", fCream: "Kreem", fYellow: "Kollane", fCyan: "Helesinine", fGreen: "Heleroheline", fPink: "Roosa", fBlack: "Must",
     sLogoShape: "Logo kuju", vLogoRect: "Ümardatud", vLogoRound: "Ümmargune", vLogoSquare: "Ruudukujuline",
     sTheme: "Kujundus", tNight: "Öösinine", tOled: "OLED-must", tGraphite: "Grafiit", tOcean: "Ookean", tAurora: "Virmalised", tLight: "Hele",
     audioTrack: "Helirada", audioOnly: "Sellel kanalil on ainult üks helirada",
@@ -3441,6 +3481,8 @@ var I18N = (function () {
   };
 
   D.kk = {
+    sGroupIcons: "Санат белгішелері", vIconTile: "Түрлі түсті плиткалар", vIconLine: "Контурлы белгішелер", vIconLetter: "Әріптер",
+    sTextColor: "Қаріп түсі", hTextColor: "«Автоматты» таңдалған безендіру түсін қолданады. «Ашық» безендіруде қара сияқты күңгірт түс таңдаңыз.", fWhite: "Ақ", fCream: "Кілегей", fYellow: "Сары", fCyan: "Көгілдір", fGreen: "Ашық жасыл", fPink: "Қызғылт", fBlack: "Қара",
     sLogoShape: "Логотип пішіні", vLogoRect: "Дөңгеленген", vLogoRound: "Дөңгелек", vLogoSquare: "Шаршы",
     sTheme: "Безендіру", tNight: "Түнгі көк", tOled: "OLED қара", tGraphite: "Графит", tOcean: "Мұхит", tAurora: "Аврора", tLight: "Ашық",
     audioTrack: "Дыбыс жолы", audioOnly: "Бұл арнада тек бір дыбыс жолы бар",
@@ -3711,6 +3753,8 @@ var I18N = (function () {
   };
 
   D.be = {
+    sGroupIcons: "Значкі катэгорый", vIconTile: "Каляровыя пліткі", vIconLine: "Контурныя значкі", vIconLetter: "Літары",
+    sTextColor: "Колер шрыфту", hTextColor: "«Аўтаматычна» — колер абранага афармлення. Для афармлення «Светлае» выберыце цёмны колер, напрыклад чорны.", fWhite: "Белы", fCream: "Крэмавы", fYellow: "Жоўты", fCyan: "Блакітны", fGreen: "Светла-зялёны", fPink: "Ружовы", fBlack: "Чорны",
     sLogoShape: "Форма лагатыпаў", vLogoRect: "Скругленыя", vLogoRound: "Круглыя", vLogoSquare: "Квадратныя",
     sTheme: "Афармленне", tNight: "Начны сіні", tOled: "OLED-чорны", tGraphite: "Графіт", tOcean: "Акіян", tAurora: "Аўрора", tLight: "Светлае",
     audioTrack: "Гукавая дарожка", audioOnly: "У гэтага канала толькі адна гукавая дарожка",

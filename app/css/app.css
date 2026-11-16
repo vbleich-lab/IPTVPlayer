@@ -201,7 +201,7 @@ i { font-style: normal; }
 .opt .val input:focus { border-color: #fff; background: rgba(0,0,0,.55); }
 .opt.action .lbl { font-weight: 600; }
 .opt.action.primary { background: rgba(var(--accent-rgb), .18); }
-.opt .swatch { width: 1.3rem; height: 1.3rem; border-radius: 50%; flex: none; }
+.opt .swatch { width: 1.3rem; height: 1.3rem; border-radius: 50%; flex: none; box-shadow: 0 0 0 .1rem rgba(var(--fg-rgb),.35); }
 .opt.disabled { opacity: .45; }
 .set-help { min-height: 2.6rem; font-size: 1.12rem; color: var(--dim); padding: 1rem 1rem 0 29rem; line-height: 1.4; white-space: pre-line; }
 
@@ -372,3 +372,15 @@ body.logo-round .ib-tile:not(.nologo) img { margin-bottom: .8rem; }
 body.logo-square .ch .lg { border-radius: .3rem; }
 body.logo-square .pv-logo, body.logo-square .ib-tile { border-radius: .45rem; }
 body.logo-square .ch .lg img, body.logo-square .pv-logo img, body.logo-square .ib-tile img { max-width: 84%; max-height: 84%; }
+
+/* ---------- Kategorie-Icons ---------- */
+.row .gk { width: 2.3rem; height: 2.3rem; flex: none; display: flex; align-items: center; justify-content: center; border-radius: .6rem; }
+.row .gk svg { width: 1.45rem; height: 1.45rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.row .gk-tile { color: #fff; }
+.row .gk-line { color: var(--accent); width: 1.9rem; }
+.row .gk-line svg { width: 1.6rem; height: 1.6rem; stroke-width: 1.8; }
+.pane.active .row.sel .gk-line { color: #fff; }
+.row .gk-ring { border-radius: 50%; border: .14rem solid; color: var(--text); font-size: 1.05rem; font-weight: 600; }
+.row .gk-ring svg { width: 1.2rem; height: 1.2rem; }
+.pane.active .row.sel .gk-ring { color: #fff; border-color: rgba(255,255,255,.9) !important; }
+.row.hid .gk { opacity: .45; }

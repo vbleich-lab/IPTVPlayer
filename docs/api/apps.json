@@ -15,18 +15,18 @@
       "manifestUrl": "https://vbleich-lab.github.io/IPTVPlayer/api/apps/com.iptvplayer.app/manifest.json",
       "manifest": {
         "id": "com.iptvplayer.app",
-        "version": "2.9.8",
+        "version": "2.9.9",
         "type": "web",
         "title": "IPTVPlayer",
         "appDescription": "IPTV-App für Edem TV oder jede M3U-Playlist: Kanalliste mit Live-Vorschau, Programmführer, Archiv, Einrichtung per Smartphone, Mediathek, 22 Sprachen. Optional: Autostart beim Einschalten des Fernsehers (mit Root oder im Developer Mode).",
         "iconUri": "https://vbleich-lab.github.io/IPTVPlayer/icon.png",
         "sourceUrl": "https://github.com/vbleich-lab/IPTVPlayer",
         "rootRequired": "optional",
-        "ipkUrl": "https://github.com/vbleich-lab/IPTVPlayer/releases/download/v2.9.8/com.iptvplayer.app_2.9.8_all.ipk",
+        "ipkUrl": "https://github.com/vbleich-lab/IPTVPlayer/releases/download/v2.9.9/com.iptvplayer.app_2.9.9_all.ipk",
         "ipkHash": {
-          "sha256": "fba9992b7970e7c98fe22fe065fc08b2d92a2a0e11ac91d1b55de254d0ba3919"
+          "sha256": "a6fea2d40b2d1ab6cdae0a72339d392ca25dd7e330da88c6171f09da911a47e9"
         },
-        "ipkSize": 167520
+        "ipkSize": 174002
       },
       "pool": "main",
       "requirements": {

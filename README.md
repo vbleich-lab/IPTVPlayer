@@ -109,6 +109,7 @@ Acht Kategorien. Änderungen wirken sofort, zu jeder Einstellung steht eine kurz
 **Kanalliste**
 - Gruppen aus der Playlist, dazu Favoriten, „Zuletzt gesehen“ und „Mit Archiv“. Gruppen lassen sich ausblenden (gelbe Taste).
 - **Favoriten sortieren:** In den Favoriten OK lang drücken, mit ▲ ▼ verschieben (CH± springt an den Anfang bzw. ans Ende), mit OK fertig. Die Reihenfolge wird mitgesichert.
+- **Designs:** Einstellungen › Oberfläche › Design: Nachtblau (Standard), OLED-Schwarz, Graphit, Ozean, Aurora oder Hell. Die Akzentfarbe lässt sich dazu frei wählen. Unter „Logo-Form“ werden die Senderlogos abgerundet, rund oder quadratisch angezeigt.
 - **Eigene Favoriten-Nummern:** In den Favoriten tragen die Sender ihre Position als Nummer (1, 2, 3 …). Solange ein Favorit läuft, wählen die Zifferntasten diese Nummern.
 - **Suche:** Rote Taste in der Kanalliste oder Kategorie „Suche“. Den Sendernamen mit der Bildschirmtastatur eingeben; die Treffer aus allen Kategorien erscheinen schon beim Tippen (auch Teile des Namens oder die Sendernummer). OK oder ▼ wechselt in die Trefferliste.
 - Live-Vorschau, Logos, Kanalnummern und die laufende Sendung mit Fortschrittsbalken.

@@ -11,6 +11,8 @@ var I18N = (function () {
   var D = {};
 
   D.en = {
+    sLogoShape: "Logo shape", vLogoRect: "Rounded", vLogoRound: "Round", vLogoSquare: "Square",
+    sTheme: "Design", tNight: "Night blue", tOled: "OLED black", tGraphite: "Graphite", tOcean: "Ocean", tAurora: "Aurora", tLight: "Light",
     audioTrack: "Audio track", audioOnly: "This channel has only one audio track",
     search: "Search", searchHint: "OK: type a channel name (searches all categories)", searchNone: "No channels found", hSearch: "Search", autostartLog: "Log",
     allChannels: 'All channels', favorites: 'Favorites', groups: 'Groups', empty: 'Empty',
@@ -82,6 +84,8 @@ var I18N = (function () {
   };
 
   D.de = {
+    sLogoShape: "Logo-Form", vLogoRect: "Abgerundet", vLogoRound: "Rund", vLogoSquare: "Quadratisch",
+    sTheme: "Design", tNight: "Nachtblau", tOled: "OLED-Schwarz", tGraphite: "Graphit", tOcean: "Ozean", tAurora: "Aurora", tLight: "Hell",
     audioTrack: "Tonspur", audioOnly: "Dieser Sender hat nur eine Tonspur",
     search: "Suche", searchHint: "OK: Sendernamen eingeben (sucht in allen Kategorien)", searchNone: "Keine Sender gefunden", hSearch: "Suche", autostartLog: "Protokoll",
     allChannels: 'Alle Kanäle', favorites: 'Favoriten', groups: 'Gruppen', empty: 'Leer',
@@ -153,6 +157,8 @@ var I18N = (function () {
   };
 
   D.ru = {
+    sLogoShape: "Форма логотипов", vLogoRect: "Скруглённые", vLogoRound: "Круглые", vLogoSquare: "Квадратные",
+    sTheme: "Оформление", tNight: "Ночной синий", tOled: "OLED-чёрный", tGraphite: "Графит", tOcean: "Океан", tAurora: "Аврора", tLight: "Светлое",
     audioTrack: "Звуковая дорожка", audioOnly: "У этого канала только одна звуковая дорожка",
     search: "Поиск", searchHint: "OK: введите название канала (поиск во всех категориях)", searchNone: "Каналы не найдены", hSearch: "Поиск", autostartLog: "Журнал",
     allChannels: 'Все каналы', favorites: 'Избранное', groups: 'Группы', empty: 'Пусто',
@@ -224,6 +230,8 @@ var I18N = (function () {
   };
 
   D.uk = {
+    sLogoShape: "Форма логотипів", vLogoRect: "Заокруглені", vLogoRound: "Круглі", vLogoSquare: "Квадратні",
+    sTheme: "Оформлення", tNight: "Нічний синій", tOled: "OLED-чорний", tGraphite: "Графіт", tOcean: "Океан", tAurora: "Аврора", tLight: "Світле",
     audioTrack: "Звукова доріжка", audioOnly: "У цього каналу лише одна звукова доріжка",
     search: "Пошук", searchHint: "OK: введіть назву каналу (пошук у всіх категоріях)", searchNone: "Канали не знайдено", hSearch: "Пошук", autostartLog: "Журнал",
     allChannels: 'Усі канали', favorites: 'Обране', groups: 'Групи', empty: 'Порожньо',
@@ -295,6 +303,8 @@ var I18N = (function () {
   };
 
   D.pl = {
+    sLogoShape: "Kształt logo", vLogoRect: "Zaokrąglone", vLogoRound: "Okrągłe", vLogoSquare: "Kwadratowe",
+    sTheme: "Wygląd", tNight: "Nocny błękit", tOled: "Czerń OLED", tGraphite: "Grafit", tOcean: "Ocean", tAurora: "Zorza", tLight: "Jasny",
     audioTrack: "Ścieżka dźwiękowa", audioOnly: "Ten kanał ma tylko jedną ścieżkę dźwiękową",
     search: "Szukaj", searchHint: "OK: wpisz nazwę kanału (szuka we wszystkich kategoriach)", searchNone: "Nie znaleziono kanałów", hSearch: "Szukaj", autostartLog: "Dziennik",
     allChannels: 'Wszystkie kanały', favorites: 'Ulubione', groups: 'Grupy', empty: 'Pusto',
@@ -366,6 +376,8 @@ var I18N = (function () {
   };
 
   D.tr = {
+    sLogoShape: "Logo şekli", vLogoRect: "Yuvarlatılmış", vLogoRound: "Yuvarlak", vLogoSquare: "Kare",
+    sTheme: "Tasarım", tNight: "Gece mavisi", tOled: "OLED siyahı", tGraphite: "Grafit", tOcean: "Okyanus", tAurora: "Aurora", tLight: "Açık",
     audioTrack: "Ses parçası", audioOnly: "Bu kanalın yalnızca bir ses parçası var",
     search: "Ara", searchHint: "OK: kanal adını yazın (tüm kategorilerde arar)", searchNone: "Kanal bulunamadı", hSearch: "Ara", autostartLog: "Günlük",
     allChannels: 'Tüm kanallar', favorites: 'Favoriler', groups: 'Gruplar', empty: 'Boş',
@@ -437,6 +449,8 @@ var I18N = (function () {
   };
 
   D.es = {
+    sLogoShape: "Forma del logo", vLogoRect: "Redondeado", vLogoRound: "Redondo", vLogoSquare: "Cuadrado",
+    sTheme: "Diseño", tNight: "Azul noche", tOled: "Negro OLED", tGraphite: "Grafito", tOcean: "Océano", tAurora: "Aurora", tLight: "Claro",
     audioTrack: "Pista de audio", audioOnly: "Este canal solo tiene una pista de audio",
     search: "Buscar", searchHint: "OK: escribe el nombre del canal (busca en todas las categorías)", searchNone: "No se encontraron canales", hSearch: "Buscar", autostartLog: "Registro",
     allChannels: 'Todos los canales', favorites: 'Favoritos', groups: 'Grupos', empty: 'Vacío',
@@ -508,6 +522,8 @@ var I18N = (function () {
   };
 
   D.fr = {
+    sLogoShape: "Forme des logos", vLogoRect: "Arrondi", vLogoRound: "Rond", vLogoSquare: "Carré",
+    sTheme: "Thème", tNight: "Bleu nuit", tOled: "Noir OLED", tGraphite: "Graphite", tOcean: "Océan", tAurora: "Aurore", tLight: "Clair",
     audioTrack: "Piste audio", audioOnly: "Cette chaîne n’a qu’une seule piste audio",
     search: "Recherche", searchHint: "OK : saisissez le nom de la chaîne (dans toutes les catégories)", searchNone: "Aucune chaîne trouvée", hSearch: "Recherche", autostartLog: "Journal",
     allChannels: 'Toutes les chaînes', favorites: 'Favoris', groups: 'Groupes', empty: 'Vide',
@@ -579,6 +595,8 @@ var I18N = (function () {
   };
 
   D.it = {
+    sLogoShape: "Forma dei loghi", vLogoRect: "Arrotondato", vLogoRound: "Rotondo", vLogoSquare: "Quadrato",
+    sTheme: "Tema", tNight: "Blu notte", tOled: "Nero OLED", tGraphite: "Grafite", tOcean: "Oceano", tAurora: "Aurora", tLight: "Chiaro",
     audioTrack: "Traccia audio", audioOnly: "Questo canale ha una sola traccia audio",
     search: "Cerca", searchHint: "OK: digita il nome del canale (cerca in tutte le categorie)", searchNone: "Nessun canale trovato", hSearch: "Cerca", autostartLog: "Registro",
     allChannels: 'Tutti i canali', favorites: 'Preferiti', groups: 'Gruppi', empty: 'Vuoto',
@@ -650,6 +668,8 @@ var I18N = (function () {
   };
 
   D.ro = {
+    sLogoShape: "Forma siglelor", vLogoRect: "Rotunjit", vLogoRound: "Rotund", vLogoSquare: "Pătrat",
+    sTheme: "Temă", tNight: "Albastru de noapte", tOled: "Negru OLED", tGraphite: "Grafit", tOcean: "Ocean", tAurora: "Auroră", tLight: "Luminos",
     audioTrack: "Pistă audio", audioOnly: "Acest canal are o singură pistă audio",
     search: "Căutare", searchHint: "OK: scrie numele canalului (caută în toate categoriile)", searchNone: "Niciun canal găsit", hSearch: "Căutare", autostartLog: "Jurnal",
     allChannels: 'Toate canalele', favorites: 'Favorite', groups: 'Grupuri', empty: 'Gol',
@@ -721,6 +741,8 @@ var I18N = (function () {
   };
 
   D.pt = {
+    sLogoShape: "Forma do logótipo", vLogoRect: "Arredondado", vLogoRound: "Redondo", vLogoSquare: "Quadrado",
+    sTheme: "Tema", tNight: "Azul noite", tOled: "Preto OLED", tGraphite: "Grafite", tOcean: "Oceano", tAurora: "Aurora", tLight: "Claro",
     audioTrack: "Faixa de áudio", audioOnly: "Este canal tem apenas uma faixa de áudio",
     search: "Pesquisa", searchHint: "OK: escreva o nome do canal (pesquisa em todas as categorias)", searchNone: "Nenhum canal encontrado", hSearch: "Pesquisa", autostartLog: "Registo",
     allChannels: "Todos os canais",
@@ -989,6 +1011,8 @@ var I18N = (function () {
   };
 
   D.nl = {
+    sLogoShape: "Logovorm", vLogoRect: "Afgerond", vLogoRound: "Rond", vLogoSquare: "Vierkant",
+    sTheme: "Thema", tNight: "Nachtblauw", tOled: "OLED-zwart", tGraphite: "Grafiet", tOcean: "Oceaan", tAurora: "Aurora", tLight: "Licht",
     audioTrack: "Audiospoor", audioOnly: "Deze zender heeft maar één audiospoor",
     search: "Zoeken", searchHint: "OK: typ een zendernaam (zoekt in alle categorieën)", searchNone: "Geen zenders gevonden", hSearch: "Zoeken", autostartLog: "Logboek",
     allChannels: "Alle zenders",
@@ -1257,6 +1281,8 @@ var I18N = (function () {
   };
 
   D.cs = {
+    sLogoShape: "Tvar log", vLogoRect: "Zaoblené", vLogoRound: "Kulaté", vLogoSquare: "Čtvercové",
+    sTheme: "Vzhled", tNight: "Noční modrá", tOled: "OLED černá", tGraphite: "Grafit", tOcean: "Oceán", tAurora: "Polární záře", tLight: "Světlý",
     audioTrack: "Zvuková stopa", audioOnly: "Tento kanál má jen jednu zvukovou stopu",
     search: "Hledat", searchHint: "OK: zadejte název kanálu (hledá ve všech kategoriích)", searchNone: "Žádné kanály nenalezeny", hSearch: "Hledat", autostartLog: "Protokol",
     allChannels: "Všechny kanály",
@@ -1525,6 +1551,8 @@ var I18N = (function () {
   };
 
   D.sk = {
+    sLogoShape: "Tvar lôg", vLogoRect: "Zaoblené", vLogoRound: "Okrúhle", vLogoSquare: "Štvorcové",
+    sTheme: "Vzhľad", tNight: "Nočná modrá", tOled: "OLED čierna", tGraphite: "Grafit", tOcean: "Oceán", tAurora: "Polárna žiara", tLight: "Svetlý",
     audioTrack: "Zvuková stopa", audioOnly: "Tento kanál má iba jednu zvukovú stopu",
     search: "Hľadať", searchHint: "OK: zadajte názov kanála (hľadá vo všetkých kategóriách)", searchNone: "Nenašli sa žiadne kanály", hSearch: "Hľadať", autostartLog: "Protokol",
     allChannels: "Všetky kanály",
@@ -1793,6 +1821,8 @@ var I18N = (function () {
   };
 
   D.hu = {
+    sLogoShape: "Logó alakja", vLogoRect: "Lekerekített", vLogoRound: "Kerek", vLogoSquare: "Négyzetes",
+    sTheme: "Megjelenés", tNight: "Éjkék", tOled: "OLED-fekete", tGraphite: "Grafit", tOcean: "Óceán", tAurora: "Sarki fény", tLight: "Világos",
     audioTrack: "Hangsáv", audioOnly: "Ennek a csatornának csak egy hangsávja van",
     search: "Keresés", searchHint: "OK: írja be a csatorna nevét (minden kategóriában keres)", searchNone: "Nincs találat", hSearch: "Keresés", autostartLog: "Napló",
     allChannels: "Összes csatorna",
@@ -2061,6 +2091,8 @@ var I18N = (function () {
   };
 
   D.bg = {
+    sLogoShape: "Форма на логата", vLogoRect: "Заоблени", vLogoRound: "Кръгли", vLogoSquare: "Квадратни",
+    sTheme: "Оформление", tNight: "Нощно синьо", tOled: "OLED черно", tGraphite: "Графит", tOcean: "Океан", tAurora: "Аврора", tLight: "Светло",
     audioTrack: "Аудио писта", audioOnly: "Този канал има само една аудио писта",
     search: "Търсене", searchHint: "OK: въведете име на канал (търси във всички категории)", searchNone: "Няма намерени канали", hSearch: "Търсене", autostartLog: "Дневник",
     allChannels: "Всички канали",
@@ -2329,6 +2361,8 @@ var I18N = (function () {
   };
 
   D.el = {
+    sLogoShape: "Σχήμα λογοτύπων", vLogoRect: "Στρογγυλεμένα", vLogoRound: "Στρογγυλά", vLogoSquare: "Τετράγωνα",
+    sTheme: "Θέμα", tNight: "Νυχτερινό μπλε", tOled: "Μαύρο OLED", tGraphite: "Γραφίτης", tOcean: "Ωκεανός", tAurora: "Σέλας", tLight: "Φωτεινό",
     audioTrack: "Κομμάτι ήχου", audioOnly: "Αυτό το κανάλι έχει μόνο ένα κομμάτι ήχου",
     search: "Αναζήτηση", searchHint: "OK: πληκτρολογήστε όνομα καναλιού (σε όλες τις κατηγορίες)", searchNone: "Δεν βρέθηκαν κανάλια", hSearch: "Αναζήτηση", autostartLog: "Αρχείο καταγραφής",
     allChannels: "Όλα τα κανάλια",
@@ -2597,6 +2631,8 @@ var I18N = (function () {
   };
 
   D.lt = {
+    sLogoShape: "Logotipų forma", vLogoRect: "Suapvalinti", vLogoRound: "Apvalūs", vLogoSquare: "Kvadratiniai",
+    sTheme: "Išvaizda", tNight: "Nakties mėlyna", tOled: "OLED juoda", tGraphite: "Grafitas", tOcean: "Vandenynas", tAurora: "Pašvaistė", tLight: "Šviesi",
     audioTrack: "Garso takelis", audioOnly: "Šis kanalas turi tik vieną garso takelį",
     search: "Paieška", searchHint: "OK: įveskite kanalo pavadinimą (ieško visose kategorijose)", searchNone: "Kanalų nerasta", hSearch: "Paieška", autostartLog: "Žurnalas",
     allChannels: "Visi kanalai",
@@ -2865,6 +2901,8 @@ var I18N = (function () {
   };
 
   D.lv = {
+    sLogoShape: "Logo forma", vLogoRect: "Noapaļoti", vLogoRound: "Apaļi", vLogoSquare: "Kvadrātiski",
+    sTheme: "Izskats", tNight: "Nakts zils", tOled: "OLED melns", tGraphite: "Grafīts", tOcean: "Okeāns", tAurora: "Ziemeļblāzma", tLight: "Gaišs",
     audioTrack: "Audio celiņš", audioOnly: "Šim kanālam ir tikai viens audio celiņš",
     search: "Meklēt", searchHint: "OK: ievadiet kanāla nosaukumu (meklē visās kategorijās)", searchNone: "Kanāli nav atrasti", hSearch: "Meklēt", autostartLog: "Žurnāls",
     allChannels: "Visi kanāli",
@@ -3133,6 +3171,8 @@ var I18N = (function () {
   };
 
   D.et = {
+    sLogoShape: "Logo kuju", vLogoRect: "Ümardatud", vLogoRound: "Ümmargune", vLogoSquare: "Ruudukujuline",
+    sTheme: "Kujundus", tNight: "Öösinine", tOled: "OLED-must", tGraphite: "Grafiit", tOcean: "Ookean", tAurora: "Virmalised", tLight: "Hele",
     audioTrack: "Helirada", audioOnly: "Sellel kanalil on ainult üks helirada",
     search: "Otsing", searchHint: "OK: sisesta kanali nimi (otsib kõigist kategooriatest)", searchNone: "Kanaleid ei leitud", hSearch: "Otsing", autostartLog: "Logi",
     allChannels: "Kõik kanalid",
@@ -3401,6 +3441,8 @@ var I18N = (function () {
   };
 
   D.kk = {
+    sLogoShape: "Логотип пішіні", vLogoRect: "Дөңгеленген", vLogoRound: "Дөңгелек", vLogoSquare: "Шаршы",
+    sTheme: "Безендіру", tNight: "Түнгі көк", tOled: "OLED қара", tGraphite: "Графит", tOcean: "Мұхит", tAurora: "Аврора", tLight: "Ашық",
     audioTrack: "Дыбыс жолы", audioOnly: "Бұл арнада тек бір дыбыс жолы бар",
     search: "Іздеу", searchHint: "OK: арна атауын енгізіңіз (барлық санаттардан іздейді)", searchNone: "Арналар табылмады", hSearch: "Іздеу", autostartLog: "Журнал",
     allChannels: "Барлық арналар",
@@ -3669,6 +3711,8 @@ var I18N = (function () {
   };
 
   D.be = {
+    sLogoShape: "Форма лагатыпаў", vLogoRect: "Скругленыя", vLogoRound: "Круглыя", vLogoSquare: "Квадратныя",
+    sTheme: "Афармленне", tNight: "Начны сіні", tOled: "OLED-чорны", tGraphite: "Графіт", tOcean: "Акіян", tAurora: "Аўрора", tLight: "Светлае",
     audioTrack: "Гукавая дарожка", audioOnly: "У гэтага канала толькі адна гукавая дарожка",
     search: "Пошук", searchHint: "OK: увядзіце назву канала (пошук ва ўсіх катэгорыях)", searchNone: "Каналы не знойдзены", hSearch: "Пошук", autostartLog: "Журнал",
     allChannels: "Усе каналы",

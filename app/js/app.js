@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '2.9.7';
+  var VERSION = '2.9.8';
   var KEY = {
     LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, ENTER: 13, BACK: 461, ESC: 27, BACKSPACE: 8,
     CH_UP: 33, CH_DOWN: 34, RED: 403, GREEN: 404, YELLOW: 405, BLUE: 406,
@@ -18,7 +18,7 @@
 
   var DEFAULTS = {
     source: 'edem', key: '', domain: '', playlist: '', vod: '',
-    lang: '', accent: 'blue', scale: 100, clock: 'menus', timeFmt: '24', infoTimeout: 5,
+    lang: '', theme: 'night', logoShape: 'rect', accent: 'blue', scale: 100, clock: 'menus', timeFmt: '24', infoTimeout: 5,
     showLogos: 1, showNumbers: 1, showEpgList: 1, preview: 'live', sort: 'order', start: 'last', zapDir: 'normal', okAction: 'list', zapScope: 'group',
     engine: 'native', aspect: 'fit', buffer: 30, retries: 3,
     epgMode: 'full', epg: '', epgShift: 0, epgRefresh: 12, catchup: 'auto', seekStep: 5,
@@ -1103,6 +1103,8 @@
     ] },
     { id: 'iface', label: 'catInterface', items: [
       { k: 'lang', label: 'sLang', opts: function () { return I18N.langs; } },
+      { k: 'theme', label: 'sTheme', opts: function () { return tr([['night', 'tNight'], ['oled', 'tOled'], ['graphite', 'tGraphite'], ['ocean', 'tOcean'], ['aurora', 'tAurora'], ['light', 'tLight']]); } },
+      { k: 'logoShape', label: 'sLogoShape', opts: function () { return tr([['rect', 'vLogoRect'], ['round', 'vLogoRound'], ['square', 'vLogoSquare']]); } },
       { k: 'accent', label: 'sAccent', swatch: true, opts: function () { return tr([['blue', 'cBlue'], ['green', 'cGreen'], ['purple', 'cPurple'], ['orange', 'cOrange'], ['red', 'cRed'], ['teal', 'cTeal']]); } },
       { k: 'scale', label: 'sScale', opts: function () { return [80, 90, 100, 110, 120, 130].map(function (v) { return [v, v + ' %']; }); } },
       { k: 'clock', label: 'sClock', opts: function () { return tr([['off', 'vOff'], ['menus', 'vMenus'], ['always', 'vAlways']]); } },
@@ -1410,6 +1412,15 @@
       case 'scale': document.documentElement.style.setProperty('--scale', (+get('scale') || 100) / 100); break;
       case 'clock': case 'timeFmt': updateClock(); break;
       case 'sort': case 'adult': if (S.channels.length) buildGroups(); break;
+      case 'theme':
+        document.body.className = document.body.className.replace(/\s*theme-\w+/g, '');
+        if (get('theme') !== 'night') document.body.classList.add('theme-' + get('theme'));
+        break;
+      case 'logoShape':
+        document.body.classList[get('logoShape') === 'round' ? 'add' : 'remove']('logo-round');
+        document.body.classList[get('logoShape') === 'square' ? 'add' : 'remove']('logo-square');
+        placeVideo();
+        break;
       case 'panelBg': document.body.classList[get('panelBg') === 'glass' ? 'add' : 'remove']('glass'); break;
       case 'anim': document.body.classList[+get('anim') ? 'remove' : 'add']('no-anim'); break;
       case 'groupCounts': document.body.classList[+get('groupCounts') ? 'remove' : 'add']('no-counts'); break;
@@ -1427,7 +1438,7 @@
     }
   }
   function applyAll() {
-    ['lang', 'accent', 'scale', 'engine', 'aspect', 'panelBg', 'anim', 'groupCounts', 'infoPos'].forEach(applySetting);
+    ['lang', 'theme', 'logoShape', 'accent', 'scale', 'engine', 'aspect', 'panelBg', 'anim', 'groupCounts', 'infoPos'].forEach(applySetting);
     armEpgRefresh(); armPlRefresh();
   }
   function rerender() {

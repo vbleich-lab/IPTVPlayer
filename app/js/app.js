@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '2.11.0';
+  var VERSION = '2.11.1';
   var KEY = {
     LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, ENTER: 13, BACK: 461, ESC: 27, BACKSPACE: 8,
     CH_UP: 33, CH_DOWN: 34, RED: 403, GREEN: 404, YELLOW: 405, BLUE: 406,
@@ -2176,6 +2176,29 @@
       return;
     }
     if (Platform.name !== 'webos' || !window.PalmServiceBridge) { updFailed('not supported'); return; }
+    updateViaHb(function (ok, err) { if (!ok) updateViaService(err); });
+  }
+  /** Gerootete Fernseher: Installation über den Dienst des Homebrew Channels (lädt, prüft sha256, installiert als root) */
+  function updateViaHb(cb) {
+    var b = new window.PalmServiceBridge(), started = false, done = false;
+    S.bridges.push(b);
+    var fin = function (ok, err) { if (done) return; done = true; cb(ok, err); };
+    b.onservicecallback = function (msg) {
+      var r; try { r = JSON.parse(msg); } catch (e) { r = { returnValue: false, errorText: String(msg) }; }
+      if (r.returnValue === false) {
+        // Dienst fehlt oder verweigert (kein Root): eigenen Dienst versuchen; sonst echter Fehler
+        if (!started) fin(false, r.errorText || '?'); else { done = true; updFailed(r.errorText || '?'); }
+        return;
+      }
+      started = true;
+      if (r.finished) { done = true; updStatus(t('updInstalling')); return; }
+      updStatus(t('updInstalling') + (r.statusText ? '  (' + r.statusText + ')' : ''));
+    };
+    try { b.call('luna://org.webosbrew.hbchannel.service/install', JSON.stringify({ ipkUrl: U.info.ipk, ipkHash: U.info.sha, subscribe: true })); }
+    catch (e) { fin(false, e.message); }
+  }
+  /** Developer Mode: eigener Dienst lädt die .ipk und installiert sie über den Installationsdienst */
+  function updateViaService(hbErr) {
     var b = new window.PalmServiceBridge();
     S.bridges.push(b);
     b.onservicecallback = function (msg) {

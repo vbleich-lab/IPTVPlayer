@@ -71,7 +71,7 @@
 
 <img src="docs/screenshots/05-settings.png" width="900" alt="Настройки, раздел «Список каналов»">
 
-<img src="docs/screenshots/06-settings-system.png" width="900" alt="Настройки, раздел «Система» с автозапуском">
+<img src="docs/screenshots/06-settings-system.png" width="900" alt="Настройки, раздел «Система»">
 
 ### Настройка со смартфона
 

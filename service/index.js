@@ -359,6 +359,115 @@ if (Service) {
     });
   });
 
+  // ---- Weck-Timer: tägliche Aktivität (Zeitplan) startet die App zur Weckzeit ----
+  // Der Fernseher muss dazu eingeschaltet sein (z. B. über den Einschalt-Timer des Fernsehers); die App wählt dann den Wecksender.
+  var WAKE = 'com.iptvplayer.app.wake';
+  function p2(n) { return (n < 10 ? '0' : '') + n; }
+  function nextAt(h, m) {
+    var d = new Date(); d.setHours(h, m, 0, 0);
+    if (d.getTime() <= Date.now()) d.setDate(d.getDate() + 1);
+    return d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate()) + ' ' + p2(h) + ':' + p2(m) + ':00';
+  }
+  service.register('setWake', function (msg) {
+    var q = msg.payload || {}, on = !!q.on, h = Math.max(0, Math.min(23, +q.h || 0)), m = Math.max(0, Math.min(59, +q.m || 0));
+    var days = /^(daily|weekdays|weekend)$/.test(String(q.days)) ? String(q.days) : 'daily';
+    amCall('cancel', { activityName: WAKE }, function () {
+      if (!on) { log('Weck-Timer ausgeschaltet'); return msg.respond({ returnValue: true, on: false }); }
+      var spec = {
+        activity: {
+          name: WAKE,
+          description: 'IPTVPlayer: wake timer (Settings > Playback)',
+          type: { foreground: true, persist: true },
+          schedule: { start: nextAt(h, m), interval: '1d', local: true, precise: true },
+          callback: { method: 'luna://' + SERVICE_ID + '/wakeFire', params: { days: days } }
+        },
+        replace: true,
+        start: true
+      };
+      amCall('create', spec, function (err, r) {
+        if (err) { log('Weck-Timer anlegen: Fehler ' + err); return msg.respond({ returnValue: false, errorText: 'create: ' + err }); }
+        log('Weck-Timer ' + p2(h) + ':' + p2(m) + ' (' + days + ', Aktivität ' + r.activityId + ')');
+        msg.respond({ returnValue: true, on: true, activityId: r.activityId });
+      });
+    });
+  });
+  service.register('wakeFire', function (msg) {
+    msg.respond({ returnValue: true });
+    var q = msg.payload || {}, act = q.$activity, wd = new Date().getDay();
+    var ok = q.days === 'weekdays' ? wd >= 1 && wd <= 5 : q.days === 'weekend' ? wd === 0 || wd === 6 : true;
+    var done = function () {
+      if (act && act.activityId) amCall('complete', { activityId: act.activityId, restart: true }, function (err) {
+        if (err && !/invalid transition/i.test(err)) log('Weck-Timer neu planen: Fehler ' + err);
+      });
+    };
+    if (!ok) { log('Weck-Timer: heute kein Wecktag'); return done(); }
+    launchApp(3, function (r) {
+      log('Weck-Timer: App-Start ' + (r.returnValue ? 'ok' : 'Fehler ' + (r.errorText || '?')));
+      done();
+    });
+  });
+
+  // ---- Update: neue .ipk laden, Prüfsumme prüfen, über den Installationsdienst (Developer Mode) installieren ----
+  // Die App ruft das als Abo auf und bekommt Zwischenstände: download → verify → install → installed (oder Fehler).
+  // Beim Installieren beendet webOS App und Dienst; danach startet man IPTVPlayer einfach neu.
+  function download(url, file, cb, hops) {
+    hops = hops || 0;
+    var mod = /^https:/.test(url) ? require('https') : http, done = false;
+    var fin = function (err) { if (!done) { done = true; cb(err); } };
+    var req = mod.get(url, function (res) {
+      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location && hops < 6) {
+        res.resume();
+        return download(require('url').resolve(url, res.headers.location), file, fin, hops + 1);
+      }
+      if (res.statusCode !== 200) { res.resume(); return fin('HTTP ' + res.statusCode); }
+      var out = fs.createWriteStream(file);
+      res.pipe(out);
+      out.on('finish', function () { out.close(function () { fin(null); }); });
+      out.on('error', function (e) { fin(String(e.message || e)); });
+      res.on('error', function (e) { fin(String(e.message || e)); });
+    });
+    req.on('error', function (e) { fin(String(e.message || e)); });
+    req.setTimeout(60000, function () { req.abort(); fin('timeout'); });
+  }
+  function sha256(file) {
+    try { return crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex'); } catch (e) { return ''; }
+  }
+  service.register('update', function (msg) {
+    var p = msg.payload || {}, url = String(p.url || ''), hash = String(p.sha256 || '').toLowerCase();
+    var send = function (r) { try { msg.respond(r); } catch (e) {} };
+    if (!/^https?:\/\/[^\s]+\.ipk$/.test(url)) return send({ returnValue: false, errorText: 'bad url' });
+    var dirs = ['/media/developer/temp', '/tmp', os.tmpdir ? os.tmpdir() : '/tmp'], file = null;
+    for (var i = 0; i < dirs.length && !file; i++) { try { fs.accessSync ? fs.accessSync(dirs[i], 2) : 0; file = path.join(dirs[i], 'iptvplayer-update.ipk'); } catch (e) {} }
+    file = file || '/tmp/iptvplayer-update.ipk';
+    log('Update: lade ' + url.replace(/^.*\//, ''));
+    send({ returnValue: true, state: 'download' });
+    download(url, file, function (err) {
+      if (err) { log('Update: Download fehlgeschlagen (' + err + ')'); return send({ returnValue: false, errorText: 'download: ' + err }); }
+      send({ returnValue: true, state: 'verify' });
+      if (hash && sha256(file) !== hash) { log('Update: Prüfsumme falsch'); return send({ returnValue: false, errorText: 'sha256 mismatch' }); }
+      send({ returnValue: true, state: 'install' });
+      log('Update: installiere');
+      var sub, answered = false;
+      try {
+        sub = service.subscribe('luna://com.webos.appInstallService/dev/install', { id: 'com.ares.defaultName', ipkUrl: file, subscribe: true });
+      } catch (e) { return send({ returnValue: false, errorText: 'install: ' + (e.message || e) }); }
+      sub.on('response', function (m) {
+        var r = (m && m.payload) || {}, det = r.details || {};
+        if (r.returnValue === false || det.errorCode) {
+          var t = String(r.errorText || det.reason || det.errorCode || 'install failed');
+          log('Update: Installation fehlgeschlagen (' + t + ')');
+          answered = true; send({ returnValue: false, errorText: 'install: ' + t });
+          try { sub.cancel(); } catch (e) {}
+          return;
+        }
+        if (r.statusValue === 30 || /installed/i.test(String(det.state || ''))) {
+          log('Update installiert'); answered = true; send({ returnValue: true, state: 'installed' });
+        }
+      });
+      setTimeout(function () { if (!answered) send({ returnValue: true, state: 'installing' }); }, 4000);
+    });
+  });
+
   service.register('autostartLog', function (msg) {
     msg.respond({ returnValue: true, log: readLog().slice(-8), waiting: Object.keys(watchers).length });
   });

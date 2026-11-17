@@ -7,6 +7,34 @@
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
+  <!-- Startbildschirm (bis Kanalliste und Sender geladen sind) -->
+  <div id="splash">
+    <div class="sp-glow"></div>
+    <div class="sp-center">
+      <svg class="sp-logo" viewBox="0 0 1024 1024" aria-hidden="true">
+        <defs>
+          <linearGradient id="spBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2896ff"/><stop offset=".5" stop-color="#4f5cf6"/><stop offset="1" stop-color="#8b34e6"/></linearGradient>
+          <linearGradient id="spTri" x1="440" y1="400" x2="650" y2="630" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2896ff"/><stop offset="1" stop-color="#8b34e6"/></linearGradient>
+          <radialGradient id="spGloss"><stop offset="0" stop-color="#fff" stop-opacity=".27"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+          <clipPath id="spClip"><rect width="1024" height="1024" rx="230"/></clipPath>
+        </defs>
+        <rect width="1024" height="1024" rx="230" fill="url(#spBg)"/>
+        <ellipse cx="512" cy="-80" rx="812" ry="540" fill="url(#spGloss)" clip-path="url(#spClip)"/>
+        <path d="M512 300L392 168M512 300L632 168" stroke="#fff" stroke-width="44" stroke-linecap="round"/>
+        <circle cx="394" cy="170" r="26" fill="#fff"/><circle cx="630" cy="170" r="26" fill="#fff"/>
+        <rect x="196" y="318" width="640" height="440" rx="92" fill="#140a50" fill-opacity=".24"/>
+        <rect x="192" y="296" width="640" height="440" rx="92" fill="#fff"/>
+        <path d="M452 404V628L642 516Z" fill="url(#spTri)" stroke="#4f5cf6" stroke-width="34" stroke-linejoin="round"/>
+        <rect x="392" y="790" width="240" height="46" rx="23" fill="#fff" fill-opacity=".92"/>
+      </svg>
+      <div class="sp-title">IPTVPlayer</div>
+      <div id="sp-tag" class="sp-tag"></div>
+      <div class="sp-dots"><span></span><span></span><span></span></div>
+    </div>
+    <div id="sp-status" class="sp-status"></div>
+    <div id="sp-ver" class="sp-ver"></div>
+  </div>
+
   <video id="video" autoplay playsinline></video>
 
   <div id="spinner" class="hidden"><div class="ring"></div></div>
@@ -24,6 +52,7 @@
         <span id="ib-badge" class="chip live"></span>
         <span id="ib-arc" class="chip ghost hidden"></span>
         <span id="ib-fav" class="star hidden">★</span>
+        <span id="ib-stream" class="chip ghost hidden"></span>
       </div>
       <div class="ib-now"><span id="ib-time" class="ib-time"></span><span id="ib-title"></span></div>
       <div class="progress"><div id="ib-progress"></div></div>
@@ -34,6 +63,7 @@
       <div id="ib-date"></div>
       <div class="ib-btns">
       <div id="ib-audio" class="ib-gear ib-audio" data-act="audio"><span class="ico"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.4 5.6a9 9 0 0 1 0 12.8"/></svg></span><span id="ib-audio-t"></span></div>
+      <div id="ib-aspect" class="ib-gear ib-audio" data-act="aspect"><span class="ico"><svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M6 10.5V8h2.5M18 13.5V16h-2.5"/></svg></span><span id="ib-aspect-t"></span></div>
       <div id="ib-gear" class="ib-gear" data-act="settings"><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span></div>
       </div>
     </div>
@@ -93,6 +123,19 @@
     <div class="hints">
       <span><b>OK</b> <i data-t="hPlay"></i></span>
       <span><em class="key red"></em><i data-t="hFromStart"></i></span>
+      <span><b>↩</b> <i data-t="hBack"></i></span>
+    </div>
+  </div>
+
+  <!-- Jetzt im TV -->
+  <div id="now" class="panel hidden">
+    <div class="now-wrap">
+      <div class="now-head"><span class="now-title" data-t="nowTv"></span><span id="now-sub" class="now-sub"></span></div>
+      <div id="now-grid" class="now-grid"></div>
+    </div>
+    <div class="hints">
+      <span><b>OK</b> <i data-t="hPlay"></i></span>
+      <span><em class="key green"></em><i data-t="hGuide"></i></span>
       <span><b>↩</b> <i data-t="hBack"></i></span>
     </div>
   </div>
@@ -175,8 +218,39 @@
     </div>
   </div>
 
+  <!-- Auswahlmenü (Senderoptionen, Profilwahl) -->
+  <div id="menu" class="modal hidden">
+    <div class="modal-card audio-card">
+      <div id="menu-title" class="modal-title"></div>
+      <div id="menu-rows" class="audio-rows"></div>
+      <div class="modal-help"><b>OK</b> <i data-t="hSelect"></i> &nbsp; <b>↩</b> <i data-t="hClose"></i></div>
+    </div>
+  </div>
+
+  <!-- Update -->
+  <div id="update" class="modal hidden">
+    <div class="modal-card upd-card">
+      <div id="upd-title" class="modal-title"></div>
+      <div id="upd-text" class="upd-text"></div>
+      <div id="upd-notes" class="upd-notes"></div>
+      <div class="upd-btns"><div id="upd-now" class="upd-btn"></div><div id="upd-later" class="upd-btn"></div></div>
+      <div id="upd-status" class="upd-status"></div>
+    </div>
+  </div>
+
   <div id="sleep" class="modal hidden">
     <div class="modal-card"><div class="modal-title">☾</div><div id="sleep-msg" class="modal-help"></div></div>
+  </div>
+
+  <!-- Bildschirmschoner -->
+  <div id="saver" class="hidden">
+    <div id="sv-box" class="sv-box">
+      <div id="sv-clock" class="sv-clock"></div>
+      <div id="sv-date" class="sv-date"></div>
+      <div class="sv-ch"><img id="sv-logo" alt=""><span id="sv-name"></span></div>
+      <div id="sv-title" class="sv-title"></div>
+      <div id="sv-state" class="sv-state"></div>
+    </div>
   </div>
 
   <div id="numinput" class="hidden"></div>

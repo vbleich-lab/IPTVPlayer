@@ -8,6 +8,7 @@ import android.content.Intent;
 public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context c, Intent intent) {
+        WakeReceiver.schedule(c); // Weck-Timer nach Neustart/Update neu setzen
         if (!Bridge.prefs(c).getBoolean("autostart", false)) return;
         boolean boot = !Intent.ACTION_MY_PACKAGE_REPLACED.equals(intent.getAction());
         AutostartService.start(c, boot);

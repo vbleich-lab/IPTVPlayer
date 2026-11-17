@@ -384,3 +384,83 @@ body.logo-square .ch .lg img, body.logo-square .pv-logo img, body.logo-square .i
 .row .gk-ring svg { width: 1.2rem; height: 1.2rem; }
 .pane.active .row.sel .gk-ring { color: #fff; border-color: rgba(255,255,255,.9) !important; }
 .row.hid .gk { opacity: .45; }
+
+/* ---------- Update-Dialog ---------- */
+.upd-card { max-width: 52rem; }
+.upd-text { font-size: 1.35rem; margin-top: 1rem; color: var(--dim); }
+.upd-notes { margin: 1.2rem auto 0; text-align: left; font-size: 1.15rem; max-width: 44rem; }
+.upd-notes div { padding: .2rem 0 .2rem 1.2rem; position: relative; }
+.upd-notes div::before { content: '•'; position: absolute; left: 0; color: var(--accent); }
+.upd-btns { display: flex; justify-content: center; margin-top: 1.8rem; }
+.upd-btns > * + * { margin-left: 1.2rem; }
+.upd-btn { padding: .8rem 1.8rem; border-radius: .9rem; font-size: 1.3rem; background: rgba(var(--fg-rgb),.06); border: .12rem solid var(--line); cursor: pointer; }
+.upd-btn.sel { background: var(--accent); color: #fff; border-color: transparent; box-shadow: 0 .4rem 1.6rem rgba(var(--accent-rgb), .45); }
+.upd-btn.off { opacity: .4; }
+.upd-status { margin-top: 1.3rem; font-size: 1.15rem; color: var(--dim); min-height: 1.5rem; }
+.upd-status.err { color: var(--bad); }
+
+/* ---------- Startbildschirm ---------- */
+#splash { position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 200; overflow: hidden;
+  display: flex; align-items: center; justify-content: center; background: rgb(var(--bg)); transition: opacity .5s ease; }
+#splash.out { opacity: 0; }
+.sp-glow { position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+  background: radial-gradient(circle at 28% 22%, rgba(var(--accent-rgb), .55) 0%, rgba(var(--accent-rgb), 0) 55%),
+              radial-gradient(circle at 76% 80%, rgba(20, 184, 196, .40) 0%, rgba(20, 184, 196, 0) 55%),
+              radial-gradient(circle at 85% 15%, rgba(139, 92, 246, .30) 0%, rgba(139, 92, 246, 0) 45%);
+  animation: spDrift 9s ease-in-out infinite alternate; }
+@keyframes spDrift { from { transform: scale(1) translate(0, 0); } to { transform: scale(1.12) translate(-2%, 1.5%); } }
+.sp-center { position: relative; display: flex; flex-direction: column; align-items: center; }
+.sp-logo { width: 17rem; height: 17rem; filter: drop-shadow(0 1.6rem 3.2rem rgba(0, 0, 0, .45)); animation: spIn .7s ease-out both, spBreath 3.2s ease-in-out .7s infinite; }
+@keyframes spIn { from { opacity: 0; transform: scale(.85); } }
+@keyframes spBreath { 50% { transform: scale(1.035); } }
+.sp-title { font-size: 4rem; font-weight: 700; margin-top: 2.2rem; letter-spacing: .06rem; color: var(--text); animation: spUp .7s ease-out .15s both; }
+.sp-tag { font-size: 1.5rem; margin-top: .5rem; color: var(--dim); animation: spUp .7s ease-out .3s both; }
+@keyframes spUp { from { opacity: 0; transform: translateY(1rem); } }
+.sp-dots { margin-top: 2.6rem; }
+.sp-dots span { display: inline-block; width: .8rem; height: .8rem; margin: 0 .45rem; border-radius: 50%; background: var(--text); opacity: .25; animation: spDot 1.2s infinite; }
+.sp-dots span:nth-child(2) { animation-delay: .2s; } .sp-dots span:nth-child(3) { animation-delay: .4s; }
+@keyframes spDot { 40% { opacity: 1; transform: translateY(-.35rem); } }
+.sp-status { position: absolute; bottom: 3.6rem; left: 0; right: 0; text-align: center; font-size: 1.2rem; color: var(--dim); }
+.sp-ver { position: absolute; bottom: 2rem; right: 2.6rem; font-size: 1.05rem; color: var(--dim2); }
+
+/* ---------- Live-Pause, Bildinfo, Bildformat ---------- */
+.chip.paused { background: var(--accent); }
+#ib-stream { margin-left: .8rem; font-variant-numeric: tabular-nums; }
+#ib-aspect-t { margin-left: .5rem; font-size: 1.05rem; white-space: nowrap; }
+
+/* ---------- Sendungen in der Suche ---------- */
+.row.prog .n { color: var(--accent); }
+
+/* ---------- Jetzt im TV ---------- */
+.now-wrap { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.now-head { display: flex; align-items: baseline; padding: .4rem .4rem 1.4rem; }
+.now-title { font-size: 2.2rem; font-weight: 700; }
+.now-sub { margin-left: 1.2rem; font-size: 1.15rem; color: var(--dim); text-transform: uppercase; letter-spacing: .1rem; }
+.now-grid { flex: 1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, 1fr)); gap: 1.2rem; min-height: 0; padding: .4rem; }
+.now-tile { display: flex; flex-direction: column; min-width: 0; padding: 1.1rem 1.2rem; border-radius: 1.2rem; background: var(--card);
+  border: .15rem solid transparent; overflow: hidden; cursor: pointer; transition: transform .12s, border-color .12s; }
+.now-tile.sel { border-color: var(--accent); background: var(--card2); transform: scale(1.03); box-shadow: 0 .6rem 2rem rgba(var(--accent-rgb), .35); }
+.now-tile.playing .nt-name { color: var(--accent); }
+.nt-head { display: flex; align-items: center; min-width: 0; }
+.nt-logo { width: 4.4rem; height: 3rem; flex: none; display: flex; align-items: center; justify-content: center; margin-right: .8rem;
+  border-radius: .6rem; background: rgba(var(--fg-rgb), .06); overflow: hidden; }
+.nt-logo img { max-width: 86%; max-height: 80%; object-fit: contain; }
+.nt-num { font-size: 1rem; font-weight: 700; color: var(--dim); margin-right: .6rem; font-variant-numeric: tabular-nums; }
+.nt-name { font-size: 1.3rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nt-title { margin-top: .9rem; font-size: 1.35rem; line-height: 1.3; max-height: 3.5rem; overflow: hidden; }
+.nt-time { display: flex; justify-content: space-between; margin: auto 0 .45rem; padding-top: .6rem; font-size: 1rem; color: var(--dim); }
+.nt-time b { color: var(--accent); font-weight: 600; }
+.nt-next { margin-top: .5rem; font-size: .98rem; color: var(--dim2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.now-empty { grid-column: 1 / -1; color: var(--dim); font-size: 1.4rem; padding: 2rem; }
+body.logo-round .nt-logo { border-radius: 50%; width: 3.4rem; height: 3.4rem; }
+body.logo-square .nt-logo { width: 3.4rem; height: 3.4rem; }
+
+/* ---------- Bildschirmschoner ---------- */
+#saver { position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 150; background: #000; animation: fade 1s ease-out; cursor: none; }
+.sv-box { position: absolute; left: 30%; top: 30%; padding: 2rem 2.6rem; color: rgba(255,255,255,.82); transition: left 2.5s ease-in-out, top 2.5s ease-in-out; }
+.sv-clock { font-size: 7rem; font-weight: 200; line-height: 1; font-variant-numeric: tabular-nums; }
+.sv-date { font-size: 1.6rem; color: rgba(255,255,255,.5); margin-top: .6rem; }
+.sv-ch { display: flex; align-items: center; margin-top: 2.2rem; font-size: 1.6rem; font-weight: 600; }
+.sv-ch img { height: 2.8rem; max-width: 6rem; object-fit: contain; margin-right: 1rem; opacity: .85; }
+.sv-title { margin-top: .5rem; font-size: 1.3rem; color: rgba(255,255,255,.55); max-width: 40rem; }
+.sv-state { margin-top: 1rem; font-size: 1.2rem; color: rgba(255,255,255,.4); letter-spacing: .1rem; }

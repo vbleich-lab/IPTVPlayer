@@ -33,6 +33,25 @@ var Player = (function () {
     function flush(ok) { hlsLoading = false; var q = hlsQueue; hlsQueue = []; for (var i = 0; i < q.length; i++) q[i](ok); }
   }
 
+  // Bildinfo: Bildrate aus der Zahl dekodierter Bilder, Codec und Bitrate aus hls.js
+  var fpsS = { t: 0, f: 0, fps: 0 };
+  function frameCount() {
+    try { var q = video.getVideoPlaybackQuality && video.getVideoPlaybackQuality(); if (q && q.totalVideoFrames) return q.totalVideoFrames; } catch (e) {}
+    return video.webkitDecodedFrameCount || video.mozPresentedFrames || 0;
+  }
+  function snapFps(f) { var c = [23.976, 24, 25, 29.97, 30, 48, 50, 59.94, 60]; for (var i = 0; i < c.length; i++) if (Math.abs(f - c[i]) < 1.2) return Math.round(c[i]); return Math.round(f); }
+  function stats() {
+    var now = Date.now(), f = frameCount(), r = { w: video.videoWidth || 0, h: video.videoHeight || 0, fps: 0, codec: '', kbps: 0 };
+    if (fpsS.t && now - fpsS.t >= 800 && f > fpsS.f && !video.paused) fpsS.fps = snapFps((f - fpsS.f) * 1000 / (now - fpsS.t));
+    if (!fpsS.t || now - fpsS.t >= 800 || f < fpsS.f) { fpsS.t = now; fpsS.f = f; }
+    r.fps = fpsS.fps;
+    if (hls && hls.levels && hls.levels.length) {
+      var l = hls.levels[hls.currentLevel >= 0 ? hls.currentLevel : 0];
+      if (l) { r.codec = l.videoCodec || ''; r.kbps = Math.round((l.bitrate || 0) / 1000); if (!r.fps && l.frameRate) r.fps = snapFps(+l.frameRate); }
+    }
+    return r;
+  }
+
   function destroyHls() { if (hls) { try { hls.destroy(); } catch (e) {} hls = null; } }
 
   function init(el) {
@@ -144,6 +163,7 @@ var Player = (function () {
     clearTimeout(retryTimer);
     currentUrl = url;
     gotPlaying = false;
+    fpsS = { t: 0, f: 0, fps: 0 };
     clearTimeout(loadTimer);
     // Sender, die nach X Sekunden nicht laufen, gelten als Fehler (-> Neuversuch)
     if (opts.timeout > 0) loadTimer = setTimeout(function () { if (!gotPlaying && currentUrl === url) handleError('Timeout'); }, opts.timeout * 1000);
@@ -209,7 +229,7 @@ var Player = (function () {
   return {
     init: init, start: start, stop: stop, togglePause: togglePause, seek: seek, position: position,
     setEngine: function (e) { engine = e; },
-    tracks: tracks, setTrack: setTrack,
+    tracks: tracks, setTrack: setTrack, stats: stats,
     configure: function (o) { if (o.engine) engine = o.engine; if (o.buffer) opts.buffer = o.buffer; if (o.retries !== undefined && !isNaN(o.retries)) opts.retries = o.retries;
       if (o.prefFn) opts.prefFn = o.prefFn;
       if (o.timeout !== undefined && !isNaN(o.timeout)) opts.timeout = o.timeout; if (o.audioLang) { opts.audioLang = o.audioLang; pickAudio(); }

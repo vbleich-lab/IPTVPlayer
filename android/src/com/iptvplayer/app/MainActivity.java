@@ -50,6 +50,13 @@ public class MainActivity extends Activity {
         web.requestFocus();
     }
 
+    /** JavaScript in der Web-App ausführen (aus beliebigem Thread) */
+    void js(final String code) {
+        runOnUiThread(new Runnable() {
+            @Override public void run() { if (web != null) web.evaluateJavascript(code, null); }
+        });
+    }
+
     private void hideSystemUi() {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY

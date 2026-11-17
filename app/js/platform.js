@@ -72,6 +72,10 @@ var Platform = (function () {
     autostart: name === 'webos' || name === 'android',
     startPhoneServer: startPhoneServer,
     androidAutostart: androidAutostart,
+    // Android: neue APK laden und Installation öffnen ("started", "perm" oder "error: …")
+    installUpdate: function (url) { try { return String(android.installUpdate(url)); } catch (e) { return 'error: ' + e.message; } },
+    // Android: Weck-Timer über den AlarmManager ("on", "off", "perm" oder "error: …")
+    androidWake: function (on, h, m, days) { try { return String(android.setWake(!!on, h | 0, m | 0, String(days))); } catch (e) { return 'error: ' + e.message; } },
     openAutostartPermission: function () { try { android.openOverlaySettings(); } catch (e) {} }
   };
 })();

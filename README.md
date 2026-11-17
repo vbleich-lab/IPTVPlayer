@@ -108,10 +108,14 @@ Acht Kategorien. Änderungen wirken sofort, zu jeder Einstellung steht eine kurz
 
 **Kanalliste**
 - Gruppen aus der Playlist, dazu Favoriten, „Zuletzt gesehen“ und „Mit Archiv“. Gruppen lassen sich ausblenden (gelbe Taste).
-- **Favoriten sortieren:** In den Favoriten OK lang drücken, mit ▲ ▼ verschieben (CH± springt an den Anfang bzw. ans Ende), mit OK fertig. Die Reihenfolge wird mitgesichert.
+- **Senderoptionen:** OK lang auf einem Sender öffnet ein Menü: Favorit an/aus, Verschieben (in den Favoriten), mit PIN sperren und Sender ausblenden. Gesperrte Sender zeigen ein Schloss und fragen nach der PIN; ausgeblendete erscheinen nur mit „Ausgeblendete anzeigen“. Aufheben unter Kindersicherung › „Alle Sendersperren aufheben“ bzw. Kanalliste › „Alle wieder einblenden“.
+- **Favoriten sortieren:** In den Favoriten OK lang drücken › Verschieben, mit ▲ ▼ verschieben (CH± springt an den Anfang bzw. ans Ende), mit OK fertig. Die Reihenfolge wird mitgesichert.
+- **Profile:** Einstellungen › Profile: bis zu 9 Profile mit eigenen Favoriten, Verlauf, letztem Sender, Bildformaten sowie ausgeblendeten und gesperrten Sendern. Die Einstellungen gelten für alle. Mit „Beim Start fragen“ erscheint beim Start „Wer schaut?“.
+- **Startbildschirm:** Beim Start erscheint das IPTVPlayer-Logo auf farbigem Hintergrund, bis der erste Sender läuft (abschaltbar unter Oberfläche › Startbildschirm).
+- **Updates:** Beim Start prüft die App, ob es eine neue Version gibt, und fragt: „Jetzt aktualisieren“ oder „Beim nächsten Start“. LG (Developer Mode): der Dienst lädt die .ipk, prüft die Prüfsumme und installiert sie; danach IPTVPlayer neu starten. Android: die APK wird geladen und die Installation geöffnet (einmalig „Unbekannte Apps installieren“ erlauben). Samsung: Hinweis auf die neue .wgt. Abschaltbar unter System › „Nach Updates suchen“; dort auch „Jetzt nach Updates suchen“.
 - **Designs:** Einstellungen › Oberfläche › Design: Nachtblau (Standard), OLED-Schwarz, Graphit, Ozean, Aurora oder Hell. Die Akzentfarbe lässt sich dazu frei wählen. Unter „Logo-Form“ werden die Senderlogos abgerundet, rund oder quadratisch angezeigt, unter „Schriftfarbe“ lässt sich die Textfarbe wählen (Weiß, Creme, Gelb, Hellblau, Hellgrün, Rosa, Schwarz). Unter Kanalliste › „Kategorie-Icons“ bekommen die Kategorien Icons: farbige Kacheln, Linien-Icons oder Buchstaben (erkannt am Namen, z. B. Спорт, Кино, Новости, Landesgruppen).
 - **Eigene Favoriten-Nummern:** In den Favoriten tragen die Sender ihre Position als Nummer (1, 2, 3 …). Solange ein Favorit läuft, wählen die Zifferntasten diese Nummern.
-- **Suche:** Rote Taste in der Kanalliste oder Kategorie „Suche“. Den Sendernamen mit der Bildschirmtastatur eingeben; die Treffer aus allen Kategorien erscheinen schon beim Tippen (auch Teile des Namens oder die Sendernummer). OK oder ▼ wechselt in die Trefferliste.
+- **Suche:** Rote Taste in der Kanalliste oder Kategorie „Suche“. Den Sendernamen mit der Bildschirmtastatur eingeben; die Treffer aus allen Kategorien erscheinen schon beim Tippen (auch Teile des Namens oder die Sendernummer). Ab 3 Zeichen folgen darunter passende Sendungen aus dem Programmführer: laufende spielen live, vergangene aus dem Archiv, kommende öffnen den Programmführer an dieser Stelle. OK oder ▼ wechselt in die Trefferliste.
 - Live-Vorschau, Logos, Kanalnummern und die laufende Sendung mit Fortschrittsbalken.
 - Sortierung, Startkanal, Verhalten von OK sowie ▲▼, automatisches Schließen und Wartezeit nach Zifferneingabe sind einstellbar.
 
@@ -120,6 +124,12 @@ Acht Kategorien. Änderungen wirken sofort, zu jeder Einstellung steht eine kurz
 - Bildformat, Puffer, automatische Neuverbindung, Stream-Zeitlimit, bevorzugte Tonspur (Sprache), Untertitel und Sleep-Timer.
 - Startet mit dem letzten Kanal in der zuletzt benutzten Kategorie (Umschalten und Liste bleiben darin). Rote Taste wechselt zum vorigen Kanal.
 - **Tonspur wählen:** ▶ in der laufenden Sendung zeigt die Info-Leiste mit dem Knopf „Tonspur“; OK öffnet die Auswahl. Die gewählte Spur merkt sich die App pro Sender.
+- **Bildformat pro Sender:** ▶ ▶ wählt in der Info-Leiste den Knopf daneben; jedes OK schaltet weiter (Einpassen, Füllen, Strecken, Zoom). Das Format merkt sich die App pro Sender.
+- **Bildinfo:** Die Info-Leiste zeigt Auflösung, Bildrate, Codec und Bitrate, soweit der Player sie meldet (abschaltbar unter Wiedergabe › „Bildinfo in der Info-Leiste“).
+- **Live-Pause:** Pause (❚❚ bzw. ▶❚❚) hält das Live-Bild an. Hat der Sender ein Archiv, läuft er mit ▶ oder OK genau an dieser Stelle weiter (aus dem Archiv); ohne Archiv geht es zurück ins Live-Bild. Stopp oder Zurück springt sofort zu live.
+- **Jetzt im TV:** Kacheln mit dem, was gerade auf den Favoriten läuft (ohne Favoriten: alle Sender mit Programm), mit Fortschritt, Restzeit und Folgesendung. Öffnet sich über die Kategorie „Jetzt im TV“ oder mit ►► während der Wiedergabe; OK schaltet um, Grün öffnet den Programmführer.
+- **Weck-Timer:** Wiedergabe › Weck-Timer schaltet zur eingestellten Zeit (jeden Tag, Mo–Fr oder Sa & So) auf den gewählten Sender. Der Fernseher muss dafür an sein: dazu den Einschalt-Timer des Fernsehers stellen (LG: Einstellungen › Allgemein › Timer). Ist IPTVPlayer geschlossen, starten webOS (Developer Mode, über den Dienst) und Android die App selbst; auf Samsung nur, solange die App offen ist.
+- **Bildschirmschoner:** Nur wenn das Bild angehalten ist oder die Senderliste ohne Tastendruck offen bleibt, erscheint nach 1–10 Minuten (Oberfläche › Bildschirmschoner) eine wandernde Uhr mit Sender und Sendung auf Schwarz. Jede Taste beendet ihn.
 
 **Oberfläche**
 - 22 Sprachen (Standard ist die Sprache des Fernsehers), 6 Akzentfarben, Größe 80–130 %.

@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '2.11.1';
+  var VERSION = '2.11.2';
   var KEY = {
     LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, ENTER: 13, BACK: 461, ESC: 27, BACKSPACE: 8,
     CH_UP: 33, CH_DOWN: 34, RED: 403, GREEN: 404, YELLOW: 405, BLUE: 406,
@@ -2143,6 +2143,10 @@
     xhrText(UPD_NOTES + U.info.v, function (err, text) {
       if (err) return;
       var body = ''; try { body = JSON.parse(text).body || ''; } catch (e) {}
+      // Abschnitte je Sprache (<!-- lang:xx -->): Sprache der Oberfläche, sonst Russisch, sonst der erste
+      var secs = {}, first = '';
+      body.split(/<!--\s*lang:([a-z]{2})\s*-->/).forEach(function (part, i, arr) { if (i % 2) { secs[part] = arr[i + 1] || ''; if (!first) first = part; } });
+      if (first) body = secs[I18N.get()] || secs.ru || secs[first];
       var lines = body.split(/\r?\n/).filter(function (l) { return /^\s*[-*]\s+/.test(l); }).slice(0, 5);
       $('upd-notes').innerHTML = lines.map(function (l) { return '<div>' + esc(l.replace(/^\s*[-*]\s+/, '').replace(/\*\*/g, '')) + '</div>'; }).join('');
     });

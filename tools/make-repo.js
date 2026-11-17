@@ -23,7 +23,7 @@ var ipkPath = path.join(ROOT, 'dist', ipkName);
 if (!fs.existsSync(ipkPath)) { console.error('Fehlt: dist/' + ipkName + ' – zuerst bauen (ares-package app service -o dist -e demo)'); process.exit(1); }
 var ipk = fs.readFileSync(ipkPath);
 
-var SHORT = 'IPTV-App für Edem TV oder jede M3U-Playlist: Kanalliste mit Live-Vorschau, Programmführer, Archiv, Einrichtung per Smartphone, Mediathek, 22 Sprachen.';
+var SHORT = 'IPTV-приложение для Edem TV или любого M3U-плейлиста: список каналов с живым превью, телегид, архив, настройка со смартфона, медиатека, 22 языка.';
 var DESC = SHORT + ' Optional: Autostart beim Einschalten des Fernsehers (mit Root oder im Developer Mode).';
 
 var manifest = {
@@ -41,12 +41,12 @@ var manifest = {
 };
 
 var shots = [
-  ['01-player.png', 'Wiedergabe mit Info-Leiste'],
-  ['02-channel-list.png', 'Kanalliste mit Gruppen, Programm und Live-Vorschau'],
-  ['03-category.png', 'Kategorie mit großer Vorschau'],
-  ['04-epg.png', 'Programmführer mit Archiv'],
-  ['05-settings.png', 'Einstellungen am Fernseher'],
-  ['07-qr.png', 'Einrichtung per Smartphone (QR-Code)']
+  ['01-player.png', 'Воспроизведение с инфопанелью'],
+  ['02-channel-list.png', 'Список каналов с группами, программой и живым превью'],
+  ['03-category.png', 'Категория с большим превью'],
+  ['04-epg.png', 'Телегид с архивом'],
+  ['05-settings.png', 'Настройки на телевизоре'],
+  ['07-qr.png', 'Настройка со смартфона (QR-код)']
 ];
 
 var pkg = {
@@ -69,18 +69,18 @@ var apps = {
 
 var desc = [
   '<h2>IPTVPlayer</h2>',
-  '<p>IPTV-App für LG-Fernseher mit webOS – für Edem TV (iedem.tv) oder jede andere M3U-Playlist.</p>',
+  '<p>IPTV-приложение для телевизоров LG с webOS — для Edem TV (iedem.tv) или любого другого M3U-плейлиста.</p>',
   '<ul>',
-  '<li><b>Edem TV per Code:</b> nur Zugangsschlüssel und Kanal-Domain eingeben, oder eine eigene Playlist-URL.</li>',
-  '<li><b>Kanalliste mit Live-Vorschau,</b> Gruppen, Favoriten, „Zuletzt gesehen“, „Mit Archiv“.</li>',
-  '<li><b>Programmführer und Archiv</b> bis 7 Tage zurück.</li>',
-  '<li><b>Einrichtung per Smartphone:</b> QR-Code scannen, Einstellungen am Handy eintippen, Sicherung herunterladen.</li>',
-  '<li>Über 50 Einstellungen, Kindersicherung mit PIN, 22 Sprachen.</li>',
-  '<li><b>Autostart</b> beim Einschalten des Fernsehers (Einstellungen › System, mit Root oder im Developer Mode).</li>',
+  '<li><b>Edem TV по коду:</b> достаточно ввести ключ доступа и домен каналов, или своя ссылка на плейлист.</li>',
+  '<li><b>Список каналов с живым превью,</b> группы, избранное, «Недавние», «С архивом».</li>',
+  '<li><b>Телегид и архив</b> до 7 дней назад, напоминания о передачах.</li>',
+  '<li><b>Настройка со смартфона:</b> отсканируйте QR-код, введите настройки на телефоне, скачайте резервную копию.</li>',
+  '<li>Более 50 настроек, несколько провайдеров, профили, родительский контроль с PIN-кодом, 22 языка.</li>',
+  '<li><b>Автозапуск</b> при включении телевизора (Настройки › Система, с root или в Developer Mode).</li>',
   '</ul>',
-  '<p>Die App enthält keine Sender oder Zugangsdaten – ein eigenes Abo bzw. eine eigene Playlist ist nötig.</p>',
-  '<p>Quellcode, Screenshots und Anleitung: <a href="' + SOURCE + '">' + SOURCE + '</a></p>',
-  '<p>Unterstützen: <a href="https://paypal.me/VitalijBleich">paypal.me/VitalijBleich</a></p>'
+  '<p>Приложение не содержит каналов и данных доступа — нужна своя подписка или свой плейлист.</p>',
+  '<p>Исходный код, скриншоты и инструкция: <a href="' + SOURCE + '">' + SOURCE + '</a></p>',
+  '<p>Поддержать: <a href="https://paypal.me/VitalijBleich">paypal.me/VitalijBleich</a></p>'
 ].join('\n');
 
 var out = path.join(ROOT, 'docs');

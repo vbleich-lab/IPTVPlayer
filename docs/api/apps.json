@@ -15,49 +15,49 @@
       "manifestUrl": "https://vbleich-lab.github.io/IPTVPlayer/api/apps/com.iptvplayer.app/manifest.json",
       "manifest": {
         "id": "com.iptvplayer.app",
-        "version": "2.11.1",
+        "version": "2.11.2",
         "type": "web",
         "title": "IPTVPlayer",
-        "appDescription": "IPTV-App für Edem TV oder jede M3U-Playlist: Kanalliste mit Live-Vorschau, Programmführer, Archiv, Einrichtung per Smartphone, Mediathek, 22 Sprachen. Optional: Autostart beim Einschalten des Fernsehers (mit Root oder im Developer Mode).",
+        "appDescription": "IPTV-приложение для Edem TV или любого M3U-плейлиста: список каналов с живым превью, телегид, архив, настройка со смартфона, медиатека, 22 языка. Optional: Autostart beim Einschalten des Fernsehers (mit Root oder im Developer Mode).",
         "iconUri": "https://vbleich-lab.github.io/IPTVPlayer/icon.png",
         "sourceUrl": "https://github.com/vbleich-lab/IPTVPlayer",
         "rootRequired": "optional",
-        "ipkUrl": "https://github.com/vbleich-lab/IPTVPlayer/releases/download/v2.11.1/com.iptvplayer.app_2.11.1_all.ipk",
+        "ipkUrl": "https://github.com/vbleich-lab/IPTVPlayer/releases/download/v2.11.2/com.iptvplayer.app_2.11.2_all.ipk",
         "ipkHash": {
-          "sha256": "53860c9a0c5ef61ba7593a4dfa15622717247ad23a9c10b0377cbb1ee5484d60"
+          "sha256": "de44e4cf54e12ff31314ff460feb8fc584e4a17429152b4eb233b85c53c1fce2"
         },
-        "ipkSize": 232064
+        "ipkSize": 232152
       },
       "pool": "main",
       "requirements": {
         "webosRelease": ">=3.0"
       },
-      "shortDescription": "IPTV-App für Edem TV oder jede M3U-Playlist: Kanalliste mit Live-Vorschau, Programmführer, Archiv, Einrichtung per Smartphone, Mediathek, 22 Sprachen.",
+      "shortDescription": "IPTV-приложение для Edem TV или любого M3U-плейлиста: список каналов с живым превью, телегид, архив, настройка со смартфона, медиатека, 22 языка.",
       "fullDescriptionUrl": "https://vbleich-lab.github.io/IPTVPlayer/api/apps/com.iptvplayer.app/full_description.html",
       "screenshots": [
         {
           "url": "https://vbleich-lab.github.io/IPTVPlayer/screenshots/01-player.png",
-          "caption": "Wiedergabe mit Info-Leiste"
+          "caption": "Воспроизведение с инфопанелью"
         },
         {
           "url": "https://vbleich-lab.github.io/IPTVPlayer/screenshots/02-channel-list.png",
-          "caption": "Kanalliste mit Gruppen, Programm und Live-Vorschau"
+          "caption": "Список каналов с группами, программой и живым превью"
         },
         {
           "url": "https://vbleich-lab.github.io/IPTVPlayer/screenshots/03-category.png",
-          "caption": "Kategorie mit großer Vorschau"
+          "caption": "Категория с большим превью"
         },
         {
           "url": "https://vbleich-lab.github.io/IPTVPlayer/screenshots/04-epg.png",
-          "caption": "Programmführer mit Archiv"
+          "caption": "Телегид с архивом"
         },
         {
           "url": "https://vbleich-lab.github.io/IPTVPlayer/screenshots/05-settings.png",
-          "caption": "Einstellungen am Fernseher"
+          "caption": "Настройки на телевизоре"
         },
         {
           "url": "https://vbleich-lab.github.io/IPTVPlayer/screenshots/07-qr.png",
-          "caption": "Einrichtung per Smartphone (QR-Code)"
+          "caption": "Настройка со смартфона (QR-код)"
         }
       ]
     }

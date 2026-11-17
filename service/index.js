@@ -21,7 +21,7 @@ var crypto = require('crypto');
 
 var SERVICE_ID = 'com.iptvplayer.app.service';
 var PORTS = [8765, 8766, 8767, 8768];
-var MAX_BODY = 512 * 1024;
+var MAX_BODY = 3 * 1024 * 1024;
 
 var token = crypto.randomBytes(6).toString('hex');
 var state = null;          // vom TV gesendet: { ui, schema, settings, favs, title }
@@ -138,7 +138,7 @@ function handle(req, res) {
     if (!q.t || q.t !== token) return send(res, 403, { error: 'token' });
     if (!state) return send(res, 503, { error: 'tv not ready' });
     if (p === '/api/state') {
-      return send(res, 200, { ui: state.ui, schema: state.schema, settings: state.settings, favCount: Object.keys(state.favs || {}).length, title: state.title });
+      return send(res, 200, { ui: state.ui, schema: state.schema, settings: state.settings, favCount: Object.keys(state.favs || {}).length, channels: state.channels || [], title: state.title });
     }
     if (p === '/api/backup') {
       var d = new Date(), stamp = d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '-' + pad(d.getHours()) + pad(d.getMinutes());

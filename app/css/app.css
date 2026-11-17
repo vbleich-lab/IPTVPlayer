@@ -464,3 +464,17 @@ body.logo-square .nt-logo { width: 3.4rem; height: 3.4rem; }
 .sv-ch img { height: 2.8rem; max-width: 6rem; object-fit: contain; margin-right: 1rem; opacity: .85; }
 .sv-title { margin-top: .5rem; font-size: 1.3rem; color: rgba(255,255,255,.55); max-width: 40rem; }
 .sv-state { margin-top: 1rem; font-size: 1.2rem; color: rgba(255,255,255,.4); letter-spacing: .1rem; }
+
+/* ---------- Senderprüfung ---------- */
+.diag-card { min-width: 40rem; max-width: 52rem; text-align: left; }
+.diag-card .modal-title, .diag-card .modal-help { text-align: center; }
+.diag-card .modal-help i { font-style: normal; }
+.diag-rows { margin-top: 1.4rem; }
+.dg-row { display: flex; justify-content: space-between; padding: .55rem .2rem; border-top: .1rem solid var(--line); font-size: 1.25rem; }
+.dg-row:first-child { border-top: 0; }
+.dg-row span { color: var(--dim); }
+.dg-row b { font-weight: 600; margin-left: 2rem; text-align: right; }
+.dg-row.ok b, .dg-row.ok span { color: var(--ok); }
+.dg-row.warn b, .dg-row.warn span { color: var(--warn); }
+.dg-row.bad b, .dg-row.bad span { color: var(--bad); }
+.dg-row.dim span { font-style: italic; }

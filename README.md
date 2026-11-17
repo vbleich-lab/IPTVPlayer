@@ -91,6 +91,7 @@ Acht Kategorien. Änderungen wirken sofort, zu jeder Einstellung steht eine kurz
 **Quellen**
 - **Edem TV:** nur *Ключ доступа* (Zugangsschlüssel) und *Домен каналов* (Kanal-Domain) aus dem Kabinett eingeben. Die App lädt die aktuelle Edem-Kanalvorlage (epg.one, etwa 4200 Kanäle) und setzt beides ein: `http://<domain>/iptv/<schlüssel>/<kanal>/index.m3u8`. Die Vorlage wird gespeichert, falls der Server einmal nicht erreichbar ist.
 - **Eigene Playlist:** beliebige M3U/M3U8-URL, auf Wunsch automatisch alle 6, 12 oder 24 Stunden neu geladen.
+- **Mehrere Anbieter:** Einstellungen › Anbieter › „Weiteren Anbieter hinzufügen“ legt einen zweiten (bis achten) Anbieter an. Zugangsdaten, Playlist, Mediathek und Programmführer gelten je Anbieter; „Aktiver Anbieter“ wechselt zwischen ihnen, und jeder Anbieter startet wieder mit seinem zuletzt gesehenen Sender. Name ändern und Löschen ebenfalls dort.
 
 **Mediathek (Filme und Serien)**
 - Edem: im Kabinett unter *Медиатека* den Link kopieren und in Einstellungen › Anbieter › *Mediathek-Link* eintragen (am einfachsten per Smartphone). Jede andere VOD-Playlist im M3U-Format funktioniert genauso.
@@ -101,6 +102,7 @@ Acht Kategorien. Änderungen wirken sofort, zu jeder Einstellung steht eine kurz
 - Für Edem automatisch von epg.one: „komplett“ mit Archivtagen und Beschreibungen, oder „kompakt“ nur für heute. Alternativ das EPG aus der Playlist (`url-tvg`) oder eine eigene XMLTV-URL.
 - Das EPG wird auf dem Fernseher zwischengespeichert und nur in einstellbaren Abständen neu geladen. Gepackte Dateien (`.gz`) funktionieren auch auf älteren Geräten (mitgeliefertes pako).
 - Zeitverschiebung ±12 h.
+- **Erinnerungen:** OK auf einer kommenden Sendung setzt eine Erinnerung (⏰), ein zweites OK entfernt sie. Kurz vor Beginn (zum Beginn oder 1, 2, 5 Minuten vorher) fragt die App „Umschalten auf …?“ oder schaltet auf Wunsch selbst um (Programm & Archiv › „Bei Erinnerung“). Läuft der Sender schon, kommt nur ein Hinweis.
 
 **Archiv (Catch-up)**
 - Bis 7 Tage zurück. Formate: Edem/Shift (`utc`/`lutc`), Flussonic und `catchup-source`.
@@ -108,7 +110,7 @@ Acht Kategorien. Änderungen wirken sofort, zu jeder Einstellung steht eine kurz
 
 **Kanalliste**
 - Gruppen aus der Playlist, dazu Favoriten, „Zuletzt gesehen“ und „Mit Archiv“. Gruppen lassen sich ausblenden (gelbe Taste).
-- **Senderoptionen:** OK lang auf einem Sender öffnet ein Menü: Favorit an/aus, Verschieben (in den Favoriten), mit PIN sperren und Sender ausblenden. Gesperrte Sender zeigen ein Schloss und fragen nach der PIN; ausgeblendete erscheinen nur mit „Ausgeblendete anzeigen“. Aufheben unter Kindersicherung › „Alle Sendersperren aufheben“ bzw. Kanalliste › „Alle wieder einblenden“.
+- **Senderoptionen:** OK lang auf einem Sender öffnet ein Menü: Favorit an/aus, Verschieben (in den Favoriten), mit PIN sperren, Sender ausblenden und Sender prüfen. Gesperrte Sender zeigen ein Schloss und fragen nach der PIN; ausgeblendete erscheinen nur mit „Ausgeblendete anzeigen“. Aufheben unter Kindersicherung › „Alle Sendersperren aufheben“ bzw. Kanalliste › „Alle wieder einblenden“.
 - **Favoriten sortieren:** In den Favoriten OK lang drücken › Verschieben, mit ▲ ▼ verschieben (CH± springt an den Anfang bzw. ans Ende), mit OK fertig. Die Reihenfolge wird mitgesichert.
 - **Profile:** Einstellungen › Profile: bis zu 9 Profile mit eigenen Favoriten, Verlauf, letztem Sender, Bildformaten sowie ausgeblendeten und gesperrten Sendern. Die Einstellungen gelten für alle. Mit „Beim Start fragen“ erscheint beim Start „Wer schaut?“.
 - **Startbildschirm:** Beim Start erscheint das IPTVPlayer-Logo auf farbigem Hintergrund, bis der erste Sender läuft (abschaltbar unter Oberfläche › Startbildschirm).
@@ -117,6 +119,7 @@ Acht Kategorien. Änderungen wirken sofort, zu jeder Einstellung steht eine kurz
 - **Eigene Favoriten-Nummern:** In den Favoriten tragen die Sender ihre Position als Nummer (1, 2, 3 …). Solange ein Favorit läuft, wählen die Zifferntasten diese Nummern.
 - **Suche:** Rote Taste in der Kanalliste oder Kategorie „Suche“. Den Sendernamen mit der Bildschirmtastatur eingeben; die Treffer aus allen Kategorien erscheinen schon beim Tippen (auch Teile des Namens oder die Sendernummer). Ab 3 Zeichen folgen darunter passende Sendungen aus dem Programmführer: laufende spielen live, vergangene aus dem Archiv, kommende öffnen den Programmführer an dieser Stelle. OK oder ▼ wechselt in die Trefferliste.
 - Live-Vorschau, Logos, Kanalnummern und die laufende Sendung mit Fortschrittsbalken.
+- **Eigene Senderlogos:** Kanalliste › „Logo-Quelle für fehlende Logos“ lädt Logos für Sender ohne Logo aus einer Logo-Sammlung, z. B. `https://…/{slug}.png` (Platzhalter `{name}`, `{slug}`, `{id}` = tvg-id). Unter „Logos per Smartphone ändern“ lässt sich am Handy jedem Sender eine eigene Bildadresse geben; „Eigenes Logo entfernen“ steht in den Senderoptionen (OK lang).
 - Sortierung, Startkanal, Verhalten von OK sowie ▲▼, automatisches Schließen und Wartezeit nach Zifferneingabe sind einstellbar.
 
 **Wiedergabe**
@@ -129,6 +132,8 @@ Acht Kategorien. Änderungen wirken sofort, zu jeder Einstellung steht eine kurz
 - **Live-Pause:** Pause (❚❚ bzw. ▶❚❚) hält das Live-Bild an. Hat der Sender ein Archiv, läuft er mit ▶ oder OK genau an dieser Stelle weiter (aus dem Archiv); ohne Archiv geht es zurück ins Live-Bild. Stopp oder Zurück springt sofort zu live.
 - **Jetzt im TV:** Kacheln mit dem, was gerade auf den Favoriten läuft (ohne Favoriten: alle Sender mit Programm), mit Fortschritt, Restzeit und Folgesendung. Öffnet sich über die Kategorie „Jetzt im TV“ oder mit ►► während der Wiedergabe; OK schaltet um, Grün öffnet den Programmführer.
 - **Weck-Timer:** Wiedergabe › Weck-Timer schaltet zur eingestellten Zeit (jeden Tag, Mo–Fr oder Sa & So) auf den gewählten Sender. Der Fernseher muss dafür an sein: dazu den Einschalt-Timer des Fernsehers stellen (LG: Einstellungen › Allgemein › Timer). Ist IPTVPlayer geschlossen, starten webOS (Developer Mode, über den Dienst) und Android die App selbst; auf Samsung nur, solange die App offen ist.
+- **Untertitel-Stil:** Größe, Farbe (Weiß, Gelb, Hellblau) und Hintergrund (Schatten, Kasten, ohne) der Untertitel, sobald Untertitel eingeschaltet sind.
+- **Senderprüfung:** Wiedergabe › „Aktuellen Sender prüfen“ oder „Sender prüfen“ in den Senderoptionen misst Antwortzeit des Servers, Qualitätsstufen, Datenrate und Aussetzer und zeigt, ob die Leitung reicht (gut, knapp, zu langsam, nicht erreichbar). Angezeigt wird nur der Servername, nie die vollständige Adresse mit Zugangsschlüssel.
 - **Bildschirmschoner:** Nur wenn das Bild angehalten ist oder die Senderliste ohne Tastendruck offen bleibt, erscheint nach 1–10 Minuten (Oberfläche › Bildschirmschoner) eine wandernde Uhr mit Sender und Sendung auf Schwarz. Jede Taste beendet ihn.
 
 **Oberfläche**
@@ -138,7 +143,7 @@ Acht Kategorien. Änderungen wirken sofort, zu jeder Einstellung steht eine kurz
 **Smartphone und Sicherung**
 - Auf LG startet ein kleiner webOS-Hintergrunddienst (`service/`) im Heimnetz einen Web-Server (Port 8765), auf Android übernimmt das die App selbst. Zugriff gibt es nur mit dem zufälligen Token aus dem QR-Code; er wird bei jedem App-Start neu erzeugt.
 - Änderungen an der Kindersicherung verlangen auch auf dem Handy die PIN.
-- Sicherung von Einstellungen und Favoriten auf dem Fernseher oder als JSON-Datei auf dem Handy, später wieder einspielbar.
+- Sicherung von Einstellungen, Favoriten, Anbietern und eigenen Logos auf dem Fernseher oder als JSON-Datei auf dem Handy, später wieder einspielbar.
 
 **Autostart (LG mit Root oder im Developer Mode, Android TV)**
 - Einstellungen › System › „Beim Einschalten des Fernsehers starten“.

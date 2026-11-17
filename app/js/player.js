@@ -4,7 +4,7 @@ var Player = (function () {
 
   var video, hls = null, engine = 'native', currentUrl = '', retries = 0, retryTimer = null;
   var opts = { buffer: 30, retries: 3, timeout: 15, audioLang: 'auto', subtitles: false };
-  var loadTimer = null, gotPlaying = false;
+  var loadTimer = null, gotPlaying = false, stallN = 0, retryN = 0;
   // Mediathek (Filme): Startposition und letzte Position für Neuversuche
   var vodMode = false, seekTo = 0, lastTime = 0;
   // Kürzel, an denen Tonspuren in der jeweiligen Sprache erkannt werden
@@ -44,7 +44,7 @@ var Player = (function () {
     var now = Date.now(), f = frameCount(), r = { w: video.videoWidth || 0, h: video.videoHeight || 0, fps: 0, codec: '', kbps: 0 };
     if (fpsS.t && now - fpsS.t >= 800 && f > fpsS.f && !video.paused) fpsS.fps = snapFps((f - fpsS.f) * 1000 / (now - fpsS.t));
     if (!fpsS.t || now - fpsS.t >= 800 || f < fpsS.f) { fpsS.t = now; fpsS.f = f; }
-    r.fps = fpsS.fps;
+    r.fps = fpsS.fps; r.stalls = stallN; r.retries = retryN;
     if (hls && hls.levels && hls.levels.length) {
       var l = hls.levels[hls.currentLevel >= 0 ? hls.currentLevel : 0];
       if (l) { r.codec = l.videoCodec || ''; r.kbps = Math.round((l.bitrate || 0) / 1000); if (!r.fps && l.frameRate) r.fps = snapFps(+l.frameRate); }
@@ -56,7 +56,7 @@ var Player = (function () {
 
   function init(el) {
     video = el;
-    video.addEventListener('waiting', function () { listeners.loading(true); });
+    video.addEventListener('waiting', function () { if (gotPlaying) stallN++; listeners.loading(true); });
     video.addEventListener('playing', function () {
       retries = 0; clearTimeout(loadTimer);
       if (!gotPlaying) { gotPlaying = true; pickAudio(); applySubs(); }
@@ -77,7 +77,7 @@ var Player = (function () {
   function handleError(msg) {
     if (!currentUrl) return;
     if (opts.retries < 0 || retries < opts.retries) {
-      retries++;
+      retries++; retryN++;
       clearTimeout(retryTimer);
       retryTimer = setTimeout(function () { start(currentUrl, true); }, 1500 * Math.min(retries, 5));
     } else {
@@ -158,7 +158,7 @@ var Player = (function () {
 
   /** startAt (Sekunden) nur für Filme der Mediathek: Wiedergabe ab dieser Stelle, Neuversuche setzen an der letzten Stelle fort */
   function start(url, isRetry, startAt) {
-    if (!isRetry) { retries = 0; vodMode = startAt !== undefined && startAt !== null; seekTo = +startAt || 0; lastTime = seekTo; }
+    if (!isRetry) { stallN = 0; retryN = 0; retries = 0; vodMode = startAt !== undefined && startAt !== null; seekTo = +startAt || 0; lastTime = seekTo; }
     else if (vodMode && lastTime > 5) seekTo = lastTime;
     clearTimeout(retryTimer);
     currentUrl = url;

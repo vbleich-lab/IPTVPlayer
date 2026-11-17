@@ -35,7 +35,7 @@ import java.util.TimeZone;
  */
 public class PhoneServer {
     private static final int[] PORTS = {8765, 8766, 8767, 8768};
-    private static final int MAX_BODY = 512 * 1024;
+    private static final int MAX_BODY = 3 * 1024 * 1024;
     private static PhoneServer instance;
 
     private final Context ctx;
@@ -293,6 +293,7 @@ public class PhoneServer {
                 JSONObject favs = st.optJSONObject("favs");
                 o.put("favCount", favs == null ? 0 : favs.length());
                 o.put("title", st.opt("title"));
+                o.put("channels", st.opt("channels"));
                 json(out, 200, o);
                 return;
             }

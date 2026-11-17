@@ -41,6 +41,10 @@
   .center { text-align:center; color: var(--dim); padding: 40px 20px; }
   .pinrow input { letter-spacing: .5em; text-align: center; font-size: 20px; }
   .eye { position: relative; } .eye input { padding-right: 52px; }
+  .lg { display:flex; align-items:center; gap:10px; }
+  .lg img { width:56px; height:36px; object-fit:contain; background:var(--card2); border-radius:8px; flex:none; }
+  .lg .nm { font-size:14px; font-weight:600; margin-bottom:6px; }
+  .lg > div { flex:1; min-width:0; }
   .eye button { position:absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: 0; color: var(--dim); font-size: 18px; padding: 6px 10px; }
 </style>
 </head>
@@ -58,7 +62,7 @@
 (function () {
   'use strict';
   var token = (/[?&]t=([^&]+)/.exec(location.search) || [])[1] || '';
-  var ui = {}, schema = [], settings = {}, changes = {};
+  var ui = {}, schema = [], settings = {}, changes = {}, channels = [], logoChanges = {};
   var $ = function (id) { return document.getElementById(id); };
   function T(k, a) { var s = ui[k] || k; return a !== undefined ? s.replace('%1', a) : s; }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -82,6 +86,7 @@
     api('GET', 'state', null, function (err, r) {
       if (err) { $('main').innerHTML = '<div class="center">⚠︎ ' + esc(err === 'token' ? 'QR code expired – please scan the code on the TV again' : (ui.wErr || 'No connection to the TV')) + '</div>'; return; }
       ui = r.ui || {}; schema = r.schema || []; settings = r.settings || {}; changes = {};
+      channels = r.channels || []; logoChanges = {};
       if (ui.accent) document.documentElement.style.setProperty('--accent', ui.accent);
       document.documentElement.lang = ui.lang || 'en';
       $('title').textContent = T('wTitle'); $('subtitle').textContent = r.title || '';
@@ -115,6 +120,8 @@
       }
       h += '</section>';
     });
+    if (channels.length) h += '<section><h2>' + esc(T('wLogos')) + '</h2><div class="row"><input id="lsearch" type="search" autocomplete="off" placeholder="' + esc(T('wLogoSearch')) + '">' +
+      '<div class="help">' + esc(T('wLogoHelp')) + '</div></div><div id="llist"></div></section>';
     h += '<section><h2>' + esc(T('wBackup')) + '</h2><div class="row"><div class="help" style="margin:0 0 12px">' + esc(T('wBackupHelp')) + ' ' + esc(T('wFavs', favCount)) + '</div>' +
       '<button class="btn ghost" id="dl">⬇ ' + esc(T('wDownload')) + '</button><button class="btn ghost" id="ul">⬆ ' + esc(T('wUpload')) + '</button></div></section>';
     $('main').innerHTML = h;
@@ -125,7 +132,7 @@
         var k = el.getAttribute('data-k');
         if (String(el.value) === String(settings[k] == null ? '' : settings[k])) delete changes[k]; else changes[k] = el.value;
         el.closest('.row').classList[k in changes ? 'add' : 'remove']('changed');
-        $('save').disabled = !Object.keys(changes).length;
+        updSave();
         deps();
       });
     });
@@ -133,8 +140,37 @@
       b.addEventListener('click', function () { var i = b.previousSibling; i.type = i.type === 'password' ? 'text' : 'password'; });
     });
     deps();
+    if ($('lsearch')) { $('lsearch').addEventListener('input', renderLogos); renderLogos(); }
     $('dl').addEventListener('click', function () { location.href = '/api/backup?t=' + encodeURIComponent(token); });
     $('ul').addEventListener('click', function () { $('file').value = ''; $('file').click(); });
+  }
+
+  function updSave() { $('save').disabled = !Object.keys(changes).length && !Object.keys(logoChanges).length; }
+
+  // Senderlogos: Suche, Vorschau und eigene Bildadresse je Sender ([Name, Schlüssel, Playlist-Logo, eigenes Logo])
+  function renderLogos() {
+    var q = ($('lsearch').value || '').toLowerCase().trim(), list = [];
+    channels.forEach(function (c) {
+      if (list.length >= 30) return;
+      if (q ? String(c[0]).toLowerCase().indexOf(q) >= 0 : (c[3] || c[1] in logoChanges)) list.push(c);
+    });
+    $('llist').innerHTML = list.map(function (c, i) {
+      var k = c[1], v = k in logoChanges ? logoChanges[k] : (c[3] || '');
+      return '<div class="row lg' + (k in logoChanges ? ' changed' : '') + '"><img data-li="' + i + '" src="' + esc(v || c[2] || '') + '" alt="">' +
+        '<div><div class="nm">' + esc(c[0]) + '</div><input data-lk="' + i + '" type="url" inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" value="' +
+        esc(v) + '" placeholder="' + esc(c[2] || T('wLogoUrl')) + '"></div></div>';
+    }).join('');
+    Array.prototype.forEach.call(document.querySelectorAll('[data-lk]'), function (el) {
+      var c = list[+el.getAttribute('data-lk')];
+      el.addEventListener('input', function () {
+        var v = el.value.trim();
+        if (v === (c[3] || '')) delete logoChanges[c[1]]; else logoChanges[c[1]] = v;
+        el.closest('.row').classList[c[1] in logoChanges ? 'add' : 'remove']('changed');
+        var img = el.closest('.row').querySelector('img');
+        if (!v || /^https?:\/\/\S+$/.test(v)) img.src = v || c[2] || '';
+        updSave();
+      });
+    });
   }
 
   // Felder nur zeigen, wenn sie zur gewählten Quelle / zum EPG-Modus passen
@@ -148,7 +184,9 @@
   $('save').addEventListener('click', function () {
     var b = $('save'); b.disabled = true;
     var pin = $('curpin') ? $('curpin').value : '';
-    api('POST', 'apply', { settings: changes, pin: pin }, function (err) {
+    var body = { settings: changes, pin: pin };
+    if (Object.keys(logoChanges).length) body.logos = logoChanges;
+    api('POST', 'apply', body, function (err) {
       if (err) { b.disabled = false; msg(T('wErr'), 'err'); return; }
       msg('✓ ' + T('wSaved'), 'ok');
       setTimeout(load, 1500);

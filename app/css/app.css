@@ -478,3 +478,9 @@ body.logo-square .nt-logo { width: 3.4rem; height: 3.4rem; }
 .dg-row.warn b, .dg-row.warn span { color: var(--warn); }
 .dg-row.bad b, .dg-row.bad span { color: var(--bad); }
 .dg-row.dim span { font-style: italic; }
+/* Mediathek: gesehen, Serien */
+.ch .icons .seen { color: #3fbf5f; font-weight: 700; }
+.ch .icons .sr { font-size: 1.1rem; }
+.row.vi.watched .name { opacity: .75; }
+.pane.active .row.sel .icons .seen { color: #fff; }
+

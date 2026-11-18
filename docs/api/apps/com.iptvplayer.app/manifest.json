@@ -1,15 +1,15 @@
 {
   "id": "com.iptvplayer.app",
-  "version": "2.11.2",
+  "version": "2.12.0",
   "type": "web",
   "title": "IPTVPlayer",
   "appDescription": "IPTV-приложение для Edem TV или любого M3U-плейлиста: список каналов с живым превью, телегид, архив, настройка со смартфона, медиатека, 22 языка. Optional: Autostart beim Einschalten des Fernsehers (mit Root oder im Developer Mode).",
   "iconUri": "https://vbleich-lab.github.io/IPTVPlayer/icon.png",
   "sourceUrl": "https://github.com/vbleich-lab/IPTVPlayer",
   "rootRequired": "optional",
-  "ipkUrl": "https://github.com/vbleich-lab/IPTVPlayer/releases/download/v2.11.2/com.iptvplayer.app_2.11.2_all.ipk",
+  "ipkUrl": "https://github.com/vbleich-lab/IPTVPlayer/releases/download/v2.12.0/com.iptvplayer.app_2.12.0_all.ipk",
   "ipkHash": {
-    "sha256": "de44e4cf54e12ff31314ff460feb8fc584e4a17429152b4eb233b85c53c1fce2"
+    "sha256": "5eceea4c49207a4b31e9e148904002cf4ba625ef39b7aed746f3089d9f02917e"
   },
-  "ipkSize": 232152
+  "ipkSize": 242730
 }

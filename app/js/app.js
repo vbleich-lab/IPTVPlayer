@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '2.11.2';
+  var VERSION = '2.12.0';
   var KEY = {
     LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, ENTER: 13, BACK: 461, ESC: 27, BACKSPACE: 8,
     CH_UP: 33, CH_DOWN: 34, RED: 403, GREEN: 404, YELLOW: 405, BLUE: 406,
@@ -29,7 +29,7 @@
     startScreen: 'play', timeout: 15, audioLang: 'auto', protectSettings: 0, plRefresh: 0,
     infoPos: 'bottom', groupHistory: 1, streamInfo: 1, groupNow: 1, saver: 5, profileAsk: 0,
     wake: 0, wakeH: 7, wakeM: 0, wakeDays: 'daily', wakeCh: 'last',
-    remindLead: 1, remindAct: 'ask', subSize: 'm', subColor: 'white', subBg: 'shadow', logoTpl: '', showHidden: 0, listAutoClose: 0, numDelay: 1.5, subtitles: 0, archiveOffset: 0
+    remindLead: 1, remindAct: 'ask', subSize: 'm', subColor: 'white', subBg: 'shadow', logoTpl: '', showHidden: 0, listAutoClose: 0, numDelay: 1.5, subtitles: 0, archiveOffset: 0, watchWords: ''
   };
 
   var $ = function (id) { return document.getElementById(id); };
@@ -49,7 +49,7 @@
   function save(key, v) { try { localStorage.setItem(key, JSON.stringify(v)); } catch (e) {} }
   function get(k) { return S.settings[k] !== undefined && S.settings[k] !== null ? S.settings[k] : DEFAULTS[k]; }
   // Profile: Favoriten, Verlauf, letzter Sender, Ausblendungen und Sendersperren je Profil (Einstellungen gelten für alle)
-  var PROFILE_KEYS = ['favs', 'history', 'last', 'lastGroup', 'hiddenGroups', 'audioPref', 'aspectCh', 'chLock', 'chHide', 'reminders'];
+  var PROFILE_KEYS = ['favs', 'history', 'last', 'lastGroup', 'hiddenGroups', 'audioPref', 'aspectCh', 'chLock', 'chHide', 'reminders', 'series', 'remindDone'];
   function pkey(k) { return S.prof && PROFILE_KEYS.indexOf(k) >= 0 ? k + '@' + S.prof : k; }
   function pload(k, def) { return load(pkey(k), def); }
   function psave(k, v) { save(pkey(k), v); }
@@ -444,6 +444,7 @@
   function epgRefreshed() {
     EPG.resetKeys(S.channels);
     rerender();
+    autoRemind();
   }
 
   /** Erst Cache (sofort), dann bei Bedarf im Hintergrund neu laden */
@@ -1111,9 +1112,9 @@
   }
 
   // ---------- Mediathek (Filme & Serien als eigene M3U-Playlist, z. B. Edem „Медиатека“) ----------
-  var V = { url: '', items: [], cats: [], ci: 0, ii: 0, focus: 'cats', loading: false, at: 0, resumeLive: false };
+  var V = { url: '', items: [], cats: [], ci: 0, ii: 0, focus: 'cats', loading: false, at: 0, resumeLive: false, ser: null, q: '', seen: null };
   function hasVod() { return !!String(get('vod') || '').trim(); }
-  function vodKey(it) { return (it.group || '') + '|' + it.name; }
+  function vodKey(it) { return (it.ser ? '§' : '') + (it.group || '') + '|' + it.name; }
   function vodPos() { return load('vodPos', {}); }
   function fmtDur(sec) {
     sec = Math.max(0, Math.floor(sec || 0));
@@ -1124,7 +1125,7 @@
   function vodSavePos(done) {
     var v = S.vod; if (!v) return;
     var p = Player.position(), all = vodPos(), k = vodKey(v.item);
-    if (done || (p.dur && p.pos > p.dur - 120)) delete all[k];
+    if (done || (p.dur && p.pos > p.dur - 120)) { delete all[k]; vodMarkSeen(k, true); }
     else if (p.pos > 30) all[k] = { p: Math.floor(p.pos), d: Math.floor(p.dur), t: Date.now() };
     else return;
     var keys = Object.keys(all).sort(function (a, b) { return all[b].t - all[a].t; });
@@ -1132,8 +1133,79 @@
     save('vodPos', all);
   }
 
+  // gesehene Filme und Folgen (Häkchen)
+  function vodSeen() { return V.seen || (V.seen = load('vodSeen', {})); }
+  function vodMarkSeen(k, on) {
+    var m = vodSeen();
+    if (on) m[k] = Date.now(); else delete m[k];
+    var keys = Object.keys(m);
+    if (keys.length > 3000) { keys.sort(function (a, b) { return m[a] - m[b]; }); for (var i = 0; i < keys.length - 3000; i++) delete m[keys[i]]; }
+    save('vodSeen', m);
+  }
+  function serSeen(x) { var m = vodSeen(), n = 0; x.eps.forEach(function (e) { if (m[vodKey(e)]) n++; }); return n; }
+  function isSeen(it) { return it.ser ? serSeen(it) === it.eps.length : !!vodSeen()[vodKey(it)]; }
+
+  // Staffel und Folge aus dem Titel lesen: „S01E02“, „1x02“, „1 сезон 2 серия“, „Сезон 1 Серия 2“, „Staffel 1 Folge 2“, „Серия 5“ …
+  var EP_W = '(?:серия|серії|серыя|сер\\.|эпизод|епізод|episode|ep\\.?|folge|odcinek|épisode|episodio|epizod[aeuy]?|bölüm|aflevering|díl|rész|епизод|серија|бөлім|osa|sērija|serija)';
+  var SE_W = '(?:сезон|season|staffel|sezon|saison|stagione|temporada|seizoen|série|séria|sezóna|évad|sezonas|sezona|hooaeg|маусым|σεζόν)';
+  var SEP = '[\\s.\\-_:,(\\[|–—]+';
+  var EP_RES = [
+    [new RegExp('^(.*?)' + SEP + 'S(\\d{1,2})[\\s._]*E(\\d{1,4})(?![0-9])', 'i'), 2, 3],
+    [new RegExp('^(.*?)' + SEP + '(\\d{1,2})x(\\d{1,4})(?![0-9])', 'i'), 2, 3],
+    [new RegExp('^(.*?)' + SEP + SE_W + '\\s*(\\d{1,2})[\\s.,:\\-|)\\]–—]*' + EP_W + '\\s*(\\d{1,4})', 'i'), 2, 3],
+    [new RegExp('^(.*?)' + SEP + '(\\d{1,2})\\s*(?:-?(?:й|ый|ий|я|\\.))?\\s*' + SE_W + '[\\s.,:\\-|)\\]–—]*(\\d{1,4})\\s*(?:-?(?:я|ая|\\.))?\\s*' + EP_W, 'i'), 2, 3],
+    [new RegExp('^(.*?)' + SEP + EP_W + '\\s*(\\d{1,4})', 'i'), 0, 2],
+    [new RegExp('^(.*?)' + SEP + '(\\d{1,4})\\s*(?:-?(?:я|ая|\\.))?\\s*' + EP_W, 'i'), 0, 2]
+  ];
+  function vodEp(name) {
+    for (var i = 0; i < EP_RES.length; i++) {
+      var m = EP_RES[i][0].exec(name || '');
+      if (!m) continue;
+      var base = m[1].replace(/[\s.\-_:,(\[|–—]+$/, '').trim();
+      if (base.length < 2) continue;
+      return { base: base, s: EP_RES[i][1] ? +m[EP_RES[i][1]] : 0, e: +m[EP_RES[i][2]] };
+    }
+    return null;
+  }
+  function epOf(it) { return it._ep === undefined ? (it._ep = vodEp(it.name)) : it._ep; }
+  function epLabel(ep) { return !ep ? '' : ep.s ? t('seasonEp', ep.s, ep.e) : t('episodeN', ep.e); }
+  /** Folgen derselben Serie (mindestens 2) zu einem Eintrag zusammenfassen */
+  function vodGroup(list) {
+    var out = [], ser = {};
+    list.forEach(function (it) {
+      var ep = epOf(it);
+      if (!ep) { out.push(it); return; }
+      var k = it.group + '|' + normT(ep.base), x = ser[k];
+      if (!x) { x = ser[k] = { ser: true, name: ep.base, group: it.group, logo: it.logo, url: '', eps: [] }; out.push(x); }
+      x.eps.push(it);
+    });
+    return out.map(function (x) {
+      if (!x.ser) return x;
+      if (x.eps.length < 2) return x.eps[0];
+      x.eps.sort(function (a, b) { return (a._ep.s - b._ep.s) || (a._ep.e - b._ep.e); });
+      var ss = {}; x.eps.forEach(function (e) { ss[e._ep.s] = 1; }); x.seasons = Object.keys(ss).length;
+      return x;
+    });
+  }
+  function vodSearch(q) {
+    q = normT(q).trim();
+    if (q.length < 2) return [];
+    return (V.flat || []).filter(function (x) {
+      return normT(x.name).indexOf(q) >= 0 || (x.ser && x.eps.some(function (e) { return normT(e.name).indexOf(q) >= 0; }));
+    }).slice(0, 300);
+  }
+  function vodSerOf(it) {
+    for (var i = 0; i < V.cats.length; i++) {
+      var c = V.cats[i]; if (c.id !== 'g' || c.name !== it.group) continue;
+      for (var j = 0; j < c.items.length; j++) if (c.items[j].ser && c.items[j].eps.indexOf(it) >= 0) return c.items[j];
+    }
+    return null;
+  }
+
   function vodBuild() {
-    // Auswahl merken (Kategorie + Titel), damit sie nach dem Neuaufbau an derselben Stelle steht
+    // Auswahl merken (Kategorie + Titel, ggf. geöffnete Serie), damit sie nach dem Neuaufbau an derselben Stelle steht
+    var serK = V.ser ? vodKey(V.ser.it) : '', serII = V.ii;
+    if (V.ser) { V.ii = V.ser.back; V.ser = null; }
     var oc = V.cats[V.ci], oi = oc && oc.items[V.ii], ocId = oc ? oc.id + '|' + (oc.name || '') : '', oiKey = oi ? vodKey(oi) : '';
     var hide = get('adult') === 'hide', map = {}, order = [], byKey = {}, pos = vodPos();
     var items = V.items.filter(function (it) { return !(hide && isAdult(it)); });
@@ -1144,14 +1216,49 @@
     var cont = Object.keys(pos).sort(function (a, b) { return pos[b].t - pos[a].t; })
       .map(function (k) { return byKey[k]; }).filter(function (x) { return !!x; });
     V.cats = [];
+    V.flat = vodGroup(items);
+    V.cats.push({ id: 'search', items: vodSearch(V.q), icon: '⌕' });
     if (cont.length) V.cats.push({ id: 'cont', items: cont, icon: '◷' });
-    if (order.length > 1) V.cats.push({ id: 'all', items: items, icon: '▦' });
-    order.forEach(function (g) { V.cats.push({ id: 'g', name: g, items: map[g], adult: ADULT_RE.test(g) }); });
-    V.ci = 0; V.ii = 0;
+    if (order.length > 1) V.cats.push({ id: 'all', items: V.flat, icon: '▦' });
+    order.forEach(function (g) { V.cats.push({ id: 'g', name: g, items: vodGroup(map[g]), adult: ADULT_RE.test(g) }); });
+    V.ci = V.cats.length > 1 ? 1 : 0; V.ii = 0;
     for (var i = 0; i < V.cats.length; i++) if (V.cats[i].id + '|' + (V.cats[i].name || '') === ocId) { V.ci = i; break; }
     if (oiKey && V.cats[V.ci]) for (var j = 0; j < V.cats[V.ci].items.length; j++) if (vodKey(V.cats[V.ci].items[j]) === oiKey) { V.ii = j; break; }
+    var sx = serK && V.cats[V.ci] && V.cats[V.ci].items[V.ii];
+    if (sx && sx.ser && vodKey(sx) === serK) { V.ser = { it: sx, back: V.ii }; V.ii = Math.min(serII, sx.eps.length - 1); }
   }
-  function vodCatName(c) { return c.id === 'cont' ? t('vodContinue') : c.id === 'all' ? t('vodAll') : c.name; }
+  function vodCatName(c) { return c.id === 'cont' ? t('vodContinue') : c.id === 'all' ? t('vodAll') : c.id === 'search' ? t('vodSearch') + (V.q ? ': ' + V.q : '') : c.name; }
+  /** angezeigte Liste: Titel der Kategorie oder Folgen der geöffneten Serie */
+  function vodList() { return V.ser ? V.ser.it.eps : (V.cats[V.ci] || { items: [] }).items; }
+  function vodEnterSer(x) {
+    var pos = vodPos(), m = vodSeen(), best = -1, bt = 0, first = -1;
+    x.eps.forEach(function (e, i) { var pp = pos[vodKey(e)]; if (pp && pp.t > bt) { bt = pp.t; best = i; } if (first < 0 && !m[vodKey(e)]) first = i; });
+    V.ser = { it: x, back: V.ii };
+    V.ii = best >= 0 ? best : first >= 0 ? first : 0;
+    renderVod();
+  }
+  function vodLeaveSer() { if (!V.ser) return false; V.ii = V.ser.back; V.ser = null; renderVod(); return true; }
+  function vodStartSearch() {
+    V.ser = null;
+    for (var i = 0; i < V.cats.length; i++) if (V.cats[i].id === 'search') V.ci = i;
+    V.focus = 'items'; V.ii = 0; S.vodEdit = true;
+    renderVod();
+    var inp = $('vod-search');
+    show('vod-search', true); inp.value = V.q || ''; inp.focus();
+    try { inp.setSelectionRange(inp.value.length, inp.value.length); } catch (e) {}
+  }
+  function vodEndSearch() {
+    if (!S.vodEdit) return;
+    S.vodEdit = false;
+    var inp = $('vod-search'); inp.blur(); show('vod-search', false);
+    var c = V.cats[V.ci]; V.focus = c && c.items.length ? 'items' : 'cats';
+    if (S.mode === 'vod') renderVod();
+  }
+  function vodSearchInput() {
+    V.q = $('vod-search').value;
+    for (var i = 0; i < V.cats.length; i++) if (V.cats[i].id === 'search') V.cats[i].items = vodSearch(V.q);
+    V.ii = 0; renderVod();
+  }
 
   function vodLoad(cb) {
     var url = String(get('vod')).trim();
@@ -1184,29 +1291,37 @@
   }
 
   function renderVod() {
-    var cats = V.cats, c = cats[V.ci] || { items: [] }, pos = vodPos();
+    var cats = V.cats, c = cats[V.ci] || { items: [] }, pos = vodPos(), seen = vodSeen(), list = vodList(), inSer = !!V.ser;
     var locking = get('adult') === 'lock' && !S.unlocked;
     $('vod-cats').parentNode.classList[V.focus === 'cats' ? 'add' : 'remove']('active');
     $('vod-items').parentNode.classList[V.focus === 'items' ? 'add' : 'remove']('active');
     renderRows($('vod-cats'), cats.length, V.ci, function (i, sel) {
       var g = cats[i];
       return '<div class="row' + (sel ? ' sel' : '') + '">' + groupIcon(g, 'movie') + '<span class="t">' + esc(vodCatName(g)) + '</span>' +
-        (g.adult && locking ? '<span class="lock">🔒</span>' : '') + '<span class="pill">' + g.items.length + '</span></div>';
+        (g.adult && locking ? '<span class="lock">🔒</span>' : '') + (g.id === 'search' && !g.items.length ? '' : '<span class="pill">' + g.items.length + '</span>') + '</div>';
     });
-    $('vod-title').textContent = vodCatName(c);
-    $('vod-count').textContent = c.items.length;
-    if (V.ii >= c.items.length) V.ii = Math.max(0, c.items.length - 1);
-    if (!c.items.length) $('vod-items').innerHTML = '<div class="row dim" style="height:4rem">' + esc(t('empty')) + '</div>';
-    else renderRows($('vod-items'), c.items.length, V.ii, function (i, sel) {
-      var it = c.items[i], hid = locking && isAdult(it), pp = pos[vodKey(it)];
-      var pct = pp && pp.d ? Math.min(100, pp.p / pp.d * 100) : 0;
-      return '<div class="row ch vi' + (sel ? ' sel' : '') + '">' + vodThumb(it, hid) +
-        '<span class="txt"><span class="name">' + esc(it.name) + '</span>' +
-        (c.id !== 'g' ? '<span class="sub">' + esc(it.group) + '</span>' : '') +
+    $('vod-title').textContent = inSer ? V.ser.it.name : vodCatName(c);
+    $('vod-count').textContent = list.length;
+    if (V.ii >= list.length) V.ii = Math.max(0, list.length - 1);
+    if (!list.length) $('vod-items').innerHTML = '<div class="row dim" style="height:4rem">' + esc(t(c.id === 'search' && !inSer ? (normT(V.q).trim().length < 2 ? 'vodSearchHint' : 'nothingFound') : 'empty')) + '</div>';
+    else renderRows($('vod-items'), list.length, V.ii, function (i, sel) {
+      var it = list[i], hid = locking && isAdult(it), pp = !it.ser && pos[vodKey(it)];
+      var pct = pp && pp.d ? Math.min(100, pp.p / pp.d * 100) : 0, sub = '', name = it.name, ok = false;
+      if (it.ser) {
+        var ns = serSeen(it); ok = ns === it.eps.length;
+        sub = (c.id !== 'g' ? it.group + '  ·  ' : '') + (it.seasons > 1 ? t('vodSeasons', it.seasons) + '  ·  ' : '') + t('vodEps', it.eps.length) + (ns && !ok ? '  ·  ✓ ' + ns : '');
+      } else {
+        ok = !!seen[vodKey(it)];
+        if (inSer) { name = epLabel(it._ep); sub = it.name; } else if (c.id !== 'g') sub = it.group;
+      }
+      var icons = (it.ser ? '<span class="sr">❯</span>' : '') + (ok ? '<span class="seen">✓</span>' : '') + (hid ? '<span class="lock">🔒</span>' : '');
+      return '<div class="row ch vi' + (sel ? ' sel' : '') + (ok ? ' watched' : '') + '">' + vodThumb(it, hid) +
+        '<span class="txt"><span class="name">' + esc(name) + '</span>' +
+        (sub ? '<span class="sub">' + esc(sub) + '</span>' : '') +
         (pct ? '<span class="mini"><div style="width:' + pct + '%"></div></span>' : '') + '</span>' +
-        (hid ? '<span class="icons"><span class="lock">🔒</span></span>' : '') + '</div>';
+        (icons ? '<span class="icons">' + icons + '</span>' : '') + '</div>';
     });
-    renderVodCard(c.items[V.ii], pos);
+    renderVodCard(list[V.ii], pos);
   }
 
   function renderVodCard(it, pos) {
@@ -1215,14 +1330,22 @@
     var hid = needsPin(it);
     if (it.logo && !hid) { if (img.getAttribute('src') !== it.logo) img.src = it.logo; img.style.display = ''; } else img.style.display = 'none';
     $('vod-name').textContent = it.name;
-    $('vod-meta').textContent = it.group;
+    if (it.ser) {
+      var ns = serSeen(it);
+      $('vod-meta').textContent = it.group + '  ·  ' + (it.seasons > 1 ? t('vodSeasons', it.seasons) + '  ·  ' : '') + t('vodEps', it.eps.length);
+      $('vod-resume').textContent = hid ? '🔒 ' + t('locked') : ns ? '✓ ' + t('vodSeenN', ns, it.eps.length) : '';
+      return;
+    }
+    var ep = epOf(it);
+    $('vod-meta').textContent = it.group + (ep && V.ser ? '  ·  ' + epLabel(ep) : '');
     var pp = pos[vodKey(it)];
-    $('vod-resume').textContent = hid ? '🔒 ' + t('locked') : pp ? t('vodResumeAt', fmtDur(pp.p) + (pp.d ? ' / ' + fmtDur(pp.d) : '')) : '';
+    $('vod-resume').textContent = hid ? '🔒 ' + t('locked') : pp ? t('vodResumeAt', fmtDur(pp.p) + (pp.d ? ' / ' + fmtDur(pp.d) : '')) : vodSeen()[vodKey(it)] ? '✓ ' + t('vodWatched') : '';
   }
 
   function vodKeyDown(k) {
-    var c = V.cats[V.ci], items = c ? c.items : [];
+    var c = V.cats[V.ci], items = vodList();
     if (k === KEY.BACK || k === KEY.ESC || k === KEY.BACKSPACE) {
+      if (vodLeaveSer()) return;
       if (V.focus === 'items') { V.focus = 'cats'; renderVod(); } else closePanels();
       return;
     }
@@ -1235,6 +1358,7 @@
       else if (k === KEY.CH_UP) { V.ci = Math.max(0, V.ci - pageSize($('vod-cats'))); V.ii = 0; }
       else if (k === KEY.CH_DOWN) { V.ci = Math.min(n - 1, V.ci + pageSize($('vod-cats'))); V.ii = 0; }
       else if (k === KEY.RIGHT || k === KEY.ENTER) {
+        if (c.id === 'search') { if (k === KEY.ENTER || !items.length) vodStartSearch(); else { V.focus = 'items'; renderVod(); } return; }
         if (!items.length) return;
         var go = function () { V.focus = 'items'; renderVod(); };
         if (c.adult && get('adult') === 'lock' && !S.unlocked) askPin(function (ok) { if (ok) go(); }); else go();
@@ -1243,13 +1367,22 @@
     } else {
       var page = pageSize($('vod-items'));
       if (!items.length) { V.focus = 'cats'; renderVod(); return; }
+      var cur = items[V.ii];
+      if (k === KEY.UP && V.ii === 0 && c.id === 'search' && !V.ser) { vodStartSearch(); return; }
       if (k === KEY.UP) V.ii = (V.ii - 1 + items.length) % items.length;
       else if (k === KEY.DOWN) V.ii = (V.ii + 1) % items.length;
       else if (k === KEY.CH_UP) V.ii = Math.max(0, V.ii - page);
       else if (k === KEY.CH_DOWN) V.ii = Math.min(items.length - 1, V.ii + page);
-      else if (k === KEY.LEFT) V.focus = 'cats';
-      else if (k === KEY.ENTER || k === KEY.PLAY || k === KEY.PLAYPAUSE) { playVod(items[V.ii]); return; }
-      else if (k === KEY.RED) { playVod(items[V.ii], true); return; }
+      else if (k === KEY.LEFT) { if (vodLeaveSer()) return; V.focus = 'cats'; }
+      else if (cur && cur.ser && (k === KEY.ENTER || k === KEY.RIGHT || k === KEY.PLAY || k === KEY.PLAYPAUSE)) { guarded(cur, function () { vodEnterSer(cur); }); return; }
+      else if (k === KEY.ENTER || k === KEY.PLAY || k === KEY.PLAYPAUSE) { playVod(cur); return; }
+      else if (k === KEY.RED) { if (!cur.ser) playVod(cur, true); return; }
+      else if (k === KEY.GREEN) {
+        // gesehen / nicht gesehen umschalten (bei einer Serie alle Folgen)
+        var on = !isSeen(cur);
+        (cur.ser ? cur.eps : [cur]).forEach(function (e) { vodMarkSeen(vodKey(e), on); });
+        toast((on ? '✓ ' : '') + t(on ? 'vodMarked' : 'vodUnmarked'), 1500);
+      }
       else return;
     }
     renderVod();
@@ -1261,7 +1394,7 @@
       var pp = vodPos()[vodKey(it)], at = !fromStart && pp ? Math.max(0, pp.p - 5) : 0;
       clearTimeout(S.previewTimer);
       S.previewing = null; S.archive = null;
-      S.vod = { item: it };
+      S.vod = { item: it, ser: V.ser && V.ser.it.eps.indexOf(it) >= 0 ? V.ser.it : vodSerOf(it) };
       S.livePause = null;
       S.mode = 'player'; show('vod', false);
       applyAspect();
@@ -1273,6 +1406,15 @@
   /** Film beenden und zurück in die Mediathek */
   function exitVod(done) {
     vodSavePos(done);
+    // Folge zu Ende: nächste Folge der Serie gleich abspielen
+    var v = S.vod, eps = v && v.ser ? v.ser.eps : null, n = eps ? eps.indexOf(v.item) : -1;
+    if (done && n >= 0 && n + 1 < eps.length) {
+      if (V.ser && V.ser.it === v.ser) V.ii = n + 1;
+      S.vod = null;
+      playVod(eps[n + 1], true);
+      toast('▶ ' + (epLabel(epOf(eps[n + 1])) || eps[n + 1].name), 3000);
+      return;
+    }
     S.vod = null;
     Player.stop(); hideInfo();
     V.resumeLive = true;
@@ -1381,7 +1523,7 @@
     $('epg-pname').textContent = p.t;
     $('epg-ptime').textContent = dateStr(new Date((p.s + sh) * 1000)) + '  ' + hm(p.s + sh) + ' – ' + hm(p.e + sh);
     $('epg-pstate').textContent = isNow ? '● ' + t('live') + ' · ' + t('minLeft', Math.round((p.e + sh - now) / 60)) :
-      canArchive(ch, p) ? '⟲ ' + t('archive') : p.s + sh > now ? (reminded(ch, p) ? '⏰ ' + t('remindActive') : t('notStarted') + '  ·  ' + t('remindHint')) : t('noArchive');
+      canArchive(ch, p) ? '⟲ ' + t('archive') : p.s + sh > now ? (reminded(ch, p) ? '⏰ ' + t('remindActive') : t('notStarted') + '  ·  ' + t('remindHint')) + (serIdx(ch, p) ? '  ·  🔁 ' + t('seriesActive') : '') : t('noArchive');
     $('epg-pdesc').textContent = p.d || '';
   }
 
@@ -1398,7 +1540,7 @@
       var now = nowSec(), sh = shiftOf(ch);
       if (p.s + sh <= now && p.e + sh > now) { play(ch); closePanels(); }
       else if (canArchive(ch, p)) { closePanels(); playArchive(ch, { s: p.s + sh, e: p.e + sh, t: p.t, d: p.d }); }
-      else if (p.s + sh > now) { toggleReminder(ch, p); renderEpg(); }
+      else if (p.s + sh > now) remindMenu(ch, p);
       else toast(t('noArchive'));
       return;
     } else if (k === KEY.BACK || k === KEY.ESC || k === KEY.BACKSPACE || k === KEY.GREEN) { show('epg', false); openList(); return; }
@@ -1512,8 +1654,10 @@
       { k: 'archiveOffset', label: 'sArchiveOffset', help: 'hArchiveOffset', opts: function () { return [[0, t('vOff')]].concat([1, 2, 5, 10].map(function (v) { return [v, t('minutes', v)]; })); } },
       { k: 'remindLead', label: 'sRemindLead', help: 'hRemind', opts: function () { return [[0, t('vAtStart')]].concat([1, 2, 5].map(function (v) { return [v, t('minBefore', v)]; })); } },
       { k: 'remindAct', label: 'sRemindAct', help: 'hRemind', opts: function () { return tr([['ask', 'vAsk'], ['switch', 'vSwitch']]); } },
-      { id: 'clearRemind', type: 'act', label: 'sClearRemind', help: 'hRemind', confirm: true, value: function () { return String(S.reminders.length); }, when: function () { return S.reminders.length > 0; },
-        run: function () { S.reminders = []; psave('reminders', S.reminders); toast(t('remindsCleared'), 2000); renderSettings(); } },
+      { k: 'watchWords', type: 'text', label: 'sWatch', help: 'hWatch' },
+      { id: 'seriesList', type: 'act', label: 'sSeries', help: 'hSeries', value: function () { return String(S.series.length); }, when: function () { return S.series.length > 0; }, run: openSeriesMenu },
+      { id: 'clearRemind', type: 'act', label: 'sClearRemind', help: 'hRemind', confirm: true, value: function () { return String(S.reminders.length + S.series.length); }, when: function () { return S.reminders.length + S.series.length > 0; },
+        run: function () { S.reminders = []; S.series = []; psave('reminders', S.reminders); psave('series', S.series); toast(t('remindsCleared'), 2000); renderSettings(); } },
       { id: 'clearEpg', type: 'act', label: 'sClearEpg', help: 'hClearEpg', run: actClearEpg }
     ] },
     { id: 'parental', label: 'catParental', items: [
@@ -1775,6 +1919,7 @@
     switch (k) {
       case 'lang': I18N.set(get('lang') || I18N.detect()); translateStatic(); rerender(); break;
       case 'vod': V.url = ''; V.items = []; if (S.channels.length) buildGroups(); break;
+      case 'watchWords': autoRemind(); break;
       case 'accent':
         var hex = ACCENTS[get('accent')] || ACCENTS.blue, n = parseInt(hex.substring(1), 16);
         document.documentElement.style.setProperty('--accent', hex);
@@ -2040,6 +2185,7 @@
     if (k === 'key') v = v.replace(/\s+/g, '');
     if (k === 'domain') v = normDomain(v);
     if (k === 'pin' && !/^\d{4}$/.test(v)) return null;
+    if (k === 'watchWords') v = v.replace(/\s*[,;\n]\s*/g, ', ').substring(0, 300);
     return v;
   }
 
@@ -2245,7 +2391,7 @@
   function loadProfileData() {
     S.favs = pload('favs', {}); S.history = pload('history', []); S.hiddenGroups = pload('hiddenGroups', {});
     S.audioPref = pload('audioPref', {}); S.aspectCh = pload('aspectCh', {}); S.chLock = pload('chLock', {}); S.chHide = pload('chHide', {});
-    S.reminders = pload('reminders', []);
+    S.reminders = pload('reminders', []); S.series = pload('series', []); S.remindDone = pload('remindDone', {});
   }
   function profById(id) {
     if (!id) return { id: '', name: '' };
@@ -2390,11 +2536,14 @@
   }
   function toggleReminder(ch, p) {
     var i = reminded(ch, p), sh = shiftOf(ch);
-    if (i) { S.reminders.splice(i - 1, 1); toast(t('remindOff'), 2000); }
+    if (i) {
+      S.reminders.splice(i - 1, 1); toast(t('remindOff'), 2000);
+      S.remindDone[chKey(ch) + '|' + (p.s + sh)] = p.e + sh; psave('remindDone', S.remindDone); // nicht automatisch wieder anlegen
+    }
     else {
       S.reminders.push({ k: chKey(ch), s: p.s + sh, e: p.e + sh, t: p.t, n: ch.name });
       S.reminders.sort(function (a, b) { return a.s - b.s; });
-      if (S.reminders.length > 50) S.reminders.length = 50;
+      if (S.reminders.length > 100) S.reminders.length = 100;
       toast(t('remindSet', p.t, hm(p.s + sh)), 3000);
     }
     psave('reminders', S.reminders);
@@ -2432,6 +2581,90 @@
       break;
     }
     if (changed) psave('reminders', S.reminders);
+  }
+
+  // ---------- Merkliste (Suchbegriffe) und Serien: Erinnerungen automatisch anlegen ----------
+  /** Titel ohne Folgennummer, damit alle Folgen einer Sendung denselben Schlüssel haben */
+  function serKey(title) {
+    return normT(title).replace(/\([^)]*\)|\[[^\]]*\]/g, ' ')
+      .replace(/\d+\s*-?\s*(?:я|й|ая|ый)?\s*(?:серия|сер\.|часть|ч\.|сезон|folge|teil|staffel|episode|ep\.|season|odcinek|część|bölüm|épisode|episodio|capítulo)/g, ' ')
+      .replace(/(?:серия|сер\.|часть|ч\.|сезон|folge|teil|staffel|episode|ep\.|season|odcinek|część|bölüm|épisode|episodio|capítulo)\s*\d+/g, ' ')
+      .replace(/[\s.,:;!?…\-–—]+$/, '').replace(/^[\s.,:;\-–—]+/, '').replace(/\s+/g, ' ');
+  }
+  function watchList() {
+    return String(get('watchWords') || '').split(/[,;\n]/).map(function (w) { return normT(w).trim(); }).filter(function (w) { return w.length >= 3; });
+  }
+  function serIdx(ch, p) {
+    var k = chKey(ch), st = serKey(p.t);
+    for (var i = 0; i < S.series.length; i++) if (S.series[i].k === k && S.series[i].t === st) return i + 1;
+    return 0;
+  }
+  /** OK auf einer kommenden Sendung: einmal erinnern oder an alle Folgen */
+  function remindMenu(ch, p) {
+    var si = serIdx(ch, p);
+    openMenu(p.t, [
+      { label: t(reminded(ch, p) ? 'remindDel' : 'remindOne'), run: function () { toggleReminder(ch, p); renderEpg(); } },
+      { label: t(si ? 'seriesOff' : 'seriesOn'), run: function () { toggleSeries(ch, p); renderEpg(); } }
+    ], 0);
+  }
+  function toggleSeries(ch, p) {
+    var i = serIdx(ch, p), k = chKey(ch), st = serKey(p.t);
+    if (i) {
+      S.series.splice(i - 1, 1);
+      S.reminders = S.reminders.filter(function (r) { return !(r.k === k && serKey(r.t) === st); });
+      psave('series', S.series); psave('reminders', S.reminders);
+      toast(t('seriesRemoved', p.t), 2500);
+      return;
+    }
+    S.series.push({ k: k, t: st, d: p.t, n: ch.name });
+    if (S.series.length > 40) S.series.shift();
+    psave('series', S.series);
+    if (!reminded(ch, p)) toggleReminder(ch, p);
+    var n = autoRemind(true);
+    toast(t('seriesSet', p.t, n + 1), 3500);
+  }
+  /** Einstellungen: gemerkte Serien ansehen und einzeln entfernen */
+  function openSeriesMenu() {
+    if (!S.series.length) return;
+    openMenu(t('sSeries'), S.series.map(function (x, i) {
+      return { label: x.d + '  ·  ' + x.n, run: function () {
+        var rm = S.series.splice(i, 1)[0];
+        S.reminders = S.reminders.filter(function (r) { return !(r.k === rm.k && serKey(r.t) === rm.t); });
+        psave('series', S.series); psave('reminders', S.reminders);
+        toast(t('seriesRemoved', rm.d), 2500); renderSettings();
+        if (S.series.length) openSeriesMenu();
+      } };
+    }), 0);
+  }
+  /** Programm der nächsten 2 Tage nach Suchbegriffen und gemerkten Serien durchsuchen; gibt die Zahl neuer Erinnerungen zurück */
+  function autoRemind(quiet) {
+    if (!S.series || !EPG.isLoaded() || !S.channels.length) return 0;
+    var words = watchList(), ser = {}, done = S.remindDone, now = nowSec(), until = now + 2 * 86400, added = [];
+    S.series.forEach(function (x) { ser[x.k + '|' + x.t] = 1; });
+    if (!words.length && !S.series.length) return 0;
+    for (var i = 0; i < S.visible.length; i++) {
+      var c = S.visible[i], arr = EPG.list(c);
+      if (!arr || !arr.length || isLocked(c)) continue;
+      var k = chKey(c), sh = shiftOf(c);
+      for (var j = 0; j < arr.length; j++) {
+        var x = arr[j], st = x.s + sh;
+        if (st <= now || st > until || done[k + '|' + st]) continue;
+        var n = x._n || (x._n = normT(x.t)), hit = false;
+        for (var w = 0; w < words.length && !hit; w++) if (n.indexOf(words[w]) >= 0) hit = true;
+        if (!hit && !(S.series.length && ser[k + '|' + serKey(x.t)])) continue;
+        done[k + '|' + st] = x.e + sh; // nur einmal anlegen, auch wenn sie später gelöscht oder ausgelöst wird
+        if (reminded(c, x) || S.reminders.length >= 100) continue;
+        S.reminders.push({ k: k, s: st, e: x.e + sh, t: x.t, n: c.name, a: 1 });
+        added.push(k + '|' + st);
+      }
+    }
+    Object.keys(done).forEach(function (key) { if (done[key] < now) delete done[key]; });
+    if (!added.length) { psave('remindDone', done); return 0; }
+    S.reminders.sort(function (a, b) { return a.s - b.s; });
+    psave('reminders', S.reminders); psave('remindDone', done);
+    if (!quiet) toast('⏰ ' + t('autoAdded', added.length), 3500);
+    if (S.mode === 'epg') renderEpg();
+    return added.length;
   }
 
   // ---------- Untertitel-Stil ----------
@@ -2698,6 +2931,10 @@
     S.lastKey = Date.now();
     if (S.saver) { if (ev.preventDefault) ev.preventDefault(); hideSaver(); return; }
     if (S.searchEdit) { searchKey(k, ev); return; }
+    if (S.vodEdit) {
+      if (k === KEY.ENTER || k === KEY.UP || k === KEY.DOWN || k === KEY.BACK || k === KEY.ESC) { ev.preventDefault(); vodEndSearch(); }
+      return;
+    }
     if (k === KEY.ENTER && (S.okDown || longPressOk())) {
       ev.preventDefault();
       if (S.okDown) return; // Wiederholung beim Gedrückthalten
@@ -2722,6 +2959,8 @@
   }
   document.addEventListener('keydown', onKeyDown);
   $('search-input').addEventListener('input', updateSearch);
+  $('vod-search').addEventListener('input', vodSearchInput);
+  $('vod-search').addEventListener('blur', function () { setTimeout(function () { if (S.vodEdit && document.activeElement !== $('vod-search')) vodEndSearch(); }, 200); });
   $('search-input').addEventListener('blur', function () { setTimeout(function () { if (S.searchEdit && document.activeElement !== $('search-input')) endSearch(); }, 200); });
   document.addEventListener('keyup', function (ev) {
     if (Platform.mapKey(ev.keyCode) !== KEY.ENTER || !S.okDown) return;
@@ -2780,7 +3019,7 @@
       else if (a === 'aspect' && S.mode === 'player') cycleAspect();
       else if (a === 'close' && (S.mode !== 'settings' || S.channels.length)) closePanels();
       else if (a === 'groups' && S.mode === 'list') { S.focus = 'groups'; renderList(); }
-      else if (a === 'vodcats' && S.mode === 'vod') { V.focus = 'cats'; renderVod(); }
+      else if (a === 'vodcats' && S.mode === 'vod') { if (!vodLeaveSer()) { V.focus = 'cats'; renderVod(); } }
       return;
     }
     var row = closestEl(ev.target, '[data-i]');
@@ -2849,6 +3088,7 @@
   setInterval(function () { if (visible('infobar')) { if (S.vod) renderVodInfo(); else renderStream(); } }, 1000);
   setInterval(saverCheck, 5000);
   setInterval(checkReminders, 15000);
+  setInterval(function () { autoRemind(); }, 600000);
   setInterval(function () { if (S.channels.length && wakeDue(new Date())) wakeUp(); }, 20000);
 
   S.progHits = [];

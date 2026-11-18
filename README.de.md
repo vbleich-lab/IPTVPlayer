@@ -37,7 +37,7 @@ Alle drei Versionen bauen auf demselben Code auf und haben dieselbe Oberfläche.
 
 - 📺 **Edem TV per Code:** nur Zugangsschlüssel und Kanal-Domain eingeben, die App erzeugt die komplette Kanalliste selbst. Alternativ geht jede eigene M3U/M3U8-Playlist.
 - 🗂️ **Kanalliste mit Live-Vorschau:** Gruppen, Favoriten, „Zuletzt gesehen“ und „Mit Archiv“. Der gewählte Sender läuft klein in der Vorschau, daneben stehen die laufende Sendung und das Programm.
-- 🎬 **Mediathek:** Filme und Serien aus einer eigenen Playlist (bei Edem: *Медиатека*), mit Postern, Spulen und „Weiter ansehen“ an der zuletzt gesehenen Stelle.
+- 🎬 **Mediathek:** Filme und Serien aus einer eigenen Playlist (bei Edem: *Медиатека*), mit Postern, Spulen und „Weiter ansehen“ an der zuletzt gesehenen Stelle, Suche, Staffeln und Folgen, Gesehen-Häkchen.
 - 🗓️ **Programmführer (EPG) und Archiv bis 7 Tage:** Sendung auswählen, OK drücken, und sie läuft aus dem Archiv. Mit ⏪ ⏩ springt man in der Sendung.
 - 📱 **Einrichtung per Smartphone:** QR-Code am Fernseher scannen und alle Einstellungen bequem am Handy eintippen. Dort lassen sich auch Sicherungen herunterladen und wieder einspielen.
 - ⚙️ **Über 50 Einstellungen in 8 Kategorien,** direkt am Fernseher oder am Handy.
@@ -99,12 +99,17 @@ Acht Kategorien. Änderungen wirken sofort, zu jeder Einstellung steht eine kurz
 - Edem: im Kabinett unter *Медиатека* den Link kopieren und in Einstellungen › Anbieter › *Mediathek-Link* eintragen (am einfachsten per Smartphone). Jede andere VOD-Playlist im M3U-Format funktioniert genauso.
 - Öffnen über die Gruppe **Mediathek** in der Kanalliste. Links die Kategorien aus der Playlist, dazu „Weiter ansehen“ und „Alle“.
 - OK spielt ab oder setzt an der gemerkten Stelle fort, 🔴 Rot startet von vorn. Im Film: ◀ ▶ ±30 s, ⏪ ⏩ ±5 Min, OK Pause, Zurück führt zurück in die Mediathek, danach läuft wieder der Live-Sender.
+- **Serien:** Folgen einer Serie („S01E02“, „1 сезон 2 серия“, „Staffel 1 Folge 2“, „Серия 5“ …) werden zu einer Zeile zusammengefasst. OK öffnet die Folgen nach Staffeln; der Cursor steht auf der zuletzt begonnenen oder ersten ungesehenen Folge. Nach dem Ende einer Folge startet die nächste automatisch.
+- **Gesehen:** zu Ende geschaute Filme und Folgen bekommen ein ✓. 🟢 Grün setzt oder entfernt das Häkchen von Hand (auf einer Serie für alle Folgen).
+- **Suche:** Kategorie „Suche“ ganz oben – OK, einen Teil des Titels eintippen, passende Filme und Serien erscheinen sofort.
 
 **Programmführer**
 - Für Edem automatisch von epg.one: „komplett“ mit Archivtagen und Beschreibungen, oder „kompakt“ nur für heute. Alternativ das EPG aus der Playlist (`url-tvg`) oder eine eigene XMLTV-URL.
 - Das EPG wird auf dem Fernseher zwischengespeichert und nur in einstellbaren Abständen neu geladen. Gepackte Dateien (`.gz`) funktionieren auch auf älteren Geräten (mitgeliefertes pako).
 - Zeitverschiebung ±12 h.
 - **Erinnerungen:** OK auf einer kommenden Sendung setzt eine Erinnerung (⏰), ein zweites OK entfernt sie. Kurz vor Beginn (zum Beginn oder 1, 2, 5 Minuten vorher) fragt die App „Umschalten auf …?“ oder schaltet auf Wunsch selbst um (Programm & Archiv › „Bei Erinnerung“). Läuft der Sender schon, kommt nur ein Hinweis.
+- **Alle Folgen:** Im Menü nach OK auf einer kommenden Sendung „An alle Folgen erinnern“ wählen. Die App setzt dann selbst Erinnerungen für jede weitere Folge dieser Sendung auf diesem Sender. Liste unter Programm & Archiv › „Serien mit Erinnerung“ (OK entfernt).
+- **Merkliste:** Programm & Archiv › „Merkliste“ – Begriffe durch Komma getrennt (z. B. *Fußball, Tatort*; bequem per Smartphone). Sobald eine passende Sendung in den nächsten 2 Tagen im Programmführer auftaucht, setzt die App selbst eine Erinnerung.
 
 **Archiv (Catch-up)**
 - Bis 7 Tage zurück. Formate: Edem/Shift (`utc`/`lutc`), Flussonic und `catchup-source`.
